@@ -3,12 +3,14 @@
 
 #include <glm/gtc/matrix_transform.hpp>
 
+#include "AseraiEngine/Core/Logger.h"
+
 namespace Aserai
 {
 	EditorCamera::EditorCamera()
 		: m_ProjectionType(CameraProjectionType::Orthographic), m_AspectRatio(1.3f),
 		m_OrthographicSize(10.0f), m_OrthographicNear(-1.0f), m_OrthographicFar(1.0f), m_OrthographicRotation(0.0f),
-		m_TranslationSpeed(5.0f), m_RotationSpeed(5.0f),
+		m_TranslationSpeed(5.0f), m_RotationSpeed(90.0f),
 		m_Translation({ 0.0f, 0.0f, 0.0f }), m_Rotation({ 0.0f, 0.0f, 1.0f }), m_Scale({ 1.0f, 1.0f, 1.0f })
 	{
 		CalculateProjectionViewMatrix();
@@ -18,25 +20,76 @@ namespace Aserai
 	{
 		if (inputManager->IsKeyPressed(KeyCode::LeftControl))
 		{
+			bool flag = false;
+
 			if (inputManager->IsKeyPressed(KeyCode::W))
+			{
 				m_Translation.y += m_TranslationSpeed * dt;
+				flag = true;
+			}
 
 			if (inputManager->IsKeyPressed(KeyCode::S))
+			{
 				m_Translation.y -= m_TranslationSpeed * dt;
+				flag = true;
+			}
 
 			if (inputManager->IsKeyPressed(KeyCode::A))
+			{
 				m_Translation.x -= m_TranslationSpeed * dt;
+				flag = true;
+			}
 
 			if (inputManager->IsKeyPressed(KeyCode::D))
+			{
 				m_Translation.x += m_TranslationSpeed * dt;
+				flag = true;
+			}
 
 			if (inputManager->IsKeyPressed(KeyCode::Q))
-				m_Rotation += m_RotationSpeed * dt;
+			{
+				m_OrthographicRotation += m_RotationSpeed * dt;
+				flag = true;
+			}
 
 			if (inputManager->IsKeyPressed(KeyCode::E))
-				m_Rotation -= m_RotationSpeed * dt;
+			{
+				m_OrthographicRotation -= m_RotationSpeed * dt;
+				flag = true;
+			}
 
-			CalculateProjectionViewMatrix();
+			if (inputManager->IsMouseScrollingUp())
+			{
+				m_OrthographicSize -= 1;
+				flag = true;
+			}
+
+			if (inputManager->IsMouseScrollingDown())
+			{
+				m_OrthographicSize += 1;
+				flag = true;
+			}
+
+			static MousePoint<double> oldPos = {};
+			if (inputManager->IsMouseDragging())
+			{
+				auto& newPos = inputManager->GetPosition();
+				if(newPos.x > oldPos.x)
+					m_Translation.x += (m_TranslationSpeed + 1) * dt;
+				else if (newPos.x < oldPos.x)
+					m_Translation.x -= (m_TranslationSpeed + 1) * dt;
+
+				if (newPos.y < oldPos.y)
+					m_Translation.y += (m_TranslationSpeed + 1) * dt;
+				else if (newPos.y > oldPos.y)
+					m_Translation.y -= (m_TranslationSpeed + 1) * dt;
+
+				oldPos = newPos;
+				flag = true;
+			}
+
+			if(flag)
+				CalculateProjectionViewMatrix();
 		}
 	}
 

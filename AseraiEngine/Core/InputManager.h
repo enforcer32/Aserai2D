@@ -25,6 +25,7 @@ namespace Aserai
 		bool IsMouseScrollingDown() const;
 		bool IsMouseMoving() const;
 		bool IsMouseDragging() const;
+		MousePoint<double> GetPosition();
 
 	private:
 		friend class Window;

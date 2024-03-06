@@ -71,6 +71,11 @@ namespace Aserai
 		return m_Mouse.IsMouseDragging();
 	}
 
+	MousePoint<double> InputManager::GetPosition()
+	{
+		return m_Mouse.GetPosition();
+	}
+
 	void InputManager::OnKeyEvent(KeyEventType type, KeyCode key)
 	{
 		switch (type)
