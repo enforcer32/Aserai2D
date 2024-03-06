@@ -9,6 +9,7 @@
 #include <AseraiEngine/Components/RigidBodyComponent.h>
 #include <AseraiEngine/Components/SpriteComponent.h>
 #include <AseraiEngine/Components/CameraComponent.h>
+#include <AseraiEngine/Components/KeyboardMovementComponent.h>
 
 #include <imgui.h>
 
@@ -23,36 +24,22 @@ namespace Aserai
 			ASERAI_LOG_INFO("Initialized AseraiSandbox");
 
 			m_AssetManager = std::make_shared<AssetManager>();
-
-			m_Renderer2D->SetAlphaBlending(true);
 			m_ActiveScene = std::make_shared<Scene>("Sandbox");
 
-			// Simple Entities
-			/*Entity entity1 = m_ActiveScene->CreateEntity();
-			entity1.AddComponent<RigidBodyComponent>(glm::vec3({ 0.1, 0.0, 0.0 }));
-			entity1.AddComponent<SpriteComponent>(glm::vec4({ 1.0f, 0.0f, 0.0f, 1.0f }), 0, 0, 1);
+			m_Renderer2D->SetAlphaBlending(true);
 
-			Entity entity2 = m_ActiveScene->CreateEntity();
-			entity2.AddComponent<RigidBodyComponent>(glm::vec3({ 0.1, 0.0, 0.0 }));
-			entity2.AddComponent<SpriteComponent>(glm::vec4({ 0.0f, 1.0f, 0.0f, 1.0f }), 0, 0, 0);
-
-			Entity entity3 = m_ActiveScene->CreateEntity();
-			entity3.AddComponent<RigidBodyComponent>(glm::vec3({ 0.0, 0.1, 0.0 }));
-			entity3.AddComponent<SpriteComponent>(m_AssetManager->GetTexture("../Assets/Textures/wall_brick.png"));
-
-			Entity entity4 = m_ActiveScene->CreateEntity();
-			entity4.AddComponent<RigidBodyComponent>(glm::vec3({ 0.0, -0.1, 0.0 }));
-			entity4.AddComponent<SpriteComponent>(m_AssetManager->GetTexture("../Assets/Textures/panther_tank_jlee104.png"), 0, 0, 2);*/			
-
-			/*Entity block = m_ActiveScene->CreateEntity();
-			block.AddComponent<SpriteComponent>(m_AssetManager->GetTexture("../Assets/Spritesheets/top_down_tanks.png"), 128, 128, 0, 3);*/
+			m_InputManager->SetAutoRepeatKey(false);
+			m_InputManager->SetAutoRepeatChar(false);
+			m_InputManager->SetKeyAutoRepeatHeldDown(false);
+			m_InputManager->SetMouseAutoRepeatHeldDown(false);
 
 			Entity camera = m_ActiveScene->CreateEntity();
 			camera.AddComponent<CameraComponent>(true);
 
-			Entity square = m_ActiveScene->CreateEntity();
-			square.AddComponent<SpriteComponent>(glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
-			square.AddComponent<TransformComponent>(glm::vec3(0.0f, 0.0f, 0.0f));
+			Entity player = m_ActiveScene->CreateEntity("player");
+			player.AddComponent<TransformComponent>(glm::vec3(-5.0, 0.0, 0.0), glm::vec3(0.0, 0.0, 1.0), glm::vec3(1.0, 1.0, 1.0), 0.0);
+			player.AddComponent<SpriteComponent>(m_AssetManager->GetTexture("../Assets/Spritesheets/top_down_tanks.png"), 2, 2, 1, 7.16, 5.5, 82, 79);
+			player.AddComponent<KeyboardMovementComponent>(5.0);
 		}
 
 		virtual void OnProcessInput() override
@@ -63,9 +50,7 @@ namespace Aserai
 
 		virtual void OnUpdate(DeltaTime dt) override
 		{
-			//ASERAI_LOG_INFO("FPS: {}", (1000 / (dt * 1000)));
-
-			m_ActiveScene->OnRuntimeUpdate(dt, m_InputManager);
+			m_ActiveScene->OnRuntimeUpdate(dt, m_InputManager, m_EventManager);
 		}
 
 		virtual void OnRender(DeltaTime dt, const std::shared_ptr<Renderer2D>& renderer) override
@@ -74,12 +59,7 @@ namespace Aserai
 			renderer->SetClearColor({ 0.2f, 0.3f, 0.3f, 1.0f });
 			renderer->Clear();
 
-			m_ActiveScene->OnRuntimeRender(dt, renderer);
-
-			/*std::cout << "DrawCall Count: " << renderer->GetRenderStats().DrawCallCount << std::endl;
-			std::cout << "Quad Count: " << renderer->GetRenderStats().QuadCount << std::endl;
-			std::cout << "Vertex Count: " << renderer->GetRenderStats().GetVertexCount() << std::endl;
-			std::cout << "Index Count: " << renderer->GetRenderStats().GetIndexCount() << std::endl;*/
+			m_ActiveScene->OnRuntimeRender(dt, renderer, m_InputManager);
 		}
 
 		virtual void OnImGuiRender(DeltaTime dt) override
