@@ -32,6 +32,10 @@ namespace Aserai
 		if (!m_Renderer2D->Init(1000))
 			ASERAI_LOG_CRITICAL("Failed to Initialize Renderer2D");
 
+		m_ImGui = std::make_unique<AImGui>();
+		if(!m_ImGui->Init(m_Window))
+			ASERAI_LOG_CRITICAL("Failed to Initialize AImGui");
+
 		m_Initialized = true;
 		m_Running = true;
 	}
@@ -40,6 +44,7 @@ namespace Aserai
 	{
 		if (m_Initialized)
 		{
+			m_ImGui->Destroy();
 			m_Renderer2D->Destroy();
 			m_InputManager->Destroy();
 			m_EventManager->Destroy();
@@ -62,6 +67,10 @@ namespace Aserai
 				OnProcessInput();
 				OnUpdate(dt);
 				OnRender(dt, m_Renderer2D);
+
+				m_ImGui->BeginFrame();
+				OnImGuiRender(dt);
+				m_ImGui->EngFrame();
 			}
 
 			m_Window->Update();

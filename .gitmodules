@@ -13,3 +13,6 @@
 [submodule "Dependencies/stb"]
 	path = Dependencies/stb
 	url = https://github.com/enforcer32/stb
+[submodule "Dependencies/imgui"]
+	path = Dependencies/imgui
+	url = https://github.com/enforcer32/imgui/

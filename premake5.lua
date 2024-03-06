@@ -12,6 +12,7 @@ group "Dependencies"
 	include "Dependencies/glfw"
 	include "Dependencies/glad"
 	include "Dependencies/stb"
+	include "Dependencies/imgui"
 group ""
 
 include "AseraiEngine"

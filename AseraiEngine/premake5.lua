@@ -39,6 +39,7 @@ includedirs
 	"%{IncludeDir.glm}",
 	"%{IncludeDir.stb}",
 	"%{IncludeDir.fnv}",
+	"%{IncludeDir.imgui}",
 }
 
 links
@@ -47,6 +48,7 @@ links
 	"glfw",
 	"glad",
 	"stb",
+	"imgui",
 	"opengl32.lib",
 }
 

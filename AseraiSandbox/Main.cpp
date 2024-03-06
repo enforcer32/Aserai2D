@@ -8,6 +8,8 @@
 #include <AseraiEngine/Components/RigidBodyComponent.h>
 #include <AseraiEngine/Components/SpriteComponent.h>
 
+#include <imgui.h>
+
 namespace Aserai
 {
 	class AseraiSandbox : public AseraiApp
@@ -52,7 +54,7 @@ namespace Aserai
 
 		virtual void OnUpdate(DeltaTime dt) override
 		{
-			ASERAI_LOG_INFO("FPS: {}", (1000 / (dt * 1000)));
+			//ASERAI_LOG_INFO("FPS: {}", (1000 / (dt * 1000)));
 
 			m_ActiveScene->OnRuntimeUpdate(dt);
 		}
@@ -69,6 +71,22 @@ namespace Aserai
 			std::cout << "Quad Count: " << renderer->GetRenderStats().QuadCount << std::endl;
 			std::cout << "Vertex Count: " << renderer->GetRenderStats().GetVertexCount() << std::endl;
 			std::cout << "Index Count: " << renderer->GetRenderStats().GetIndexCount() << std::endl;*/
+		}
+
+		virtual void OnImGuiRender(DeltaTime dt) override
+		{
+			auto& stats = m_Renderer2D->GetRenderStats();
+			ImGui::Begin("Stats");
+			ImGui::Text("Renderer2D Stats:");
+			ImGui::Text("DrawCalls: %d", stats.DrawCallCount);
+			ImGui::Text("QuadCount: %d", stats.QuadCount);
+			ImGui::Text("VertexCount: %d", stats.GetVertexCount());
+			ImGui::Text("IndexCount: %d", stats.GetIndexCount());
+			ImGui::NewLine();
+			ImGui::Text("Scene Stats:");
+			ImGui::Text("Active Scene: %s", m_ActiveScene->GetName().c_str());
+			ImGui::Text("FPS: %.2f", (1.0f / dt));
+			ImGui::End();
 		}
 
 	private:
