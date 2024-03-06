@@ -17,3 +17,4 @@ group ""
 
 include "AseraiEngine"
 include "AseraiSandbox"
+include "AseraiTankGame2D"
