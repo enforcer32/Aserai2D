@@ -1,6 +1,8 @@
 #include "AseraiEditorPCH.h"
+
 #include "AseraiEditor/Panels/PanelManager.h"
 #include "AseraiEditor/Panels/SceneGraphPanel.h"
+#include "AseraiEditor/Panels/EntityPropertiesPanel.h"
 
 #include <AseraiEngine/Core/AseraiApp.h>
 #include <AseraiEngine/Core/Logger.h>
@@ -41,6 +43,7 @@ namespace Aserai
 			m_InputManager->SetMouseAutoRepeatHeldDown(false);
 
 			m_PanelManager->AddPanel("SceneGraph", std::make_shared<SceneGraphPanel>(m_ActiveScene, m_InputManager));
+			m_PanelManager->AddPanel("Entity Properties", std::make_shared<EntityPropertiesPanel>());
 
 			// TMP
 			Entity player = m_ActiveScene->CreateEntity("player");
@@ -187,7 +190,7 @@ namespace Aserai
 
 int main(int argc, char* argv)
 {
-	Aserai::AseraiEditor editor({ "AseraiEditor", 1280, 720, true });
+	Aserai::AseraiEditor editor({ "AseraiEditor", 1920, 1080, true });
 	editor.Run();
 	return 0;
 }

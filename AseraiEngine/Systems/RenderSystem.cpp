@@ -38,7 +38,9 @@ namespace Aserai
 		{
 			auto transform = entity.TransformComponent;
 			const auto& sprite = entity.SpriteComponent;
-		
+			transform.Scale.x *= sprite.Width;
+			transform.Scale.y *= sprite.Height;
+
 			if (sprite.Texture)
 			{
 				if (sprite.TextureX || sprite.TextureY || sprite.TextureH || sprite.TextureW)
@@ -48,8 +50,6 @@ namespace Aserai
 					textureUV[1] = { ((float)((sprite.TextureX + 1) * sprite.TextureW) / sprite.Texture->GetWidth()), ((float)(sprite.TextureY * sprite.TextureH) / sprite.Texture->GetHeight()) }; // BOTTOM RIGHT
 					textureUV[2] = { ((float)((sprite.TextureX + 1) * sprite.TextureW) / sprite.Texture->GetWidth()), ((float)((sprite.TextureY + 1) * sprite.TextureH) / sprite.Texture->GetHeight()) }; // TOP RIGHT
 					textureUV[3] = { ((float)(sprite.TextureX * sprite.TextureW) / sprite.Texture->GetWidth()), ((float)((sprite.TextureY + 1) * sprite.TextureH) / sprite.Texture->GetHeight()) }; // TOP LEFT
-					transform.Scale.x *= sprite.Width;
-					transform.Scale.y *= sprite.Height;
 					renderer->RenderQuad(transform.GetTransform(), sprite.Texture, textureUV);
 				}
 				else

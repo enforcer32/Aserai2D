@@ -20,12 +20,12 @@ namespace Aserai
 		uint32_t TextureH;
 		bool Fixed;
 
-		SpriteComponent(const glm::vec4& color = glm::vec4({ 1.0f, 0.0f, 0.0f, 1.0f }), uint32_t width = 0, uint32_t height = 0, uint32_t zIndex = 0, bool fixed = false)
+		SpriteComponent(const glm::vec4& color = glm::vec4({ 1.0f, 0.0f, 0.0f, 1.0f }), uint32_t width = 1, uint32_t height = 1, uint32_t zIndex = 0, bool fixed = false)
 			: Texture(nullptr), Color(color), Width(width), Height(height), ZIndex(zIndex), TextureX(0), TextureY(0), TextureW(0), TextureH(0), Fixed(fixed)
 		{
 		}
 
-		SpriteComponent(const std::shared_ptr<Texture2D>& texture, uint32_t width = 0, uint32_t height = 0, uint32_t zIndex = 0, float textureX = 0, float textureY = 0, uint32_t textureW = 0, uint32_t textureH = 0, bool fixed = false)
+		SpriteComponent(const std::shared_ptr<Texture2D>& texture, uint32_t width = 1, uint32_t height = 1, uint32_t zIndex = 0, float textureX = 0, float textureY = 0, uint32_t textureW = 0, uint32_t textureH = 0, bool fixed = false)
 			: Texture(texture), Color({1.0f, 0.0f, 0.0f, 1.0f}), Width(width), Height(height), ZIndex(zIndex), TextureX(textureX), TextureY(textureY), TextureW(textureW), TextureH(textureH), Fixed(fixed)
 		{
 		}

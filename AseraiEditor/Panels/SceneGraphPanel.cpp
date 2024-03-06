@@ -5,6 +5,8 @@
 
 namespace Aserai
 {
+	Entity SceneGraphPanel::s_SelectedEntity{};
+
 	SceneGraphPanel::SceneGraphPanel(const std::shared_ptr<Scene>& scene, const std::shared_ptr<InputManager>& inputManager)
 		: m_Scene(scene), m_InputManager(inputManager)
 	{
@@ -18,7 +20,7 @@ namespace Aserai
 			RenderEntity(entity);
 
 		if(m_InputManager->IsMousePressed(MouseCode::Button1) && ImGui::IsWindowHovered())
-			m_SelectedEntity = {};
+			s_SelectedEntity = {};
 
 		if (ImGui::BeginPopupContextWindow(0, 1))
 		{
@@ -38,18 +40,18 @@ namespace Aserai
 
 	Entity SceneGraphPanel::GetSelectedEntity()
 	{
-		return m_SelectedEntity;
+		return s_SelectedEntity;
 	}
 
 	void SceneGraphPanel::RenderEntity(Entity& entity)
 	{
 		bool remove = false;
 
-		ImGuiTreeNodeFlags flags = ((entity == m_SelectedEntity && m_SelectedEntity) ? ImGuiTreeNodeFlags_Selected : 0) | ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanAvailWidth;
+		ImGuiTreeNodeFlags flags = ((entity == s_SelectedEntity && s_SelectedEntity) ? ImGuiTreeNodeFlags_Selected : 0) | ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanAvailWidth;
 		bool open = ImGui::TreeNodeEx((void*)entity.GetID(), flags, entity.GetTag().c_str());
 
 		if (ImGui::IsItemClicked())
-			m_SelectedEntity = entity;
+			s_SelectedEntity = entity;
 
 		if (ImGui::BeginPopupContextItem(0, 1))
 		{
@@ -65,8 +67,8 @@ namespace Aserai
 		if (remove)
 		{
 			m_Scene->DestroyEntity(entity);
-			if (m_SelectedEntity == entity)
-				m_SelectedEntity = {};
+			if (s_SelectedEntity == entity)
+				s_SelectedEntity = {};
 		}
 	}
 }

@@ -15,7 +15,7 @@ namespace Aserai
 		virtual void OnImGuiRender() override;
 		
 		void SetScene(const std::shared_ptr<Scene>& scene);
-		Entity GetSelectedEntity();
+		static Entity GetSelectedEntity();
 
 	private:
 		void RenderEntity(Entity& entity);
@@ -23,6 +23,6 @@ namespace Aserai
 	private:
 		std::shared_ptr<Scene> m_Scene;
 		std::shared_ptr<InputManager> m_InputManager;
-		Entity m_SelectedEntity;
+		static Entity s_SelectedEntity;
 	};
 }
