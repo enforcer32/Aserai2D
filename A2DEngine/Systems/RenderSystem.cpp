@@ -42,25 +42,9 @@ namespace Aserai2D
 			transform.Scale.y *= sprite.Height;
 
 			if (sprite.Texture)
-			{
-				if (sprite.TextureX || sprite.TextureY || sprite.TextureH || sprite.TextureW)
-				{
-					std::array<glm::vec2, 4> textureUV;
-					textureUV[0] = { ((float)(sprite.TextureX * sprite.TextureW) / sprite.Texture->GetWidth()), ((float)(sprite.TextureY * sprite.TextureH) / sprite.Texture->GetHeight()) }; // BOTTOM LEFT
-					textureUV[1] = { ((float)((sprite.TextureX + 1) * sprite.TextureW) / sprite.Texture->GetWidth()), ((float)(sprite.TextureY * sprite.TextureH) / sprite.Texture->GetHeight()) }; // BOTTOM RIGHT
-					textureUV[2] = { ((float)((sprite.TextureX + 1) * sprite.TextureW) / sprite.Texture->GetWidth()), ((float)((sprite.TextureY + 1) * sprite.TextureH) / sprite.Texture->GetHeight()) }; // TOP RIGHT
-					textureUV[3] = { ((float)(sprite.TextureX * sprite.TextureW) / sprite.Texture->GetWidth()), ((float)((sprite.TextureY + 1) * sprite.TextureH) / sprite.Texture->GetHeight()) }; // TOP LEFT
-					renderer->RenderQuad(transform.GetTransform(), sprite.Texture, textureUV);
-				}
-				else
-				{
-					renderer->RenderQuad(transform.GetTransform(), sprite.Texture);
-				}
-			}
+				renderer->RenderQuad(transform.GetTransform(), sprite.Texture, sprite.TextureUV);
 			else
-			{
 				renderer->RenderQuad(transform.GetTransform(), sprite.Color);
-			}
 		}
 	}
 }

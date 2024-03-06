@@ -61,7 +61,7 @@ namespace Aserai2D
 			
 			Entity player = m_ActiveScene->CreateEntity("player");
 			player.AddComponent<TransformComponent>(glm::vec3(-5.0, 0.0, 0.0), glm::vec3(0.0, 0.0, 1.0), glm::vec3(1.0, 1.0, 1.0), 0.0);
-			player.AddComponent<SpriteComponent>(tankTexture, 2, 2, 1, 7.16, 5.5, 82, 79); // DONT ADD TEXTURE USING NAME, LOOP OVER TEXTURES OR ADD USING CONTENT BROWSER
+			player.AddComponent<SpriteComponent>(tankTexture, 2, 2, 1); // DONT ADD TEXTURE USING NAME, LOOP OVER TEXTURES OR ADD USING CONTENT BROWSER
 			//player.AddComponent<KeyboardMovementComponent>(5.0, true);
 
 			return true;

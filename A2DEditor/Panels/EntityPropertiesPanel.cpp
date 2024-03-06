@@ -151,29 +151,24 @@ namespace Aserai2D
 						component.Texture = std::make_shared<Texture2D>(texturePath); // Only Allow From Content Browser
 				}
 
-				ImGui::Text("TextureX");
+				ImGui::Text("TextureUV(0)");
 				ImGui::SameLine();
-				ImGui::DragFloat("##TextureX", &component.TextureX, 1.0f);
+				ImGui::DragFloat2("##TextureUV(0)", glm::value_ptr(component.TextureUV[0]), 0.1, 0, 1);
 
-				ImGui::Text("TextureY");
+				ImGui::Text("TextureUV(1)");
 				ImGui::SameLine();
-				ImGui::DragFloat("##TextureY", &component.TextureY, 1.0f);
+				ImGui::DragFloat2("##TextureUV(1)", glm::value_ptr(component.TextureUV[1]), 0.1, 0, 1);
 
-				ImGui::Text("TextureW");
+				ImGui::Text("TextureUV(2)");
 				ImGui::SameLine();
-				ImGui::DragInt("##TextureW", (int32_t*)&component.TextureW, 1.0f);
+				ImGui::DragFloat2("##TextureUV(2)", glm::value_ptr(component.TextureUV[2]), 0.1, 0, 1);
 
-				ImGui::Text("TextureH");
+				ImGui::Text("TextureUV(3)");
 				ImGui::SameLine();
-				ImGui::DragInt("##TextureH", (int32_t*)&component.TextureH, 1.0f);
+				ImGui::DragFloat2("##TextureUV(3)", glm::value_ptr(component.TextureUV[3]), 0.1, 0, 1);
 
 				if (ImGui::Button("Reset"))
-				{
-					component.TextureX = 0;
-					component.TextureY = 0;
-					component.TextureW = 0;
-					component.TextureH = 0;
-				}
+					component.TextureUV = { glm::vec2{ 0.0f, 0.0f }, glm::vec2{ 1.0f, 0.0f }, glm::vec2{ 1.0f, 1.0f }, glm::vec2{ 0.0f, 1.0f } };
 			});
 	}
 }
