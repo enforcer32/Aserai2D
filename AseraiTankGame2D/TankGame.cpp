@@ -22,9 +22,15 @@
 
 #include <imgui.h>
 #include <sstream>
+#include <unordered_map>
 
 namespace Aserai
 {
+	struct TankData
+	{
+		uint32_t Health;
+	};
+
 	class AseraiTankGame2D : public AseraiApp
 	{
 	public:
@@ -147,45 +153,70 @@ namespace Aserai
 			player.AddComponent<BoxColliderComponent>(2, 2);
 			player.AddComponent<ParticleEmitterComponent>("bullets", glm::vec3(1.0, 1.0, 0.0), 5, 3, 10, true, false, KeyCode::Space); // (SPEEDx,y(1,1) 3 seconds lifetime, run every 2 second
 			player.AddComponent<ParticleSpriteComponent>(m_AssetManager->GetTexture("../Assets/Spritesheets/top_down_tanks.png"), 1, 1, 2, 38.9, 15.2, 20, 34);
+			m_TankData[player.GetID()] = { 100 };
 
 			Entity enemy1 = m_ActiveScene->CreateEntity("enemy1");
 			enemy1.SetGroup("enemies");
 			enemy1.AddComponent<TransformComponent>(glm::vec3(5.0, 0.0, 0.0), glm::vec3(0.0, 0.0, 1.0), glm::vec3(1.0, 1.0, 1.0), 0.0);
 			enemy1.AddComponent<SpriteComponent>(m_AssetManager->GetTexture("../Assets/Spritesheets/top_down_tanks.png"), 2, 2, 0, 6.16, 5.5, 82, 79);
 			enemy1.AddComponent<BoxColliderComponent>(2, 2);
+			m_TankData[enemy1.GetID()] = { 100 };
 
 			Entity enemy2 = m_ActiveScene->CreateEntity("enemy2");
 			enemy2.SetGroup("enemies");
 			enemy2.AddComponent<TransformComponent>(glm::vec3(3.0, 3.0, 0.0), glm::vec3(0.0, 0.0, 1.0), glm::vec3(1.0, 1.0, 1.0), 0.0);
 			enemy2.AddComponent<SpriteComponent>(m_AssetManager->GetTexture("../Assets/Spritesheets/top_down_tanks.png"), 2, 2, 0, 6.16, 4.5, 82, 79);
 			enemy2.AddComponent<BoxColliderComponent>(2, 2);
-
-			/*Entity bullet = m_ActiveScene->CreateEntity("bullet");
-			bullet.AddComponent<TransformComponent>(glm::vec3(7.0, 5.0, 0.0), glm::vec3(0.0, 0.0, 1.0), glm::vec3(1.0, 1.0, 1.0), 0.0);
-			bullet.AddComponent<SpriteComponent>(m_AssetManager->GetTexture("../Assets/Spritesheets/top_down_tanks.png"), 1, 1, 2, 38.9, 15.2, 20, 34);
-			bullet.AddComponent<BoxColliderComponent>(1, 1);*/
+			m_TankData[enemy2.GetID()] = { 100 };
 		}
 
 		void OnEntityCollision(CollisionEvent& ev)
 		{
 			if ((ev.entityA.GetGroup() == "bullets" && ev.entityB.GetGroup() == "enemies"))
-			{
-				if (ev.entityA.GetComponent<ParticleComponent>().Friendly)
-				{
-					ev.entityB.Destroy();
-					ASERAI_LOG_INFO("Player Killed Enemy");
-				}
-			}
+				OnPlayerHitTank(ev.entityA, ev.entityB, 10);
 			else if (ev.entityA.GetGroup() == "enemies" && ev.entityB.GetGroup() == "bullets")
+				OnPlayerHitTank(ev.entityB, ev.entityA, 10);
+			else if ((ev.entityA.GetGroup() == "bullets" && ev.entityB.GetTag() == "player"))
+				OnEnemyHitTank(ev.entityA, ev.entityB, 10);
+			else if ((ev.entityA.GetTag() == "player" && ev.entityB.GetGroup() == "bullets"))
+				OnEnemyHitTank(ev.entityB, ev.entityA, 10);
+		}
+
+		void OnPlayerHitTank(Entity bullet, Entity tank, uint32_t damage)
+		{
+			const auto& particle = bullet.GetComponent<ParticleComponent>();
+			if (particle.Friendly) // if shot by main player
 			{
-				ev.entityA.Destroy();
-				ASERAI_LOG_INFO("Player Killed Enemy");
+				if (m_TankData[tank.GetID()].Health - damage <= 0)
+				{
+					tank.Destroy();
+					ASERAI_LOG_INFO("{} Killed!", tank.GetTag());
+					return;
+				}
+				m_TankData[tank.GetID()].Health -= damage;
+			}
+		}
+
+		void OnEnemyHitTank(Entity bullet, Entity tank, uint32_t damage)
+		{
+			const auto& particle = bullet.GetComponent<ParticleComponent>();
+			if (!particle.Friendly)
+			{
+				if (m_TankData[tank.GetID()].Health - damage <= 0)
+				{
+					tank.Destroy();
+					ASERAI_LOG_INFO("{} Killed!", tank.GetTag());
+					ASERAI_LOG_INFO("GAME OVER!"); // Maybe Event?
+					return;
+				}
+				m_TankData[tank.GetID()].Health -= damage;
 			}
 		}
 
 	private:
 		std::shared_ptr<AssetManager> m_AssetManager;
 		std::shared_ptr<Scene> m_ActiveScene;
+		std::unordered_map<uint32_t, TankData> m_TankData;
 	};
 }
 
