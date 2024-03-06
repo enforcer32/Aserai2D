@@ -41,6 +41,13 @@ namespace Aserai2D
 		const glm::vec2& GetViewportPosition() const;
 		void SetViewportPosition(const glm::vec2& position);
 
+		// Editor
+		std::shared_ptr<EditorCamera> GetEditorCamera();
+		void SetEditorCamera(const std::shared_ptr<EditorCamera>& editorCamera);
+
+		void SetGridLinesState(bool state);
+		void RenderGridLines(const std::shared_ptr<Renderer2D>& renderer, const glm::vec4& color = { 0.0f, 0.0f, 0.0f, 1.0f });
+
 		template<typename T>
 		void EnableSystem()
 		{
@@ -90,5 +97,9 @@ namespace Aserai2D
 		std::string m_Name;
 		bool m_ViewportFocused;
 		glm::vec2 m_Viewport, m_ViewportPosition;
+
+		// Editor
+		std::shared_ptr<EditorCamera> m_EditorCamera;
+		bool m_RenderGridLines;
 	};
 }

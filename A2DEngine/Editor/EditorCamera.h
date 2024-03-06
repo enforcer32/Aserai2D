@@ -20,6 +20,9 @@ namespace Aserai2D
 		CameraProjectionType GetProjectionType() const;
 		void SetProjectionType(CameraProjectionType type);
 
+		const glm::vec3& GetTranslation() const;
+		const glm::vec3& GetRotation() const;
+		const glm::vec3& GetScale() const;
 		float GetOrthographicSize() const;
 		void SetOrthographicSize(float size);
 		float GetOrthographicNear() const;

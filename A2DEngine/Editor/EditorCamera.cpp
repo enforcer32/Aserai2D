@@ -106,6 +106,21 @@ namespace Aserai2D
 		CalculateProjectionViewMatrix();
 	}
 
+	const glm::vec3& EditorCamera::GetTranslation() const
+	{
+		return m_Translation;
+	}
+
+	const glm::vec3& EditorCamera::GetRotation() const
+	{
+		return m_Rotation;
+	}
+	
+	const glm::vec3& EditorCamera::GetScale() const
+	{
+		return m_Scale;
+	}
+
 	float EditorCamera::GetOrthographicSize() const
 	{
 		return m_OrthographicSize;

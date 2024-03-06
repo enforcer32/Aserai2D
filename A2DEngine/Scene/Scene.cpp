@@ -61,6 +61,7 @@ namespace Aserai2D
 	void Scene::OnEditorRender(DeltaTime dt, const std::shared_ptr<Renderer2D>& renderer, const std::shared_ptr<EditorCamera>& editorCamera)
 	{
 		renderer->BeginRenderer(*editorCamera, editorCamera->GetTransformMatrix());		
+		RenderGridLines(renderer);
 		GetSystem<RenderSystem>()->OnUpdate(dt, renderer);
 		renderer->EndRenderer();
 	}
@@ -141,5 +142,35 @@ namespace Aserai2D
 	void Scene::SetViewportPosition(const glm::vec2& position)
 	{
 		m_ViewportPosition = position;
+	}
+
+	std::shared_ptr<EditorCamera> Scene::GetEditorCamera()
+	{
+		return m_EditorCamera;
+	}
+
+	void Scene::SetEditorCamera(const std::shared_ptr<EditorCamera>& editorCamera)
+	{
+		m_EditorCamera = editorCamera;
+	}
+
+	void Scene::SetGridLinesState(bool state)
+	{
+		m_RenderGridLines = state;
+	}
+
+	void Scene::RenderGridLines(const std::shared_ptr<Renderer2D>& renderer, const glm::vec4& color)
+	{
+		if (m_RenderGridLines)
+		{
+			float orthoSize = m_EditorCamera->GetOrthographicSize() + 2.5;
+			const auto& cameraPos = m_EditorCamera->GetTranslation();
+
+			for (int i = -orthoSize; i <= orthoSize; i++)
+			{
+				renderer->RenderLine({ -orthoSize + (int)cameraPos.x, i + (int)cameraPos.y - 0.5f, 1.0f }, { orthoSize + (int)cameraPos.x, i + (int)cameraPos.y - 0.5f, 1.0f }, color); //V (LEFT TO RIGHT)
+				renderer->RenderLine({ i + (int)cameraPos.x - 0.5f, -orthoSize + (int)cameraPos.y, 1.0f }, { i + (int)cameraPos.x - 0.5f, orthoSize + (int)cameraPos.y, 1.0f }, color); //H (UP TO DOWN)
+			}
+		}
 	}
 }
