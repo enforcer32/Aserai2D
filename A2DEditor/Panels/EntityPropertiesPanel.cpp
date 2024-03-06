@@ -150,9 +150,21 @@ namespace Aserai2D
 					if (ImGui::Button("Close"))
 						ImGui::CloseCurrentPopup();
 
-					for (auto& asset : AssetManager::GetAssets<TextureAsset>())
+					auto& itemSpacing = ImGui::GetStyle().ItemSpacing;
+					float windowX2 = ImGui::GetWindowPos().x + ImGui::GetWindowSize().x;
+
+					auto& assets = AssetManager::GetAssets<TextureAsset>();
+					for (int i = 0; i < assets.size(); i++)
+					{
+						auto& asset = assets[i];
 						if (ImGui::ImageButton(("##TextureAddSprite" + std::to_string((uint64_t)asset->GetAssetID())).c_str(), (void*)(asset->IsLoaded() ? asset->GetTexture()->GetID() : 0), ImVec2(100.f, 100.f), ImVec2(0, 1), ImVec2(1, 0)))
 							component.Texture = asset->GetAssetID();
+
+						float lastX2 = ImGui::GetItemRectMax().x;
+						float nextX2 = lastX2 + itemSpacing.x + 100.0f;
+						if ((i + 1) < assets.size() && nextX2 < windowX2)
+							ImGui::SameLine();
+					}
 
 					ImGui::EndPopup();
 				}
