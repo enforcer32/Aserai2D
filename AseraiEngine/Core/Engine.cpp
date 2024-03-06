@@ -1,6 +1,7 @@
 #include "AseraiEnginePCH.h"
 #include "AseraiEngine/Core/Engine.h"
 #include "AseraiEngine/Core/Logger.h"
+#include "AseraiEngine/Input/InputManager.h"
 #include "AseraiEngine/Core/DeltaTime.h"
 #include "AseraiEngine/Utils/DateTime.h"
 #include "AseraiEngine/Core/Assertion.h"
@@ -25,12 +26,10 @@ namespace Aserai
 		if (!m_EventManager->Init())
 			ASERAI_LOG_CRITICAL("Failed to Initialize EventManager");
 
-		m_InputManager = std::make_shared<InputManager>();
-		if(!m_InputManager->Init())
+		if(!InputManager::Init())
 			ASERAI_LOG_CRITICAL("Failed to Initialize InputManager");
 
 		m_Window->SetupWindowEvents(m_EventManager);
-		m_Window->SetupInputEvents(m_InputManager);
 
 		m_EventManager->Subscribe<WindowCloseEvent>(this, &Engine::OnWindowClose);
 		m_EventManager->Subscribe<WindowResizeEvent>(this, &Engine::OnWindowResize);
@@ -50,7 +49,7 @@ namespace Aserai
 		{
 			m_ImGui->Destroy();
 			m_Renderer2D->Destroy();
-			m_InputManager->Destroy();
+			InputManager::Destroy();
 			m_EventManager->Destroy();
 			m_Window->Destroy();
 		}
@@ -88,7 +87,7 @@ namespace Aserai
 				m_ImGui->EngFrame();
 			}
 
-			m_InputManager->Reset();
+			InputManager::Reset();
 			m_Window->Update();
 		}
 

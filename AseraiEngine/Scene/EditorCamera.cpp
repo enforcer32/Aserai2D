@@ -1,5 +1,6 @@
 #include "AseraiEnginePCH.h"
 #include "AseraiEngine/Scene/EditorCamera.h"
+#include "AseraiEngine/Input/InputManager.h"
 
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -16,75 +17,57 @@ namespace Aserai
 		CalculateProjectionViewMatrix();
 	}
 
-	void EditorCamera::OnUpdate(DeltaTime dt, const std::shared_ptr<InputManager>& inputManager)
+	void EditorCamera::OnUpdate(DeltaTime dt)
 	{
-		if (inputManager->IsKeyPressed(KeyCode::LeftControl))
+		if (InputManager::IsKeyPressed(KeyCode::LeftControl))
 		{
 			bool flag = false;
 
-			if (inputManager->IsKeyPressed(KeyCode::W))
+			if (InputManager::IsKeyPressed(KeyCode::W))
 			{
 				m_Translation.y += m_TranslationSpeed * dt;
 				flag = true;
 			}
 
-			if (inputManager->IsKeyPressed(KeyCode::S))
+			if (InputManager::IsKeyPressed(KeyCode::S))
 			{
 				m_Translation.y -= m_TranslationSpeed * dt;
 				flag = true;
 			}
 
-			if (inputManager->IsKeyPressed(KeyCode::A))
+			if (InputManager::IsKeyPressed(KeyCode::A))
 			{
 				m_Translation.x -= m_TranslationSpeed * dt;
 				flag = true;
 			}
 
-			if (inputManager->IsKeyPressed(KeyCode::D))
+			if (InputManager::IsKeyPressed(KeyCode::D))
 			{
 				m_Translation.x += m_TranslationSpeed * dt;
 				flag = true;
 			}
 
-			if (inputManager->IsKeyPressed(KeyCode::Q))
+			if (InputManager::IsKeyPressed(KeyCode::Q))
 			{
 				m_OrthographicRotation += m_RotationSpeed * dt;
 				flag = true;
 			}
 
-			if (inputManager->IsKeyPressed(KeyCode::E))
+			if (InputManager::IsKeyPressed(KeyCode::E))
 			{
 				m_OrthographicRotation -= m_RotationSpeed * dt;
 				flag = true;
 			}
 
-			if (inputManager->IsMouseScrollingUp())
+			if (InputManager::IsMouseScrollingUp())
 			{
 				m_OrthographicSize -= 1;
 				flag = true;
 			}
 
-			if (inputManager->IsMouseScrollingDown())
+			if (InputManager::IsMouseScrollingDown())
 			{
 				m_OrthographicSize += 1;
-				flag = true;
-			}
-
-			static MousePoint<double> oldPos = {};
-			if (inputManager->IsMouseDragging())
-			{
-				auto& newPos = inputManager->GetPosition();
-				if(newPos.x > oldPos.x)
-					m_Translation.x += (m_TranslationSpeed + 1) * dt;
-				else if (newPos.x < oldPos.x)
-					m_Translation.x -= (m_TranslationSpeed + 1) * dt;
-
-				if (newPos.y < oldPos.y)
-					m_Translation.y += (m_TranslationSpeed + 1) * dt;
-				else if (newPos.y > oldPos.y)
-					m_Translation.y -= (m_TranslationSpeed + 1) * dt;
-
-				oldPos = newPos;
 				flag = true;
 			}
 

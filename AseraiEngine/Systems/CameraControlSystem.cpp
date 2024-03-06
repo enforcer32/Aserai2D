@@ -1,5 +1,6 @@
 #include "AseraiEnginePCH.h"
 #include "AseraiEngine/Systems/CameraControlSystem.h"
+#include "AseraiEngine/Input/InputManager.h"
 #include "AseraiEngine/Components/TransformComponent.h"
 #include "AseraiEngine/Components/CameraComponent.h"
 
@@ -11,7 +12,7 @@ namespace Aserai
 		RegisterComponent<CameraComponent>();
 	}
 
-	void CameraControlSystem::OnUpdate(DeltaTime dt, const std::shared_ptr<InputManager>& inputManager)
+	void CameraControlSystem::OnUpdate(DeltaTime dt)
 	{
 		for (auto& entity : GetEntities())
 		{
@@ -20,13 +21,13 @@ namespace Aserai
 
 			if (camera.Primary)
 			{
-				if (inputManager->IsKeyPressed(KeyCode::A))
+				if (InputManager::IsKeyPressed(KeyCode::A))
 					transform.Translation.x -= camera.Speed * dt;
-				if (inputManager->IsKeyPressed(KeyCode::D))
+				if (InputManager::IsKeyPressed(KeyCode::D))
 					transform.Translation.x += camera.Speed * dt;
-				if (inputManager->IsKeyPressed(KeyCode::W))
+				if (InputManager::IsKeyPressed(KeyCode::W))
 					transform.Translation.y += camera.Speed * dt;
-				if (inputManager->IsKeyPressed(KeyCode::S))
+				if (InputManager::IsKeyPressed(KeyCode::S))
 					transform.Translation.y -= camera.Speed * dt;
 			}
 		}

@@ -2,7 +2,6 @@
 
 #include "AseraiEngine/Renderer/Camera.h"
 #include "AseraiEngine/Core/DeltaTime.h"
-#include "AseraiEngine/Core/InputManager.h"
 
 namespace Aserai
 {
@@ -11,7 +10,7 @@ namespace Aserai
 	public:
 		EditorCamera();
 
-		void OnUpdate(DeltaTime dt, const std::shared_ptr<InputManager>& inputManager);
+		void OnUpdate(DeltaTime dt);
 
 		void SetOrthographic(float size, float zNear, float zFar);
 		void SetViewport(uint32_t width, uint32_t height);

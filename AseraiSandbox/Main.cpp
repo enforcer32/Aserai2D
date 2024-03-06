@@ -3,6 +3,7 @@
 #include <AseraiEngine/Core/Engine.h>
 #include <AseraiEngine/Core/Logger.h>
 #include <AseraiEngine/Scene/Scene.h>
+#include <AseraiEngine/Input/InputManager.h>
 
 #include <imgui.h>
 
@@ -30,13 +31,13 @@ namespace Aserai
 
 		virtual void OnProcessInput() override
 		{
-			if (m_InputManager->IsKeyPressed(KeyCode::Escape))
+			if (InputManager::IsKeyPressed(KeyCode::Escape))
 				Shutdown();
 		}
 
 		virtual void OnUpdate(DeltaTime dt) override
 		{
-			m_ActiveScene->OnRuntimeUpdate(dt, m_InputManager, m_EventManager);
+			m_ActiveScene->OnRuntimeUpdate(dt, m_EventManager);
 		}
 
 		virtual void OnRender(DeltaTime dt, const std::shared_ptr<Renderer2D>& renderer) override
@@ -45,7 +46,7 @@ namespace Aserai
 			renderer->SetClearColor({ 0.2f, 0.3f, 0.3f, 1.0f });
 			renderer->Clear();
 
-			m_ActiveScene->OnRuntimeRender(dt, renderer, m_InputManager);
+			m_ActiveScene->OnRuntimeRender(dt, renderer);
 		}
 
 		virtual void OnImGuiRender(DeltaTime dt) override

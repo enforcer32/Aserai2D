@@ -10,6 +10,7 @@
 #include <AseraiEngine/Scene/Scene.h>
 #include <AseraiEngine/Renderer/Framebuffer.h>
 #include <AseraiEngine/Scene/EditorCamera.h>
+#include <AseraiEngine/Input/InputManager.h>
 
 #include <AseraiEngine/Components/TransformComponent.h>
 #include <AseraiEngine/Components/SpriteComponent.h>
@@ -41,9 +42,7 @@ namespace Aserai
 
 			m_Renderer2D->SetAlphaBlending(true);
 
-			m_InputManager->SetAutoRepeatKey(false);
-
-			m_PanelManager->AddPanel("SceneGraph", std::make_shared<SceneGraphPanel>(m_ActiveScene, m_InputManager));
+			m_PanelManager->AddPanel("SceneGraph", std::make_shared<SceneGraphPanel>(m_ActiveScene));
 			m_PanelManager->AddPanel("Entity Properties", std::make_shared<EntityPropertiesPanel>(m_AssetManager));
 
 			// TMP
@@ -61,7 +60,7 @@ namespace Aserai
 
 		virtual void OnProcessInput() override
 		{
-			if (m_InputManager->IsKeyPressed(KeyCode::Escape))
+			if (InputManager::IsKeyPressed(KeyCode::Escape))
 				Shutdown();
 		}
 
@@ -75,9 +74,9 @@ namespace Aserai
 			}
 
 			if (m_ViewportFocused)
-				m_EditorCamera->OnUpdate(dt, m_InputManager);
+				m_EditorCamera->OnUpdate(dt);
 
-			m_ActiveScene->OnEditorUpdate(dt, m_InputManager, m_EventManager);
+			m_ActiveScene->OnEditorUpdate(dt, m_EventManager);
 		}
 
 		virtual void OnRender(DeltaTime dt, const std::shared_ptr<Renderer2D>& renderer) override
@@ -87,7 +86,7 @@ namespace Aserai
 			renderer->SetClearColor({ 0.2f, 0.3f, 0.3f, 1.0f });
 			renderer->Clear();
 
-			m_ActiveScene->OnEditorRender(dt, renderer, m_InputManager, m_EditorCamera);
+			m_ActiveScene->OnEditorRender(dt, renderer, m_EditorCamera);
 			m_Framebuffer->Unbind();
 		}
 

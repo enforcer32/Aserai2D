@@ -29,25 +29,25 @@ namespace Aserai
 		EnableSystem<ParticleLifeSystem>();
 	}
 
-	void Scene::OnRuntimeUpdate(DeltaTime dt, const std::shared_ptr<InputManager>& inputManager, const std::shared_ptr<EventManager>& eventManager)
+	void Scene::OnRuntimeUpdate(DeltaTime dt, const std::shared_ptr<EventManager>& eventManager)
 	{
 		if(IsSystemEnabled<CameraControlSystem>())
-			GetSystem<CameraControlSystem>()->OnUpdate(dt, inputManager);
+			GetSystem<CameraControlSystem>()->OnUpdate(dt);
 		if (IsSystemEnabled<MovementSystem>())
 			GetSystem<MovementSystem>()->OnUpdate(dt);
 		if (IsSystemEnabled<KeyboardMovementSystem>())
-			GetSystem<KeyboardMovementSystem>()->OnUpdate(dt, inputManager);
+			GetSystem<KeyboardMovementSystem>()->OnUpdate(dt);
 		if (IsSystemEnabled<CollisionSystem>())
 			GetSystem<CollisionSystem>()->OnUpdate(dt, eventManager);
 		if (IsSystemEnabled<ParticleEmitSystem>())
-			GetSystem<ParticleEmitSystem>()->OnUpdate(dt, m_Registry, inputManager);
+			GetSystem<ParticleEmitSystem>()->OnUpdate(dt, m_Registry);
 		if (IsSystemEnabled<ParticleLifeSystem>())
 			GetSystem<ParticleLifeSystem>()->OnUpdate(dt);
 
 		m_Registry->Sync();
 	}
 
-	void Scene::OnRuntimeRender(DeltaTime dt, const std::shared_ptr<Renderer2D>& renderer, const std::shared_ptr<InputManager>& inputManager)
+	void Scene::OnRuntimeRender(DeltaTime dt, const std::shared_ptr<Renderer2D>& renderer)
 	{
 		Entity primaryCamera = GetPrimaryCamera();
 		if (primaryCamera)
@@ -55,35 +55,35 @@ namespace Aserai
 			renderer->BeginRenderer(primaryCamera.GetComponent<CameraComponent>().Camera, primaryCamera.GetComponent<TransformComponent>().GetTransform());
 			GetSystem<RenderSystem>()->OnUpdate(dt, renderer);
 			if(IsSystemEnabled<CollisionSystem>()) // && IsDebug?
-				GetSystem<CollisionSystem>()->OnRender(dt, renderer, inputManager);
+				GetSystem<CollisionSystem>()->OnRender(dt, renderer);
 			renderer->EndRenderer();
 		}
 	}
 
-	void Scene::OnEditorUpdate(DeltaTime dt, const std::shared_ptr<InputManager>& inputManager, const std::shared_ptr<EventManager>& eventManager)
+	void Scene::OnEditorUpdate(DeltaTime dt, const std::shared_ptr<EventManager>& eventManager)
 	{
 		if (IsSystemEnabled<CameraControlSystem>())
-			GetSystem<CameraControlSystem>()->OnUpdate(dt, inputManager);
+			GetSystem<CameraControlSystem>()->OnUpdate(dt);
 		if (IsSystemEnabled<MovementSystem>())
 			GetSystem<MovementSystem>()->OnUpdate(dt);
 		if (IsSystemEnabled<KeyboardMovementSystem>())
-			GetSystem<KeyboardMovementSystem>()->OnUpdate(dt, inputManager);
+			GetSystem<KeyboardMovementSystem>()->OnUpdate(dt);
 		if (IsSystemEnabled<CollisionSystem>())
 			GetSystem<CollisionSystem>()->OnUpdate(dt, eventManager);
 		if (IsSystemEnabled<ParticleEmitSystem>())
-			GetSystem<ParticleEmitSystem>()->OnUpdate(dt, m_Registry, inputManager);
+			GetSystem<ParticleEmitSystem>()->OnUpdate(dt, m_Registry);
 		if (IsSystemEnabled<ParticleLifeSystem>())
 			GetSystem<ParticleLifeSystem>()->OnUpdate(dt);
 
 		m_Registry->Sync();
 	}
 
-	void Scene::OnEditorRender(DeltaTime dt, const std::shared_ptr<Renderer2D>& renderer, const std::shared_ptr<InputManager>& inputManager, const std::shared_ptr<EditorCamera>& editorCamera)
+	void Scene::OnEditorRender(DeltaTime dt, const std::shared_ptr<Renderer2D>& renderer, const std::shared_ptr<EditorCamera>& editorCamera)
 	{
 		renderer->BeginRenderer(*editorCamera, editorCamera->GetTransformMatrix());
 		GetSystem<RenderSystem>()->OnUpdate(dt, renderer);
 		if (IsSystemEnabled<CollisionSystem>()) // && IsDebug?
-			GetSystem<CollisionSystem>()->OnRender(dt, renderer, inputManager);
+			GetSystem<CollisionSystem>()->OnRender(dt, renderer);
 		renderer->EndRenderer();
 	}
 

@@ -1,14 +1,16 @@
 #include "AseraiEditorPCH.h"
 #include "AseraiEditor/Panels/SceneGraphPanel.h"
 
+#include <AseraiEngine/Input/InputManager.h>
+
 #include <imgui.h>
 
 namespace Aserai
 {
 	Entity SceneGraphPanel::s_SelectedEntity{};
 
-	SceneGraphPanel::SceneGraphPanel(const std::shared_ptr<Scene>& scene, const std::shared_ptr<InputManager>& inputManager)
-		: m_Scene(scene), m_InputManager(inputManager)
+	SceneGraphPanel::SceneGraphPanel(const std::shared_ptr<Scene>& scene)
+		: m_Scene(scene)
 	{
 	}
 
@@ -19,7 +21,7 @@ namespace Aserai
 		for (auto entity : m_Scene->GetRegistry()->GetEntities())
 			RenderEntity(entity);
 
-		if(m_InputManager->IsMousePressed(MouseCode::Button1) && ImGui::IsWindowHovered())
+		if(InputManager::IsMousePressed(MouseCode::Button1) && ImGui::IsWindowHovered())
 			s_SelectedEntity = {};
 
 		if (ImGui::BeginPopupContextWindow(0, 1))

@@ -3,7 +3,6 @@
 #include "AseraiEngine/Core/Window.h"
 #include "AseraiEngine/Core/DeltaTime.h"
 #include "AseraiEngine/Core/EventManager.h"
-#include "AseraiEngine/Core/InputManager.h"
 #include "AseraiEngine/Renderer/Renderer2D.h"
 #include "AseraiEngine/Events/WindowEvents.h"
 #include "AseraiEngine/ImGui/AImGui.h"
@@ -47,7 +46,6 @@ namespace Aserai
 	protected:
 		EngineProperties m_Properties;
 		std::shared_ptr<EventManager> m_EventManager;
-		std::shared_ptr<InputManager> m_InputManager;
 		std::shared_ptr<Renderer2D> m_Renderer2D;
 
 	private:

@@ -1,5 +1,6 @@
 #include "AseraiEnginePCH.h"
 #include "AseraiEngine/Systems/KeyboardMovementSystem.h"
+#include "AseraiEngine/Input/InputManager.h"
 #include "AseraiEngine/Components/TransformComponent.h"
 #include "AseraiEngine/Components/KeyboardMovementComponent.h"
 
@@ -11,33 +12,33 @@ namespace Aserai
 		RegisterComponent<KeyboardMovementComponent>();
 	}
 
-	void KeyboardMovementSystem::OnUpdate(DeltaTime dt, const std::shared_ptr<InputManager>& inputManager)
+	void KeyboardMovementSystem::OnUpdate(DeltaTime dt)
 	{
 		for (auto& entity : GetEntities())
 		{
 			auto& transform = entity.GetComponent<TransformComponent>();
 			const auto& keyboard = entity.GetComponent<KeyboardMovementComponent>();
 
-			if (inputManager->IsKeyPressed(keyboard.LeftKey))
+			if (InputManager::IsKeyPressed(keyboard.LeftKey))
 			{
 				transform.Translation.x -= keyboard.Speed * dt;
 				if(keyboard.UpdateRotation2D)
 					transform.Rotation2D = 90.0f;
 			}
-			else if (inputManager->IsKeyPressed(keyboard.RightKey))
+			else if (InputManager::IsKeyPressed(keyboard.RightKey))
 			{
 				transform.Translation.x += keyboard.Speed * dt;
 				if (keyboard.UpdateRotation2D)
 					transform.Rotation2D = -90.0f;
 			}
-			else if (inputManager->IsKeyPressed(keyboard.UpKey))
+			else if (InputManager::IsKeyPressed(keyboard.UpKey))
 			{
 				transform.Translation.y += keyboard.Speed * dt;
 				if (keyboard.UpdateRotation2D)
 					transform.Rotation2D = 0.0;
 
 			}
-			else if (inputManager->IsKeyPressed(keyboard.DownKey))
+			else if (InputManager::IsKeyPressed(keyboard.DownKey))
 			{
 				transform.Translation.y -= keyboard.Speed * dt;
 				if (keyboard.UpdateRotation2D)

@@ -1,7 +1,6 @@
 #pragma once
 
 #include "AseraiEngine/Core/EventManager.h"
-#include "AseraiEngine/Core/InputManager.h"
 
 #include <string>
 
@@ -35,7 +34,6 @@ namespace Aserai
 		inline const auto* GetNativeWindow() const { return m_NativeWindow; }
 
 		void SetupWindowEvents(const std::shared_ptr<EventManager>& eventManager);
-		void SetupInputEvents(const std::shared_ptr<InputManager>& inputManager);
 
 	private:
 		bool InitContext();
@@ -48,7 +46,6 @@ namespace Aserai
 			uint32_t Height;
 			bool VSync;
 			std::shared_ptr<EventManager> EventManager;
-			std::shared_ptr<InputManager> InputManager;
 		};
 
 		bool m_Initialized;

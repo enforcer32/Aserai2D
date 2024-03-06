@@ -1,5 +1,6 @@
 #include "AseraiEnginePCH.h"
 #include "AseraiEngine/Systems/ParticleEmitSystem.h"
+#include "AseraiEngine/Input/InputManager.h"
 #include "AseraiEngine/Components/TransformComponent.h"
 #include "AseraiEngine/Components/ParticleEmitterComponent.h"
 #include "AseraiEngine/Components/ParticleSpriteComponent.h"
@@ -17,7 +18,7 @@ namespace Aserai
 		RegisterComponent<ParticleSpriteComponent>();
 	}
 
-	void ParticleEmitSystem::OnUpdate(DeltaTime dt, const std::shared_ptr<Registry>& registry, const std::shared_ptr<InputManager>& inputManager)
+	void ParticleEmitSystem::OnUpdate(DeltaTime dt, const std::shared_ptr<Registry>& registry)
 	{
 		for (auto& entity : GetEntities())
 		{
@@ -58,7 +59,7 @@ namespace Aserai
 			}
 			else
 			{
-				if (inputManager->IsKeyPressed(particleEmitter.Key))
+				if (InputManager::IsKeyPressed(particleEmitter.Key))
 				{
 					Entity particle = registry->CreateEntity();
 					particle.SetGroup(particleEmitter.Name);

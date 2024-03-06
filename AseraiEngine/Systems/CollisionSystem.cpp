@@ -1,5 +1,6 @@
 #include "AseraiEnginePCH.h"
 #include "AseraiEngine/Systems/CollisionSystem.h"
+#include "AseraiEngine/Input/InputManager.h"
 #include "AseraiEngine/Components/TransformComponent.h"
 #include "AseraiEngine/Components/BoxColliderComponent.h"
 #include "AseraiEngine/Events/CollisionEvent.h"
@@ -36,11 +37,11 @@ namespace Aserai
 		}
 	}
 
-	void CollisionSystem::OnRender(DeltaTime dt, const std::shared_ptr<Renderer2D>& renderer, const std::shared_ptr<InputManager>& inputManager)
+	void CollisionSystem::OnRender(DeltaTime dt, const std::shared_ptr<Renderer2D>& renderer)
 	{
 		for (auto& entity : GetEntities())
 		{
-			if (inputManager->IsKeyPressed(KeyCode::B))
+			if (InputManager::IsKeyPressed(KeyCode::B))
 			{
 				auto transform = entity.GetComponent<TransformComponent>();
 				const auto& boxCollider = entity.GetComponent<BoxColliderComponent>();

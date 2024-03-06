@@ -3,14 +3,13 @@
 #include "AseraiEditor/Panels/Panel.h"
 
 #include <AseraiEngine/Scene/Scene.h>
-#include <AseraiEngine/Core/InputManager.h>
 
 namespace Aserai
 {
 	class SceneGraphPanel : public Panel
 	{
 	public:
-		SceneGraphPanel(const std::shared_ptr<Scene>& scene, const std::shared_ptr<InputManager>& inputManager);
+		SceneGraphPanel(const std::shared_ptr<Scene>& scene);
 
 		virtual void OnImGuiRender() override;
 		
@@ -22,7 +21,6 @@ namespace Aserai
 
 	private:
 		std::shared_ptr<Scene> m_Scene;
-		std::shared_ptr<InputManager> m_InputManager;
 		static Entity s_SelectedEntity;
 	};
 }
