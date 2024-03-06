@@ -17,6 +17,7 @@ includedirs
 {
 	"%{wks.location}",
 	"%{IncludeDir.spdlog}",
+	"%{IncludeDir.glm}",
 }
 
 links

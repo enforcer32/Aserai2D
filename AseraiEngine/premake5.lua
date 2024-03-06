@@ -14,6 +14,8 @@ files
 {
 	"**.h",
 	"**.cpp",
+	"%{wks.location}/Dependencies/glm/glm/**.hpp",
+	"%{wks.location}/Dependencies/glm/glm/**.inl",
 }
 
 excludes
@@ -23,17 +25,27 @@ excludes
 defines
 {
 	"ASERAI_ENGINE",
+	"GLFW_INCLUDE_NONE",
 }
 
 includedirs
 {
+	"%{wks.location}",
 	"%{wks.location}/AseraiEngine",
 	"%{IncludeDir.spdlog}",
+	"%{IncludeDir.glfw}",
+	"%{IncludeDir.glad}",
+	"%{IncludeDir.glm}",
+	"%{IncludeDir.stb}",
 }
 
 links
 {
 	"spdlog",
+	"glfw",
+	"glad",
+	"stb",
+	"opengl32.lib",
 }
 
 filter "system:windows"

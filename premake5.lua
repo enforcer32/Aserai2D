@@ -9,6 +9,9 @@ outputdir = "%{cfg.system}-%{cfg.architecture}-%{cfg.buildcfg}"
 
 group "Dependencies"
 	include "Dependencies/spdlog"
+	include "Dependencies/glfw"
+	include "Dependencies/glad"
+	include "Dependencies/stb"
 group ""
 
 include "AseraiEngine"
