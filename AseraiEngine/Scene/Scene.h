@@ -30,6 +30,8 @@ namespace Aserai
 		void SetName(const std::string& name);
 		const std::string& GetName() const;
 
+		void SetViewportFocus(bool state);
+
 		template<typename T>
 		void EnableSystem()
 		{
@@ -77,5 +79,6 @@ namespace Aserai
 		std::unordered_map<uint32_t, System*> m_Systems;
 		std::bitset<MAX_SCENE_SYSTEMS> m_SystemSignature;
 		std::string m_Name;
+		bool m_ViewportFocused;
 	};
 }

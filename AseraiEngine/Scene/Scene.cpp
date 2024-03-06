@@ -106,4 +106,9 @@ namespace Aserai
 	{
 		return m_Name;
 	}
+
+	void Scene::SetViewportFocus(bool state)
+	{
+		m_ViewportFocused = state;
+	}
 }

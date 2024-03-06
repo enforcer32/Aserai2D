@@ -2,7 +2,7 @@ include "Dependencies.lua"
 
 workspace "Aserai"
 	architecture "x64"
-	startproject "AseraiSandbox"
+	startproject "AseraiEditor"
 	configurations { "Debug", "Release" }
 
 outputdir = "%{cfg.system}-%{cfg.architecture}-%{cfg.buildcfg}"
@@ -16,5 +16,6 @@ group "Dependencies"
 group ""
 
 include "AseraiEngine"
+include "AseraiEditor"
 include "AseraiSandbox"
 include "AseraiTankGame2D"
