@@ -5,8 +5,8 @@
 
 namespace Aserai2D
 {
-	SpritesheetAsset::SpritesheetAsset(AssetID texture, uint32_t spriteWidth, uint32_t spriteHeight, uint32_t spriteCount, uint32_t spriteSpacing)
-		: m_Texture(texture), m_SpriteWidth(spriteWidth), m_SpriteHeight(spriteHeight), m_SpriteCount(spriteCount), m_SpriteSpacing(spriteSpacing)
+	SpritesheetAsset::SpritesheetAsset(AssetID texture, uint32_t spriteWidth, uint32_t spriteHeight, uint32_t spriteCount, uint32_t spriteSpacing, const std::string& name)
+		: m_Texture(texture), m_SpriteWidth(spriteWidth), m_SpriteHeight(spriteHeight), m_SpriteCount(spriteCount), m_SpriteSpacing(spriteSpacing), m_Name(name)
 	{
 		SetFlags(AssetFlag::Unloaded);
 	}
@@ -77,6 +77,11 @@ namespace Aserai2D
 	uint32_t SpritesheetAsset::GetSpriteSpacing() const
 	{
 		return m_SpriteSpacing;
+	}
+
+	const std::string& SpritesheetAsset::GetName() const
+	{
+		return m_Name;
 	}
 
 	const std::vector<Sprite>& SpritesheetAsset::GetSprites() const

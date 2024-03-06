@@ -20,7 +20,7 @@ namespace Aserai2D
 	class SpritesheetAsset : public Asset
 	{
 	public:
-		SpritesheetAsset(AssetID texture, uint32_t spriteWidth, uint32_t spriteHeight, uint32_t spriteCount, uint32_t spriteSpacing);
+		SpritesheetAsset(AssetID texture, uint32_t spriteWidth, uint32_t spriteHeight, uint32_t spriteCount, uint32_t spriteSpacing, const std::string& name = "Untitled");
 
 		static AssetType GetStaticType();
 		virtual AssetType GetType() const override;
@@ -31,6 +31,7 @@ namespace Aserai2D
 		uint32_t GetSpriteHeight() const;
 		uint32_t GetSpriteCount() const;
 		uint32_t GetSpriteSpacing() const;
+		const std::string& GetName() const;
 		const std::vector<Sprite>& GetSprites() const;
 		const Sprite& GetSprite(uint32_t index) const;
 
@@ -40,6 +41,7 @@ namespace Aserai2D
 		uint32_t m_SpriteHeight;
 		uint32_t m_SpriteCount;
 		uint32_t m_SpriteSpacing;
+		std::string m_Name;
 		std::vector<Sprite> m_Sprites;
 	};
 }

@@ -55,4 +55,9 @@ namespace Aserai2D
 			else
 				ASERAI_LOG_DEBUG("AssetManager Failed To Reload " + (uint64_t)assetID);
 	}
+
+	const std::unordered_map<AssetID, std::shared_ptr<Asset>>& AssetManager::GetAssets()
+	{
+		return s_Assets;
+	}
 }

@@ -19,29 +19,58 @@ namespace Aserai2D
 	{
 		ImGui::Begin("Spritesheet Panel");
 
-		auto& itemSpacing = ImGui::GetStyle().ItemSpacing;
-		float windowX2 = ImGui::GetWindowPos().x + ImGui::GetWindowSize().x;
-
-		auto textureID = AssetManager::CreateAsset<TextureAsset>("../Assets/Spritesheets/top_down_tanks.png");
-		auto spritesheetID = AssetManager::CreateAsset<SpritesheetAsset>(textureID, 128, 128, 32, 0);
-		auto spritesheetAsset = AssetManager::GetAsset<SpritesheetAsset>(spritesheetID);
-		auto texture = AssetManager::GetAsset<TextureAsset>(spritesheetAsset->GetTexture())->GetTexture();
-
-		for (uint32_t i = 0; i < spritesheetAsset->GetSpriteCount(); i++)
+		if (ImGui::BeginTabBar("Spritesheet Tabs"))
 		{
-			auto& textureUV = spritesheetAsset->GetSprite(i).TextureUV;
-			if (ImGui::ImageButton((std::string("##Texture" + std::to_string(i))).c_str(), (void*)texture->GetID(), ImVec2(50.0f, 50.0f), ImVec2(textureUV[0].x, textureUV[0].y), ImVec2(textureUV[2].x, textureUV[2].y)))
+			if (ImGui::BeginTabItem("Sprites"))
 			{
-				ASERAI_LOG_INFO("Generating Sprite({})", i);
-				Entity entity = GenerateSpriteEntity(spritesheetAsset->GetSprite(i), glm::vec3(1.0f, 1.0f, 1.0f));
-				m_HoldingEntity = entity;
+				auto& itemSpacing = ImGui::GetStyle().ItemSpacing;
+				float windowX2 = ImGui::GetWindowPos().x + ImGui::GetWindowSize().x;
+
+				for (auto& spritesheetAsset : AssetManager::GetAssets<SpritesheetAsset>())
+				{
+					ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_SpanAvailWidth;
+					bool open = ImGui::TreeNodeEx((void*)(uint64_t)spritesheetAsset->GetAssetID(), flags, (spritesheetAsset->GetName() + ":" + std::to_string((uint64_t)spritesheetAsset->GetAssetID())).c_str());
+					if (open)
+					{
+						auto texture = AssetManager::GetAsset<TextureAsset>(spritesheetAsset->GetTexture())->GetTexture();
+						for (uint32_t i = 0; i < spritesheetAsset->GetSpriteCount(); i++)
+						{
+							auto& textureUV = spritesheetAsset->GetSprite(i).TextureUV;
+							if (ImGui::ImageButton((std::string("##Texture" + std::to_string(i))).c_str(), (void*)texture->GetID(), ImVec2(50.0f, 50.0f), ImVec2(textureUV[0].x, textureUV[0].y), ImVec2(textureUV[2].x, textureUV[2].y)))
+							{
+								ASERAI_LOG_INFO("Generating Sprite({})", i);
+								Entity entity = GenerateSpriteEntity(spritesheetAsset->GetSprite(i), glm::vec3(1.0f, 1.0f, 1.0f));
+								m_HoldingEntity = entity;
+							}
+
+							float lastX2 = ImGui::GetItemRectMax().x;
+							float nextX2 = lastX2 + itemSpacing.x + spritesheetAsset->GetSpriteWidth();
+
+							if ((i + 1) < spritesheetAsset->GetSpriteCount() && nextX2 < windowX2)
+								ImGui::SameLine();
+						}
+
+						ImGui::TreePop();
+					}
+				}
+			
+				ImGui::EndTabItem();
 			}
 
-			float lastX2 = ImGui::GetItemRectMax().x;
-			float nextX2 = lastX2 + itemSpacing.x + spritesheetAsset->GetSpriteWidth();
+			if (ImGui::BeginTabItem("Options"))
+			{
+				for (const auto& asset : AssetManager::GetAssets())
+				{
+					if (asset.second->GetType() == AssetType::Spritesheet)
+					{
+						ImGui::Text(std::to_string(asset.second->GetAssetID()).c_str());
+					}
+				}
 
-			if ((i + 1) < spritesheetAsset->GetSpriteCount() && nextX2 < windowX2)
-				ImGui::SameLine();
+				ImGui::EndTabItem();
+			}
+
+			ImGui::EndTabBar();
 		}
 
 		ImGui::End();
