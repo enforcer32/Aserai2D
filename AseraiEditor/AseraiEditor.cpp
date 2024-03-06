@@ -38,9 +38,6 @@ namespace Aserai
 			m_Renderer2D->SetAlphaBlending(true);
 
 			m_InputManager->SetAutoRepeatKey(false);
-			m_InputManager->SetAutoRepeatChar(false);
-			m_InputManager->SetKeyAutoRepeatHeldDown(false);
-			m_InputManager->SetMouseAutoRepeatHeldDown(false);
 
 			m_PanelManager->AddPanel("SceneGraph", std::make_shared<SceneGraphPanel>(m_ActiveScene, m_InputManager));
 			m_PanelManager->AddPanel("Entity Properties", std::make_shared<EntityPropertiesPanel>(m_AssetManager));

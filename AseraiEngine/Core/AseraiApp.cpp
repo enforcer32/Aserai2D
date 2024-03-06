@@ -73,6 +73,7 @@ namespace Aserai
 				m_ImGui->EngFrame();
 			}
 
+			m_InputManager->Reset();
 			m_Window->Update();
 		}
 	}

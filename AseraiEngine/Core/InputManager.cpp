@@ -25,37 +25,15 @@ namespace Aserai
 		}
 	}
 
+	void InputManager::Reset()
+	{
+		m_Keyboard.Reset();
+		m_Mouse.Reset();
+	}
+
 	bool InputManager::IsKeyPressed(KeyCode key) const
 	{
-		if (!m_Keyboard.IsHeldDownAutoRepeat() && m_Keyboard.WasKeyPressed(key))
-			return false;
-
-		if (m_Keyboard.IsKeyPressed(key))
-		{
-			m_Keyboard.SetOldKeyState(key, true);
-			return true;
-		}
-
-		return false;
-	}
-
-	bool InputManager::IsKeyHeldDown(KeyCode key) const
-	{
 		return m_Keyboard.IsKeyPressed(key);
-	}
-
-	bool InputManager::IsMousePressed(MouseCode button) const
-	{
-		if (!m_Mouse.IsHeldDownAutoRepeat() && m_Mouse.WasButtonDown(button))
-			return false;
-
-		if (m_Mouse.IsButtonDown(button))
-		{
-			m_Mouse.SetOldButtonState(button, true);
-			return true;
-		}
-
-		return false;
 	}
 
 	void InputManager::SetAutoRepeatKey(bool state)
@@ -63,39 +41,34 @@ namespace Aserai
 		m_Keyboard.SetAutoRepeatKey(state);
 	}
 
-	void InputManager::SetAutoRepeatChar(bool state)
-	{
-		m_Keyboard.SetAutoRepeatChar(state);
-	}
-
-	void InputManager::SetKeyAutoRepeatHeldDown(bool state)
-	{
-		return m_Keyboard.SetAutoRepeatHeldDown(state);
-	}
-
-	void InputManager::SetMouseAutoRepeatHeldDown(bool state)
-	{
-		return m_Mouse.SetAutoRepeatHeldDown(state);
-	}
-
 	bool InputManager::IsKeyAutoRepeat() const
 	{
 		return m_Keyboard.IsKeyAutoRepeat();
 	}
 
-	bool InputManager::IsCharAutoRepeat() const
+	bool InputManager::IsMousePressed(MouseCode button) const
 	{
-		return m_Keyboard.IsCharAutoRepeat();
-	}
-	
-	bool InputManager::IsKeyHeldDownAutoRepeat() const
-	{
-		return m_Keyboard.IsHeldDownAutoRepeat();
+		return m_Mouse.IsMousePressed(button);
 	}
 
-	bool InputManager::IsMouseHeldDownAutoRepeat() const
+	bool InputManager::IsMouseScrollingUp() const
 	{
-		return m_Mouse.IsHeldDownAutoRepeat();
+		return m_Mouse.IsMouseScrollingUp();
+	}
+
+	bool InputManager::IsMouseScrollingDown() const
+	{
+		return m_Mouse.IsMouseScrollingDown();
+	}
+
+	bool InputManager::IsMouseMoving() const
+	{
+		return m_Mouse.IsMouseMoving();
+	}
+	
+	bool InputManager::IsMouseDragging() const
+	{
+		return m_Mouse.IsMouseDragging();
 	}
 
 	void InputManager::OnKeyEvent(KeyEventType type, KeyCode key)
@@ -106,28 +79,11 @@ namespace Aserai
 			m_Keyboard.OnKeyPressedEvent(key);
 			break;
 		case KeyEventType::Release:
-			m_Keyboard.SetOldKeyState(key, false);
 			m_Keyboard.OnKeyReleasedEvent(key);
 			break;
 		case KeyEventType::Repeat:
 			if (m_Keyboard.IsKeyAutoRepeat())
 				m_Keyboard.OnKeyPressedEvent(key);
-			break;
-		default:
-			break;
-		}
-	}
-
-	void InputManager::OnCharEvent(KeyEventType type, unsigned char key)
-	{
-		switch (type)
-		{
-		case KeyEventType::Press:
-			m_Keyboard.OnCharEvent(key);
-			break;
-		case KeyEventType::Repeat:
-			if (m_Keyboard.IsCharAutoRepeat())
-				m_Keyboard.OnCharEvent(key);
 			break;
 		default:
 			break;
@@ -142,7 +98,6 @@ namespace Aserai
 			m_Mouse.OnMousePressedEvent(button, position);
 			break;
 		case MouseEventType::Release:
-			m_Mouse.SetOldButtonState(button, false);
 			m_Mouse.OnMouseReleasedEvent(button, position);
 			break;
 		default:

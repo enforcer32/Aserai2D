@@ -18,26 +18,26 @@ namespace Aserai
 			auto& transform = entity.GetComponent<TransformComponent>();
 			const auto& keyboard = entity.GetComponent<KeyboardMovementComponent>();
 
-			if (inputManager->IsKeyHeldDown(keyboard.LeftKey))
+			if (inputManager->IsKeyPressed(keyboard.LeftKey))
 			{
 				transform.Translation.x -= keyboard.Speed * dt;
 				if(keyboard.UpdateRotation2D)
 					transform.Rotation2D = 90.0f;
 			}
-			else if (inputManager->IsKeyHeldDown(keyboard.RightKey))
+			else if (inputManager->IsKeyPressed(keyboard.RightKey))
 			{
 				transform.Translation.x += keyboard.Speed * dt;
 				if (keyboard.UpdateRotation2D)
 					transform.Rotation2D = -90.0f;
 			}
-			else if (inputManager->IsKeyHeldDown(keyboard.UpKey))
+			else if (inputManager->IsKeyPressed(keyboard.UpKey))
 			{
 				transform.Translation.y += keyboard.Speed * dt;
 				if (keyboard.UpdateRotation2D)
 					transform.Rotation2D = 0.0;
 
 			}
-			else if (inputManager->IsKeyHeldDown(keyboard.DownKey))
+			else if (inputManager->IsKeyPressed(keyboard.DownKey))
 			{
 				transform.Translation.y -= keyboard.Speed * dt;
 				if (keyboard.UpdateRotation2D)

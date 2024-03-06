@@ -10,13 +10,10 @@ namespace Aserai
 
 	bool Mouse::Init()
 	{
-		for (int i = 0; i < MAX_MOUSE_BUTTONS; i++)
-		{
-			m_ButtonState[i] = false;
-			m_OldButtonState[i] = false;
-		}
-
-		m_AutoRepeatHeldDown = true;
+		memset(m_ButtonState, 0, sizeof(m_ButtonState));
+		memset(m_ScrollState, 0, sizeof(m_ScrollState));
+		memset(&m_Position, 0, sizeof(m_Position));
+		m_Moving = false;
 		return m_Initialized = true;
 	}
 
@@ -25,44 +22,42 @@ namespace Aserai
 		m_Initialized = false;
 	}
 
+	void Mouse::Reset()
+	{
+		//memset(m_ButtonState, 0, sizeof(m_ButtonState));
+		memset(m_ScrollState, 0, sizeof(m_ScrollState));
+		//memset(&m_Position, 0, sizeof(m_Position));
+		m_Moving = false;
+	}
+
 	void Mouse::OnMousePressedEvent(MouseCode button, MousePoint<double> position)
 	{
 		m_ButtonState[button] = true;
-		m_EventBuffer.push(MouseEvent(MouseEventType::Press, position));
+		m_Position = position;
 	}
 
 	void Mouse::OnMouseReleasedEvent(MouseCode button, MousePoint<double> position)
 	{
 		m_ButtonState[button] = false;
-		m_EventBuffer.push(MouseEvent(MouseEventType::Release, position));
+		m_Position = position;
 	}
 
 	void Mouse::OnMouseScrollUpEvent(MousePoint<double> position)
 	{
-		m_EventBuffer.push(MouseEvent(MouseEventType::ScrollUp, position));
+		m_ScrollState[1] = true;
+		m_Position = position;
 	}
 
 	void Mouse::OnMouseScrollDownEvent(MousePoint<double> position)
 	{
-		m_EventBuffer.push(MouseEvent(MouseEventType::ScrollDown, position));
+		m_ScrollState[0] = true;
+		m_Position = position;
 	}
 
 	void Mouse::OnMouseMoveEvent(MousePoint<double> position)
 	{
 		m_Position = position;
-		m_EventBuffer.push(MouseEvent(MouseEventType::Move, position));
-	}
-
-	MouseEvent Mouse::GetEvent()
-	{
-		if (!m_EventBuffer.empty())
-		{
-			MouseEvent ev = m_EventBuffer.front();
-			m_EventBuffer.pop();
-			return ev;
-		}
-
-		return { MouseEventType::Invalid, {0, 0} };
+		m_Moving = true;
 	}
 
 	MousePoint<double> Mouse::GetPosition()
@@ -70,38 +65,28 @@ namespace Aserai
 		return m_Position;
 	}
 
-	void Mouse::SetAutoRepeatHeldDown(bool state)
-	{
-		m_AutoRepeatHeldDown = state;
-	}
-
-	bool Mouse::IsButtonDown(MouseCode button) const
+	bool Mouse::IsMousePressed(MouseCode button) const
 	{
 		return m_ButtonState[button];
 	}
 
-	bool Mouse::IsEventBufferEmpty() const
+	bool Mouse::IsMouseScrollingUp() const
 	{
-		return m_EventBuffer.empty();
+		return m_ScrollState[1];
 	}
 
-	bool Mouse::IsHeldDownAutoRepeat() const
+	bool Mouse::IsMouseScrollingDown() const
 	{
-		return m_AutoRepeatHeldDown;
+		return m_ScrollState[0];
 	}
 
-	bool Mouse::WasButtonDown(MouseCode button) const
+	bool Mouse::IsMouseMoving() const
 	{
-		return m_OldButtonState[button];
+		return m_Moving;
 	}
 
-	void Mouse::SetButtonState(MouseCode button, bool state) const
+	bool Mouse::IsMouseDragging() const
 	{
-		m_ButtonState[button] = state;
-	}
-	
-	void Mouse::SetOldButtonState(MouseCode button, bool state) const
-	{
-		m_OldButtonState[button] = state;
+		return (m_ButtonState[MouseCode::Button1] && m_Moving);
 	}
 }

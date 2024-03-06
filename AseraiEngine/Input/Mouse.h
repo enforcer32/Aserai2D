@@ -2,9 +2,8 @@
 
 #include "AseraiEngine/Input/InputCodes.h"
 
-#include <queue>
-
 #define MAX_MOUSE_BUTTONS 8
+#define MAX_MOUSE_SCROLLS 2
 
 namespace Aserai
 {
@@ -25,21 +24,6 @@ namespace Aserai
 		ScrollUp,
 		ScrollDown,
 		Move,
-		HeldDown
-	};
-
-	class MouseEvent
-	{
-	public:
-		MouseEvent(MouseEventType type, MousePoint<double> position) : m_Type(type), m_Position(position) {}
-
-		inline MouseEventType GetEventType() const { return m_Type; }
-		inline MousePoint<double> GetPosition() const { return m_Position; }
-		inline bool IsValid() const { return m_Type != MouseEventType::Invalid; }
-
-	private:
-		MouseEventType m_Type;
-		MousePoint<double> m_Position;
 	};
 
 	class Mouse
@@ -49,6 +33,7 @@ namespace Aserai
 
 		bool Init();
 		void Destroy();
+		void Reset();
 
 		void OnMousePressedEvent(MouseCode button, MousePoint<double> position);
 		void OnMouseReleasedEvent(MouseCode button, MousePoint<double> position);
@@ -56,28 +41,19 @@ namespace Aserai
 		void OnMouseScrollDownEvent(MousePoint<double> position);
 		void OnMouseMoveEvent(MousePoint<double> position);
 
-		MouseEvent GetEvent();
 		MousePoint<double> GetPosition();
 
-		void SetAutoRepeatHeldDown(bool state);
-
-		bool IsButtonDown(MouseCode button) const;
-		bool IsEventBufferEmpty() const;
-		bool IsHeldDownAutoRepeat() const;
-
-	private:
-		friend class InputManager;
-
-		bool WasButtonDown(MouseCode button) const;
-		void SetButtonState(MouseCode button, bool state) const;
-		void SetOldButtonState(MouseCode button, bool state) const;
+		bool IsMousePressed(MouseCode button) const;
+		bool IsMouseScrollingUp() const;
+		bool IsMouseScrollingDown() const;
+		bool IsMouseMoving() const;
+		bool IsMouseDragging() const;
 
 	private:
 		bool m_Initialized;
-		bool m_AutoRepeatHeldDown;
-		mutable bool m_ButtonState[MAX_MOUSE_BUTTONS];
-		mutable bool m_OldButtonState[MAX_MOUSE_BUTTONS];
+		bool m_ButtonState[MAX_MOUSE_BUTTONS];
+		bool m_ScrollState[MAX_MOUSE_SCROLLS];
+		bool m_Moving;
 		MousePoint<double> m_Position;
-		std::queue<MouseEvent> m_EventBuffer;
 	};
 }

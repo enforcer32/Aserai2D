@@ -20,13 +20,13 @@ namespace Aserai
 
 			if (camera.Primary)
 			{
-				if (inputManager->IsKeyHeldDown(KeyCode::A))
+				if (inputManager->IsKeyPressed(KeyCode::A))
 					transform.Translation.x -= camera.Speed * dt;
-				if (inputManager->IsKeyHeldDown(KeyCode::D))
+				if (inputManager->IsKeyPressed(KeyCode::D))
 					transform.Translation.x += camera.Speed * dt;
-				if (inputManager->IsKeyHeldDown(KeyCode::W))
+				if (inputManager->IsKeyPressed(KeyCode::W))
 					transform.Translation.y += camera.Speed * dt;
-				if (inputManager->IsKeyHeldDown(KeyCode::S))
+				if (inputManager->IsKeyPressed(KeyCode::S))
 					transform.Translation.y -= camera.Speed * dt;
 			}
 		}

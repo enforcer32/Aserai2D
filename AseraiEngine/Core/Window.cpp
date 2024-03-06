@@ -132,13 +132,6 @@ namespace Aserai
 				}
 			});
 
-		glfwSetCharCallback(m_NativeWindow, [](GLFWwindow* window, unsigned int codepoint)
-			{
-				WindowPrivateData& data = *(WindowPrivateData*)glfwGetWindowUserPointer(window);
-				auto inputManager = data.InputManager;
-				inputManager->OnCharEvent(KeyEventType::Press, codepoint);
-			});
-
 		glfwSetMouseButtonCallback(m_NativeWindow, [](GLFWwindow* window, int button, int action, int mods)
 			{
 				WindowPrivateData& data = *(WindowPrivateData*)glfwGetWindowUserPointer(window);
@@ -213,7 +206,7 @@ namespace Aserai
 			return false;
 		}
 
-		glDebugMessageCallback(DebugMessageCallback, nullptr);
+		//glDebugMessageCallback(DebugMessageCallback, nullptr);
 
 		//ASERAI_LOG_INFO("OpenGL: Version({}), Renderer({}), Vendor({}) ", glGetString(GL_VERSION), glGetString(GL_RENDERER), glGetString(GL_VENDOR));
 

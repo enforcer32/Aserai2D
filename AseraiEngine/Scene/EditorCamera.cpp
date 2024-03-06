@@ -16,24 +16,24 @@ namespace Aserai
 
 	void EditorCamera::OnUpdate(DeltaTime dt, const std::shared_ptr<InputManager>& inputManager)
 	{
-		if (inputManager->IsKeyHeldDown(KeyCode::LeftControl))
+		if (inputManager->IsKeyPressed(KeyCode::LeftControl))
 		{
-			if (inputManager->IsKeyHeldDown(KeyCode::W))
+			if (inputManager->IsKeyPressed(KeyCode::W))
 				m_Translation.y += m_TranslationSpeed * dt;
 
-			if (inputManager->IsKeyHeldDown(KeyCode::S))
+			if (inputManager->IsKeyPressed(KeyCode::S))
 				m_Translation.y -= m_TranslationSpeed * dt;
 
-			if (inputManager->IsKeyHeldDown(KeyCode::A))
+			if (inputManager->IsKeyPressed(KeyCode::A))
 				m_Translation.x -= m_TranslationSpeed * dt;
 
-			if (inputManager->IsKeyHeldDown(KeyCode::D))
+			if (inputManager->IsKeyPressed(KeyCode::D))
 				m_Translation.x += m_TranslationSpeed * dt;
 
-			if (inputManager->IsKeyHeldDown(KeyCode::Q))
+			if (inputManager->IsKeyPressed(KeyCode::Q))
 				m_Rotation += m_RotationSpeed * dt;
 
-			if (inputManager->IsKeyHeldDown(KeyCode::E))
+			if (inputManager->IsKeyPressed(KeyCode::E))
 				m_Rotation -= m_RotationSpeed * dt;
 
 			CalculateProjectionViewMatrix();
