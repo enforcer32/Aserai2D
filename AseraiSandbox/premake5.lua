@@ -28,6 +28,15 @@ links
 filter "system:windows"
 	systemversion "latest"
 
+	defines
+	{
+		"ASERAI_PLATFORM_WINDOWS",
+	}
+
+	files
+	{
+	}
+
 filter "configurations:Debug"
 	defines "ASERAI_DEBUG"
 	runtime "Debug"

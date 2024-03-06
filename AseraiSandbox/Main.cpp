@@ -4,7 +4,7 @@
 #include <AseraiEngine/Core/Logger.h>
 #include <AseraiEngine/Scene/Scene.h>
 
-#include <glm/gtc/matrix_transform.hpp>
+#include <AseraiEngine/Components/RigidBodyComponent.h>
 
 namespace Aserai
 {
@@ -20,6 +20,12 @@ namespace Aserai
 
 			m_Renderer2D->SetAlphaBlending(true);
 			m_ActiveScene = std::make_shared<Scene>("Sandbox");
+
+			// Simple Entities
+			m_ActiveScene->CreateEntity().AddComponent<RigidBodyComponent>(glm::vec3({ 0.1, 0.1, 0.0 }));
+			m_ActiveScene->CreateEntity().AddComponent<RigidBodyComponent>(glm::vec3({ -0.1, -0.1, 0.0 }));
+			m_ActiveScene->CreateEntity().AddComponent<RigidBodyComponent>(glm::vec3({ 0.0, -0.1, 0.0 }));
+			m_ActiveScene->CreateEntity().AddComponent<RigidBodyComponent>(glm::vec3({ 0.0, 0.1, 0.0 }));
 		}
 
 		virtual void OnProcessInput() override

@@ -24,6 +24,8 @@ Aserai Game Engine an upcoming 3D Game Engine.
 - Event System
 - Input Manager
 - 2D Renderer
+- Scene System
+- Entity Component System
 
 ## Bugs and feature requests
 
