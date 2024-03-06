@@ -4,11 +4,9 @@
 
 namespace Aserai
 {
-	#define GL_TRIANGLES 0x0004
-
 	class Render
 	{
 	public:
-		static void DrawIndexed(uint32_t drawType, const VertexArray& va, uint32_t count = 0);
+		static void DrawIndexed(uint32_t drawMode, const VertexArray& va, uint32_t count = 0);
 	};
 }

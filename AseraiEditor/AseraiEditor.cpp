@@ -41,6 +41,7 @@ namespace Aserai
 			m_PanelManager = std::make_shared<PanelManager>();
 
 			m_Renderer2D->SetAlphaBlending(true);
+			m_Renderer2D->SetLineWidth(2.0f);
 
 			m_PanelManager->AddPanel("SceneGraph", std::make_shared<SceneGraphPanel>(m_ActiveScene));
 			m_PanelManager->AddPanel("Entity Properties", std::make_shared<EntityPropertiesPanel>(m_AssetManager));
@@ -167,8 +168,11 @@ namespace Aserai
 			ImGui::Text("Renderer2D Stats:");
 			ImGui::Text("DrawCalls: %d", stats.DrawCallCount);
 			ImGui::Text("QuadCount: %d", stats.QuadCount);
-			ImGui::Text("VertexCount: %d", stats.GetVertexCount());
-			ImGui::Text("IndexCount: %d", stats.GetIndexCount());
+			ImGui::Text("LineCount: %d", stats.LineCount);
+			ImGui::Text("QuadVertexCount: %d", stats.GetQuadVertexCount());
+			ImGui::Text("QuadIndexCount: %d", stats.GetQuadIndexCount());
+			ImGui::Text("LineVertexCount: %d", stats.GetLineVertexCount());
+			ImGui::Text("LineIndexCount: %d", stats.GetLineIndexCount());
 			ImGui::NewLine();
 			ImGui::Text("Scene Stats:");
 			ImGui::Text("Active Scene: %s", m_ActiveScene->GetName().c_str());

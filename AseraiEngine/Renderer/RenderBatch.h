@@ -47,6 +47,7 @@ namespace Aserai
 		~RenderBatch()
 		{
 			delete[] m_Vertices;
+			delete[] m_Indices;
 		}
 
 		void Reset()
@@ -69,11 +70,11 @@ namespace Aserai
 			m_Vertices[m_VertexIndex++] = vertex;
 		}
 
-		void Render()
+		void Render(uint32_t drawMode)
 		{
 			m_VertexBuffer->SetBuffer(m_Vertices, m_VertexIndex * sizeof(Vertex));
 			m_VertexArray->Bind();
-			Render::DrawIndexed(GL_TRIANGLES, *m_VertexArray, ((m_VertexIndex / m_Properties.VertexCount) * m_Properties.IndexCount));
+			Render::DrawIndexed(drawMode, *m_VertexArray, ((m_VertexIndex / m_Properties.VertexCount) * m_Properties.IndexCount));
 		}
 
 	private:

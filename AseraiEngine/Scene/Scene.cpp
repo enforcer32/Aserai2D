@@ -80,7 +80,7 @@ namespace Aserai
 
 	void Scene::OnEditorRender(DeltaTime dt, const std::shared_ptr<Renderer2D>& renderer, const std::shared_ptr<EditorCamera>& editorCamera)
 	{
-		renderer->BeginRenderer(*editorCamera, editorCamera->GetTransformMatrix());
+		renderer->BeginRenderer(*editorCamera, editorCamera->GetTransformMatrix());		
 		GetSystem<RenderSystem>()->OnUpdate(dt, renderer);
 		if (IsSystemEnabled<CollisionSystem>()) // && IsDebug?
 			GetSystem<CollisionSystem>()->OnRender(dt, renderer);

@@ -25,6 +25,14 @@ namespace Aserai
 		return indices;
 	}
 
+	uint32_t* GenerateLineIndices(uint32_t maxIndexCount)
+	{
+		uint32_t* indices = new uint32_t[maxIndexCount];
+		for (uint32_t i = 0; i < maxIndexCount; i++)
+			indices[i] = i;
+		return indices;
+	}
+
 	std::array<QuadVertex, 4> CreateCenteredQuad(const glm::vec4& color, float texID = 0.0f)
 	{
 		QuadVertex v0;
@@ -63,9 +71,15 @@ namespace Aserai
 		// SHADERS
 		int samplers[32];
 		for (uint32_t i = 0; i < 32; i++) samplers[i] = i;
+
+		// Quad Shader
 		m_QuadShader = std::make_unique<Shader>("../Assets/Shaders/QuadVertex.glsl", "../Assets/Shaders/QuadFragment.glsl");
 		m_QuadShader->Bind();
 		m_QuadShader->SetIntArray("u_Textures", samplers, m_MaxTextureCount);
+
+		// Line Shader
+		m_LineShader = std::make_unique<Shader>("../Assets/Shaders/LineVertex.glsl", "../Assets/Shaders/LineFragment.glsl");
+		m_LineShader->Bind();
 
 		// Texture Batch
 		uint32_t blank = 0xffffffff;
@@ -92,6 +106,18 @@ namespace Aserai
 		m_QuadTemplate = CreateCenteredQuad({ 1.0f, 1.0f, 1.0f, 1.0f });
 
 		// Line Render Batch
+		RenderBatchProperties lineRenderBatchProps;
+		lineRenderBatchProps.BatchSize = batchsize;
+		lineRenderBatchProps.VertexCount = 2;
+		lineRenderBatchProps.IndexCount = 2;
+		lineRenderBatchProps.Indices = GenerateLineIndices(batchsize * 2);
+		lineRenderBatchProps.DrawType = GL_STATIC_DRAW;
+		lineRenderBatchProps.Shader = m_LineShader;
+		lineRenderBatchProps.Layout = {
+			{"a_Position", 3, ShaderDataType::Float},
+			{"a_Color", 4, ShaderDataType::Float},
+		};
+		m_LineRenderBatch = std::make_unique<RenderBatch<LineVertex>>(lineRenderBatchProps);
 
 		return m_Initialized = true;
 	}
@@ -103,19 +129,35 @@ namespace Aserai
 
 	void Renderer2D::BeginRenderer(const Camera& camera, const glm::mat4& cameraTransform)
 	{
-		m_QuadShader->Bind();
-		m_QuadShader->SetMat4("u_ProjectionViewMatrix", (camera.GetProjection() * glm::inverse(cameraTransform)));
+		m_ProjectionViewMatrix = (camera.GetProjection() * glm::inverse(cameraTransform));
 		m_TextureIndex = 1;
 		m_QuadRenderBatch->Reset();
+		m_LineRenderBatch->Reset();
 	}
 
 	void Renderer2D::EndRenderer()
 	{
 		if (!m_QuadRenderBatch->IsEmpty())
 		{
+			m_QuadShader->Bind();
+			m_QuadShader->SetMat4("u_ProjectionViewMatrix", m_ProjectionViewMatrix);
+
 			for (uint32_t i = 0; i < m_TextureIndex; i++)
 				m_Textures[i]->Bind(i);
-			m_QuadRenderBatch->Render();
+
+			m_QuadRenderBatch->Render(GL_TRIANGLES);
+			m_QuadShader->Unbind();
+
+			m_RenderStats.DrawCallCount++;
+		}
+
+		if (!m_LineRenderBatch->IsEmpty())
+		{
+			m_LineShader->Bind();
+			m_LineShader->SetMat4("u_ProjectionViewMatrix", m_ProjectionViewMatrix);
+			m_LineRenderBatch->Render(GL_LINES);
+			m_LineShader->Unbind();
+		
 			m_RenderStats.DrawCallCount++;
 		}
 	}
@@ -151,6 +193,11 @@ namespace Aserai
 		{
 			glDisable(GL_BLEND);
 		}
+	}
+
+	void Renderer2D::SetLineWidth(float width)
+	{
+		glLineWidth(width);
 	}
 
 	void Renderer2D::RenderQuad(const glm::mat4& transform, const glm::vec4& color)
@@ -204,6 +251,25 @@ namespace Aserai
 		m_RenderStats.QuadCount++;
 	}
 
+	void Renderer2D::RenderLine(const glm::vec3& from, const glm::vec3& to, const glm::vec4& color)
+	{
+		if(m_LineRenderBatch->IsFull())
+			ResetBatch();
+
+		LineVertex v0;
+		v0.Position = from;
+		v0.Color = color;
+
+		LineVertex v1;
+		v1.Position = to;
+		v1.Color = color;
+
+		m_LineRenderBatch->Add(v0);
+		m_LineRenderBatch->Add(v1);
+
+		m_RenderStats.LineCount++;
+	}
+
 	uint32_t Renderer2D::GetTextureSlot(const std::shared_ptr<Texture2D>& texture)
 	{
 		uint32_t texID = 0;
@@ -233,5 +299,6 @@ namespace Aserai
 		EndRenderer();
 		m_TextureIndex = 1;
 		m_QuadRenderBatch->Reset();
+		m_LineRenderBatch->Reset();
 	}
 }
