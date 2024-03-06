@@ -6,7 +6,7 @@ namespace Aserai2D
 {
 	enum class FramebufferAttachmentFormat
 	{
-		RGBA,
+		RGBA8,
 		RED_INTEGER,
 	};
 
@@ -32,6 +32,7 @@ namespace Aserai2D
 		uint32_t GetWidth() const;
 		uint32_t GetHeight() const;
 		int32_t ReadPixel(uint32_t attachmentIndex, uint32_t x, uint32_t y) const;
+		void ClearColorAttachment(uint32_t index, int data);
 
 	private:
 		void Reset();

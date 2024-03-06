@@ -43,7 +43,7 @@ namespace Aserai2D
 				ASERAI_LOG_CRITICAL("Failed to Initialize Asset Manager");
 
 			m_ActiveScene = std::make_shared<Scene>("Editor");
-			m_Framebuffer = std::make_shared<Framebuffer>(FramebufferProperties{ m_Properties.WindowProperties.Width, m_Properties.WindowProperties.Height, { FramebufferAttachmentFormat::RGBA } });
+			m_Framebuffer = std::make_shared<Framebuffer>(FramebufferProperties{ m_Properties.WindowProperties.Width, m_Properties.WindowProperties.Height, { FramebufferAttachmentFormat::RGBA8, FramebufferAttachmentFormat::RED_INTEGER } });
 			m_EditorCamera = std::make_shared<EditorCamera>();
 			m_ActiveScene->SetEditorCamera(m_EditorCamera);
 			m_ActiveScene->SetGridLinesState(true);
@@ -81,6 +81,13 @@ namespace Aserai2D
 				Shutdown();
 		}
 
+		glm::vec2 ConvertScreenToWorldCoordinates(const glm::vec2& screen)
+		{
+			glm::vec2 NDC = { (((screen.x / m_ActiveScene->GetViewport().x) * 2.0) - 1.0), ((((m_ActiveScene->GetViewport().y - screen.y) / m_ActiveScene->GetViewport().y) * 2.0) - 1.0) };
+			glm::vec4 world = (glm::vec4(NDC.x, NDC.y, 0, 1) * glm::inverse(m_EditorCamera->GetProjectionViewMatrix()));
+			return { world.x, world.y };
+		}
+
 		virtual void OnUpdate(DeltaTime dt) override
 		{
 			if (m_Viewport.x > 0.0f && m_Viewport.y > 0.0f && (m_Framebuffer->GetWidth() != m_Viewport.x || m_Framebuffer->GetHeight() != m_Viewport.y))
@@ -102,8 +109,18 @@ namespace Aserai2D
 			renderer->ResetRenderStats();
 			renderer->SetClearColor({ 1.0f, 1.0f, 1.0f, 1.0f });
 			renderer->Clear();
+			m_Framebuffer->ClearColorAttachment(1, -1);
 
 			m_ActiveScene->OnEditorRender(dt, renderer, m_EditorCamera);
+
+			// TEMP
+			glm::vec2 mousePosition = InputManager::GetMousePosition();
+			if ((mousePosition.x >= m_ViewportPosition.x && mousePosition.y >= m_ViewportPosition.y) && (mousePosition.x <= m_ViewportPosition.x + m_Viewport.x && mousePosition.y <= m_ViewportPosition.y + m_Viewport.y))
+			{
+				int pixelData = m_Framebuffer->ReadPixel(1, mousePosition.x, mousePosition.y);
+				ASERAI_LOG_INFO("Pixel: {}", pixelData);
+			}
+
 			m_Framebuffer->Unbind();
 		}
 
@@ -157,7 +174,6 @@ namespace Aserai2D
 			{
 				if (ImGui::BeginMenu("File"))
 				{
-
 					if (ImGui::MenuItem("Exit"))
 						Shutdown();
 

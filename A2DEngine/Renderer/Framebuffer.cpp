@@ -9,6 +9,7 @@ namespace Aserai2D
 	Framebuffer::Framebuffer(const FramebufferProperties& properties)
 		: m_FrameBufferID(0), m_Properties(properties)
 	{
+		ASERAI_ASSERT(properties.Attachments.size() <= 6, "Framebuffer only supports 6 Color Attachments")
 		Reset();
 	}
 
@@ -59,10 +60,25 @@ namespace Aserai2D
 
 	int32_t Framebuffer::ReadPixel(uint32_t attachmentIndex, uint32_t x, uint32_t y) const
 	{
-		int data;
+		int32_t data = -5;
 		glReadBuffer(GL_COLOR_ATTACHMENT0 + attachmentIndex);
-		glReadPixels(x, y, m_Properties.Width, m_Properties.Height, GL_RED_INTEGER, GL_INT, &data);
+		glReadPixels(x, y, 1, 1, GL_RED_INTEGER, GL_INT, &data);
 		return data;
+	}
+
+	void Framebuffer::ClearColorAttachment(uint32_t index, int data)
+	{
+		switch (m_Properties.Attachments[index])
+		{
+		case FramebufferAttachmentFormat::RGBA8:
+			glClearTexImage(m_ColorAttachments[index], 0, GL_RGBA8, GL_INT, &data);
+			break;
+		case FramebufferAttachmentFormat::RED_INTEGER:
+			glClearTexImage(m_ColorAttachments[index], 0, GL_RED_INTEGER, GL_INT, &data);
+			break;
+		default:
+			break;
+		}
 	}
 
 	void Framebuffer::Reset()
@@ -85,7 +101,7 @@ namespace Aserai2D
 
 			switch (m_Properties.Attachments[i])
 			{
-			case FramebufferAttachmentFormat::RGBA:
+			case FramebufferAttachmentFormat::RGBA8:
 				glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, m_Properties.Width, m_Properties.Height, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
 				break;
 			case FramebufferAttachmentFormat::RED_INTEGER:
@@ -97,8 +113,18 @@ namespace Aserai2D
 
 			glTextureParameteri(textureID, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 			glTextureParameteri(textureID, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureID, i);
+			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, GL_TEXTURE_2D, textureID, 0);
 			m_ColorAttachments.push_back(textureID);
+		}
+
+		if (m_ColorAttachments.size() > 1)
+		{
+			GLenum buffs[6] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3, GL_COLOR_ATTACHMENT4, GL_COLOR_ATTACHMENT5 };
+			glDrawBuffers(m_ColorAttachments.size(), buffs);
+		}
+		else
+		{
+			glDrawBuffer(GL_NONE);
 		}
 
 		ASERAI_ASSERT(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE, "glCheckFrameBufferStatus(FrameBuffer FAILED)");

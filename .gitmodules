@@ -4,15 +4,15 @@
 [submodule "Dependencies/glfw"]
 	path = Dependencies/glfw
 	url = https://github.com/enforcer32/glfw
-[submodule "Dependencies/glad"]
-	path = Dependencies/glad
-	url = https://github.com/enforcer32/glad
 [submodule "Dependencies/glm"]
 	path = Dependencies/glm
 	url = https://github.com/g-truc/glm
-[submodule "Dependencies/stb"]
-	path = Dependencies/stb
-	url = https://github.com/enforcer32/stb
 [submodule "Dependencies/imgui"]
 	path = Dependencies/imgui
 	url = https://github.com/enforcer32/imgui/
+[submodule "Dependencies/glad"]
+	path = Dependencies/glad
+	url = https://github.com/enforcer32/glad
+[submodule "Dependencies/stb"]
+	path = Dependencies/stb
+	url = https://github.com/enforcer32/stb
