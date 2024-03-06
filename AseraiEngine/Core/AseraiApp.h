@@ -1,6 +1,7 @@
 #pragma once
 
 #include "AseraiEngine/Core/Window.h"
+#include "AseraiEngine/Core/DeltaTime.h"
 #include "AseraiEngine/Core/EventManager.h"
 #include "AseraiEngine/Core/InputManager.h"
 #include "AseraiEngine/Renderer/Renderer2D.h"
@@ -20,8 +21,8 @@ namespace Aserai
 		void Shutdown();
 
 		virtual void OnProcessInput() = 0;
-		virtual void OnUpdate() = 0;
-		virtual void OnRender(std::shared_ptr<Renderer2D>& renderer) = 0;
+		virtual void OnUpdate(DeltaTime dt) = 0;
+		virtual void OnRender(DeltaTime dt, const std::shared_ptr<Renderer2D>& renderer) = 0;
 
 	protected:
 		std::shared_ptr<EventManager> m_EventManager;

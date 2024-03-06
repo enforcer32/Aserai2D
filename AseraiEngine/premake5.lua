@@ -16,6 +16,7 @@ files
 	"**.cpp",
 	"%{wks.location}/Dependencies/glm/glm/**.hpp",
 	"%{wks.location}/Dependencies/glm/glm/**.inl",
+	"%{wks.location}/Dependencies/fnv/fnv/**.h",
 }
 
 excludes
@@ -37,6 +38,7 @@ includedirs
 	"%{IncludeDir.glad}",
 	"%{IncludeDir.glm}",
 	"%{IncludeDir.stb}",
+	"%{IncludeDir.fnv}",
 }
 
 links
