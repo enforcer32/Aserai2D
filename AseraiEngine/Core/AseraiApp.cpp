@@ -60,8 +60,8 @@ namespace Aserai
 			if (dt > 0)
 			{
 				OnProcessInput();
-				OnUpdate();
-				OnRender(m_Renderer2D);
+				OnUpdate(dt);
+				OnRender(dt, m_Renderer2D);
 			}
 
 			m_Window->Update();
