@@ -9,7 +9,7 @@ namespace Aserai2D
 {
 	struct SpriteComponent
 	{
-		std::shared_ptr<Texture2D> Texture;
+		std::shared_ptr<Texture2D> Texture; //AssetID
 		glm::vec4 Color;
 		uint32_t Width;
 		uint32_t Height;

@@ -52,11 +52,6 @@ namespace Aserai2D
 		}
 	}
 
-	EntityPropertiesPanel::EntityPropertiesPanel(const std::shared_ptr<AssetManager>& assetManager)
-		: m_AssetManager(assetManager)
-	{
-	}
-
 	void EntityPropertiesPanel::OnImGuiRender()
 	{
 		ImGui::Begin("Properties");
@@ -153,7 +148,7 @@ namespace Aserai2D
 				{
 					std::string texturePath = FileDialog::OpenFile("Image Files (*.png, *.jpg, *.jpeg)\0*.png;*.jpg;*.jpeg\0");
 					if(!texturePath.empty())
-						component.Texture = std::make_shared<Texture2D>(texturePath);
+						component.Texture = std::make_shared<Texture2D>(texturePath); // Only Allow From Content Browser
 				}
 
 				ImGui::Text("TextureX");

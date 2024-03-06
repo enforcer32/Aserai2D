@@ -4,9 +4,9 @@
 #include "A2DEditor/Panels/SceneGraphPanel.h"
 #include "A2DEditor/Panels/EntityPropertiesPanel.h"
 
+#include <A2DEngine/Asset/AssetManager.h>
 #include <A2DEngine/Core/Engine.h>
 #include <A2DEngine/Core/Logger.h>
-#include <A2DEngine/Utils/AssetManager.h>
 #include <A2DEngine/Scene/Scene.h>
 #include <A2DEngine/Renderer/Framebuffer.h>
 #include <A2DEngine/Editor/EditorCamera.h>
@@ -16,6 +16,8 @@
 #include <A2DEngine/Components/SpriteComponent.h>
 #include <A2DEngine/Components/CameraComponent.h>
 #include <A2DEngine/Components/KeyboardMovementComponent.h>
+
+#include <A2DEngine/Asset/TextureAsset.h>
 
 #include <imgui.h>
 #include <glm/glm.hpp>
@@ -34,7 +36,9 @@ namespace Aserai2D
 		{
 			ASERAI_LOG_INFO("Initializing A2DEditor");
 
-			m_AssetManager = std::make_shared<AssetManager>();
+			if (!AssetManager::OnInit()) // Per Project or Engine.h?
+				ASERAI_LOG_CRITICAL("Failed to Initialize Asset Manager");
+
 			m_ActiveScene = std::make_shared<Scene>("Editor");
 			m_Framebuffer = std::make_shared<Framebuffer>(m_Properties.WindowProperties.Width, m_Properties.WindowProperties.Height);
 			m_EditorCamera = std::make_shared<EditorCamera>();
@@ -44,12 +48,20 @@ namespace Aserai2D
 			m_Renderer2D->SetLineWidth(2.0f);
 
 			m_PanelManager->AddPanel("SceneGraph", std::make_shared<SceneGraphPanel>(m_ActiveScene));
-			m_PanelManager->AddPanel("Entity Properties", std::make_shared<EntityPropertiesPanel>(m_AssetManager));
+			m_PanelManager->AddPanel("Entity Properties", std::make_shared<EntityPropertiesPanel>());
 
 			// TMP
+			// Load Assets (DO IT IN EDITOR NOT MANUALLY)
+			std::shared_ptr<TextureAsset> tankAsset = std::make_shared<TextureAsset>("../Assets/Spritesheets/top_down_tanks.png");
+			AssetManager::AddAsset(tankAsset);
+			AssetManager::ReloadAsset(tankAsset->GetAssetID());
+
+			std::shared_ptr<TextureAsset> asset = AssetManager::GetAsset<TextureAsset>(tankAsset->GetAssetID());
+			std::shared_ptr<Texture2D> tankTexture = asset->GetTexture();
+			
 			Entity player = m_ActiveScene->CreateEntity("player");
 			player.AddComponent<TransformComponent>(glm::vec3(-5.0, 0.0, 0.0), glm::vec3(0.0, 0.0, 1.0), glm::vec3(1.0, 1.0, 1.0), 0.0);
-			player.AddComponent<SpriteComponent>(m_AssetManager->GetTexture("../Assets/Spritesheets/top_down_tanks.png"), 2, 2, 1, 7.16, 5.5, 82, 79);
+			player.AddComponent<SpriteComponent>(tankTexture, 2, 2, 1, 7.16, 5.5, 82, 79); // DONT ADD TEXTURE USING NAME, LOOP OVER TEXTURES OR ADD USING CONTENT BROWSER
 			//player.AddComponent<KeyboardMovementComponent>(5.0, true);
 
 			return true;
@@ -187,7 +199,6 @@ namespace Aserai2D
 		}
 
 	private:
-		std::shared_ptr<AssetManager> m_AssetManager;
 		std::shared_ptr<Scene> m_ActiveScene;
 		std::shared_ptr<Framebuffer> m_Framebuffer;
 		std::shared_ptr<EditorCamera> m_EditorCamera;

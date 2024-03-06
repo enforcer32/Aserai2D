@@ -20,10 +20,10 @@ namespace Aserai2D
 	};
 }
 
-#ifdef ASERAI_ENGINE
+#ifdef ASERAI2D_ENGINE
 	#define ASERAI_LOG_INFO(...)		Aserai2D::Logger::GetEngineLogger()->info(__VA_ARGS__)
 	#define ASERAI_LOG_WARN(...)		Aserai2D::Logger::GetEngineLogger()->warn(__VA_ARGS__)
-	#ifdef ASERAI_ENGINE_DEBUG
+	#ifdef ASERAI2D_ENGINE_DEBUG
 		#define ASERAI_LOG_DEBUG(...)	Aserai2D::Logger::GetEngineLogger()->debug(__VA_ARGS__)
 	#else
 		#define ASERAI_LOG_DEBUG(...)
@@ -34,7 +34,7 @@ namespace Aserai2D
 #else
 	#define ASERAI_LOG_INFO(...)		Aserai2D::Logger::GetLogger()->info(__VA_ARGS__)
 	#define ASERAI_LOG_WARN(...)		Aserai2D::Logger::GetLogger()->warn(__VA_ARGS__)
-#ifdef ASERAI_DEBUG
+#ifdef ASERAI2D_DEBUG
 	#define ASERAI_LOG_DEBUG(...)		Aserai2D::Logger::GetLogger()->debug(__VA_ARGS__)
 #else
 	#define ASERAI_LOG_DEBUG(...)
