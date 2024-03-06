@@ -11,10 +11,14 @@ namespace Aserai
 	bool Keyboard::Init()
 	{
 		for (int i = 0; i < MAX_KEYBOARD_KEYS; i++)
+		{
 			m_KeyState[i] = false;
+			m_OldKeyState[i] = false;
+		}
 
 		m_AutoRepeatKey = true;
 		m_AutoRepeatChar = true;
+		m_AutoRepeatHeldDown = true;
 		return m_Initialized = true;
 	}
 
@@ -64,14 +68,19 @@ namespace Aserai
 		return 0;
 	}
 
-	void Keyboard::SetAutoRepeatKey(bool status)
+	void Keyboard::SetAutoRepeatKey(bool state)
 	{
-		m_AutoRepeatKey = status;
+		m_AutoRepeatKey = state;
 	}
 
-	void Keyboard::SetAutoRepeatChar(bool status)
+	void Keyboard::SetAutoRepeatChar(bool state)
 	{
-		m_AutoRepeatChar = status;
+		m_AutoRepeatChar = state;
+	}
+
+	void Keyboard::SetAutoRepeatHeldDown(bool state)
+	{
+		m_AutoRepeatHeldDown = state;
 	}
 
 	bool Keyboard::IsKeyPressed(KeyCode key) const
@@ -97,5 +106,25 @@ namespace Aserai
 	bool Keyboard::IsCharAutoRepeat() const
 	{
 		return m_AutoRepeatChar;
+	}
+
+	bool Keyboard::IsHeldDownAutoRepeat() const
+	{
+		return m_AutoRepeatHeldDown;
+	}
+
+	bool Keyboard::WasKeyPressed(KeyCode key) const
+	{
+		return m_OldKeyState[key];
+	}
+
+	void Keyboard::SetKeyState(KeyCode key, bool state) const
+	{
+		m_KeyState[key] = state;
+	}
+
+	void Keyboard::SetOldKeyState(KeyCode key, bool state) const
+	{
+		m_OldKeyState[key] = state;
 	}
 }

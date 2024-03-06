@@ -25,6 +25,7 @@ namespace Aserai
 		ScrollUp,
 		ScrollDown,
 		Move,
+		HeldDown
 	};
 
 	class MouseEvent
@@ -58,12 +59,24 @@ namespace Aserai
 		MouseEvent GetEvent();
 		MousePoint<double> GetPosition();
 
+		void SetAutoRepeatHeldDown(bool state);
+
 		bool IsButtonDown(MouseCode button) const;
 		bool IsEventBufferEmpty() const;
+		bool IsHeldDownAutoRepeat() const;
+
+	private:
+		friend class InputManager;
+
+		bool WasButtonDown(MouseCode button) const;
+		void SetButtonState(MouseCode button, bool state) const;
+		void SetOldButtonState(MouseCode button, bool state) const;
 
 	private:
 		bool m_Initialized;
-		bool m_ButtonState[MAX_MOUSE_BUTTONS];
+		bool m_AutoRepeatHeldDown;
+		mutable bool m_ButtonState[MAX_MOUSE_BUTTONS];
+		mutable bool m_OldButtonState[MAX_MOUSE_BUTTONS];
 		MousePoint<double> m_Position;
 		std::queue<MouseEvent> m_EventBuffer;
 	};

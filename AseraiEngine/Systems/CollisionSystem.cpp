@@ -40,7 +40,7 @@ namespace Aserai
 	{
 		for (auto& entity : GetEntities())
 		{
-			if (inputManager->IsKeyPressed(KeyCode::B))
+			if (inputManager->IsKeyHeldDown(KeyCode::B))
 			{
 				auto transform = entity.GetComponent<TransformComponent>();
 				const auto& boxCollider = entity.GetComponent<BoxColliderComponent>();

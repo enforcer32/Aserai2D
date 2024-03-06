@@ -14,6 +14,7 @@ namespace Aserai
 		Press,
 		Release,
 		Repeat,
+		HeldDown,
 	};
 
 	class KeyEvent
@@ -27,6 +28,7 @@ namespace Aserai
 		inline bool IsPress() const { return m_Type == KeyEventType::Press; }
 		inline bool IsRelease() const { return m_Type == KeyEventType::Release; }
 		inline bool IsRepeat() const { return m_Type == KeyEventType::Repeat; }
+		inline bool IsHeldDown() const { return m_Type == KeyEventType::HeldDown; }
 
 	private:
 		KeyEventType m_Type;
@@ -48,20 +50,31 @@ namespace Aserai
 		KeyEvent GetEvent();
 		unsigned char GetChar();
 
-		void SetAutoRepeatKey(bool status);
-		void SetAutoRepeatChar(bool status);
+		void SetAutoRepeatKey(bool state);
+		void SetAutoRepeatChar(bool state);
+		void SetAutoRepeatHeldDown(bool state);
 
 		bool IsKeyPressed(KeyCode key) const;
 		bool IsKeyBufferEmpty() const;
 		bool IsCharBufferEmpty() const;
 		bool IsKeyAutoRepeat() const;
 		bool IsCharAutoRepeat() const;
+		bool IsHeldDownAutoRepeat() const;
+
+	private:
+		friend class InputManager;
+
+		bool WasKeyPressed(KeyCode key) const;
+		void SetKeyState(KeyCode key, bool state) const;
+		void SetOldKeyState(KeyCode key, bool state) const;
 
 	private:
 		bool m_Initialized;
 		bool m_AutoRepeatKey;
 		bool m_AutoRepeatChar;
-		bool m_KeyState[MAX_KEYBOARD_KEYS + 1];
+		bool m_AutoRepeatHeldDown;
+		mutable bool m_KeyState[MAX_KEYBOARD_KEYS + 1];
+		mutable bool m_OldKeyState[MAX_KEYBOARD_KEYS + 1];
 		std::queue<KeyEvent> m_KeyBuffer;
 		std::queue<unsigned char> m_CharBuffer;
 	};

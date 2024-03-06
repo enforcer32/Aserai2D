@@ -20,27 +20,27 @@ namespace Aserai
 			const auto& keyboard = entity.GetComponent<KeyboardMovementComponent>();
 			bool hasSprit = entity.HasComponent<SpriteComponent>();
 
-			if (inputManager->IsKeyPressed(keyboard.LeftKey))
+			if (inputManager->IsKeyHeldDown(keyboard.LeftKey))
 			{
 				transform.Translation.x -= keyboard.Speed * dt;
 
 				if (hasSprit)
 					transform.Rotation2D = 90.0f;
 			}
-			else if (inputManager->IsKeyPressed(keyboard.RightKey))
+			else if (inputManager->IsKeyHeldDown(keyboard.RightKey))
 			{
 				transform.Translation.x += keyboard.Speed * dt;
 				if (hasSprit)
 					transform.Rotation2D = -90.0f;
 			}
-			else if (inputManager->IsKeyPressed(keyboard.UpKey))
+			else if (inputManager->IsKeyHeldDown(keyboard.UpKey))
 			{
 				transform.Translation.y += keyboard.Speed * dt;
 				if (hasSprit)
 					transform.Rotation2D = 0.0;
 
 			}
-			else if (inputManager->IsKeyPressed(keyboard.DownKey))
+			else if (inputManager->IsKeyHeldDown(keyboard.DownKey))
 			{
 				transform.Translation.y -= keyboard.Speed * dt;
 				if (hasSprit)

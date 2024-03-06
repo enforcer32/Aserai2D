@@ -44,6 +44,11 @@ namespace Aserai
 			m_Renderer2D->SetAlphaBlending(true);
 			m_ActiveScene = std::make_shared<Scene>("TankGame2D");
 
+			m_InputManager->SetAutoRepeatKey(false);
+			m_InputManager->SetAutoRepeatChar(false);
+			m_InputManager->SetKeyAutoRepeatHeldDown(false);
+			m_InputManager->SetMouseAutoRepeatHeldDown(false);
+
 			// Load Tilemap
 			LoadLevel();
 		}
@@ -180,6 +185,10 @@ namespace Aserai
 				OnEnemyHitTank(ev.entityA, ev.entityB, 10);
 			else if ((ev.entityA.GetTag() == "player" && ev.entityB.GetGroup() == "bullets"))
 				OnEnemyHitTank(ev.entityB, ev.entityA, 10);
+			else if (ev.entityA.GetTag() == "player" && ev.entityB.GetGroup() == "enemies")
+				ev.entityB.Destroy();
+			else if (ev.entityA.GetGroup() == "enemies" && ev.entityB.GetTag() == "player")
+				ev.entityA.Destroy();
 		}
 
 		void OnPlayerHitTank(Entity bullet, Entity tank, uint32_t damage)

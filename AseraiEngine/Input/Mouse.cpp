@@ -11,8 +11,12 @@ namespace Aserai
 	bool Mouse::Init()
 	{
 		for (int i = 0; i < MAX_MOUSE_BUTTONS; i++)
+		{
 			m_ButtonState[i] = false;
+			m_OldButtonState[i] = false;
+		}
 
+		m_AutoRepeatHeldDown = true;
 		return m_Initialized = true;
 	}
 
@@ -66,6 +70,11 @@ namespace Aserai
 		return m_Position;
 	}
 
+	void Mouse::SetAutoRepeatHeldDown(bool state)
+	{
+		m_AutoRepeatHeldDown = state;
+	}
+
 	bool Mouse::IsButtonDown(MouseCode button) const
 	{
 		return m_ButtonState[button];
@@ -74,5 +83,25 @@ namespace Aserai
 	bool Mouse::IsEventBufferEmpty() const
 	{
 		return m_EventBuffer.empty();
+	}
+
+	bool Mouse::IsHeldDownAutoRepeat() const
+	{
+		return m_AutoRepeatHeldDown;
+	}
+
+	bool Mouse::WasButtonDown(MouseCode button) const
+	{
+		return m_OldButtonState[button];
+	}
+
+	void Mouse::SetButtonState(MouseCode button, bool state) const
+	{
+		m_ButtonState[button] = state;
+	}
+	
+	void Mouse::SetOldButtonState(MouseCode button, bool state) const
+	{
+		m_OldButtonState[button] = state;
 	}
 }
