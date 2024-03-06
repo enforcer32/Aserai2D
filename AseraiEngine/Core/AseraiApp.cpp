@@ -9,9 +9,16 @@ namespace Aserai
 	AseraiApp::AseraiApp(const WindowProps& windowProps)
 	{
 		Logger::Init();
+
 		m_Window = std::make_unique<Window>();
-		if (m_Window->Init(windowProps))
-			m_Running = true;
+		if (!m_Window->Init(windowProps))
+			ASERAI_LOG_CRITICAL("Failed to Initialize Window");
+
+		m_Renderer2D = std::make_shared<Renderer2D>();
+		if (!m_Renderer2D->Init())
+			ASERAI_LOG_CRITICAL("Failed to Initialize Renderer2D");
+
+		m_Running = true;
 	}
 
 	void AseraiApp::Run()
@@ -28,7 +35,7 @@ namespace Aserai
 			{
 				OnProcessInput();
 				OnUpdate();
-				OnRender();
+				OnRender(m_Renderer2D);
 			}
 
 			m_Window->Update();

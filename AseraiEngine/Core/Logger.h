@@ -29,7 +29,7 @@ namespace Aserai
 		#define ASERAI_LOG_DEBUG(...)
 	#endif
 	#define ASERAI_LOG_ERROR(...)		Aserai::Logger::GetEngineLogger()->error(__VA_ARGS__)
-	#define ASERAI_LOG_CRITICAL(...)	Aserai::Logger::GetEngineLogger()->critical(__VA_ARGS__)
+	#define ASERAI_LOG_CRITICAL(...)	(Aserai::Logger::GetEngineLogger()->critical(__VA_ARGS__), throw)
 	#define ASERAI_LOG_TRACE(...)		Aserai::Logger::GetEngineLogger()->trace(__VA_ARGS__)
 #else
 	#define ASERAI_LOG_INFO(...)		Aserai::Logger::GetLogger()->info(__VA_ARGS__)
@@ -40,6 +40,6 @@ namespace Aserai
 	#define ASERAI_LOG_DEBUG(...)
 #endif
 	#define ASERAI_LOG_ERROR(...)		Aserai::Logger::GetLogger()->error(__VA_ARGS__)
-	#define ASERAI_LOG_CRITICAL(...)	Aserai::Logger::GetLogger()->critical(__VA_ARGS__)
+	#define ASERAI_LOG_CRITICAL(...)	(Aserai::Logger::GetLogger()->critical(__VA_ARGS__), throw)
 	#define ASERAI_LOG_TRACE(...)		Aserai::Logger::GetLogger()->trace(__VA_ARGS__)
 #endif
