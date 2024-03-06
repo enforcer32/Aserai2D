@@ -22,10 +22,7 @@ namespace Aserai
 			m_ActiveScene = std::make_shared<Scene>("Sandbox");
 
 			// Simple Entities
-			m_ActiveScene->CreateEntity().AddComponent<RigidBodyComponent>(glm::vec3({ 0.1, 0.1, 0.0 }));
-			m_ActiveScene->CreateEntity().AddComponent<RigidBodyComponent>(glm::vec3({ -0.1, -0.1, 0.0 }));
-			m_ActiveScene->CreateEntity().AddComponent<RigidBodyComponent>(glm::vec3({ 0.0, -0.1, 0.0 }));
-			m_ActiveScene->CreateEntity().AddComponent<RigidBodyComponent>(glm::vec3({ 0.0, 0.1, 0.0 }));
+			m_ActiveScene->CreateEntity().AddComponent<RigidBodyComponent>(glm::vec3({ 0.1, 0.0, 0.0 }));
 		}
 
 		virtual void OnProcessInput() override
@@ -36,6 +33,8 @@ namespace Aserai
 
 		virtual void OnUpdate(DeltaTime dt) override
 		{
+			ASERAI_LOG_INFO("FPS: {}", (1000 / (dt * 1000)));
+
 			m_ActiveScene->OnRuntimeUpdate(dt);
 		}
 

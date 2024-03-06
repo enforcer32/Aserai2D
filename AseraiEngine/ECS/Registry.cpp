@@ -28,6 +28,11 @@ namespace Aserai
 			}), m_Entities.end());
 	}
 
+	bool System::HasEntity(Entity entity)
+	{
+		return (std::find(m_Entities.begin(), m_Entities.end(), entity) != m_Entities.end());
+	}
+
 	std::vector<Entity> System::GetEntities() const
 	{
 		return m_Entities;
@@ -57,6 +62,18 @@ namespace Aserai
 			system.second->RemoveEntity(entity);
 	}
 
+	void SystemManager::EntityComponentRemoved(Entity entity, Signature entitySignature, int componentID)
+	{
+		auto entityID = entity.GetID();
+		for (auto& system : m_Systems)
+		{
+			if (system.second->GetComponentSignature().test(componentID) && system.second->HasEntity(entity))
+			{
+				system.second->RemoveEntity(entity);
+			}
+		}
+	}
+
 	// Registry
 	Registry::Registry()
 		: m_EntityCount(0)
@@ -80,7 +97,6 @@ namespace Aserai
 		}
 
 		Entity entity(id, this);
-		m_EntityAddQueue.insert(entity);
 		ASERAI_LOG_DEBUG("Entity({}) Created!", entity.GetID());
 		return entity;
 	}
@@ -93,9 +109,9 @@ namespace Aserai
 
 	void Registry::Sync()
 	{
-		for (auto entity : m_EntityAddQueue)
+		for (auto entity : m_EntityComponentAddedQueue)
 			m_SystemManager->AddEntityToSystems(entity, m_EntityComponentSignatures[entity.GetID()]);
-		m_EntityAddQueue.clear();
+		m_EntityComponentAddedQueue.clear();
 
 		for (auto entity : m_EntityDeleteQueue)
 		{

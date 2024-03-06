@@ -48,6 +48,8 @@ namespace Aserai
 
 		void Remove(uint32_t entityID)
 		{
+			if (m_EntityIDToIndex.find(entityID) == m_EntityIDToIndex.end()) return;
+
 			uint32_t entityIndex = m_EntityIDToIndex[entityID];
 			uint32_t lastIndex = m_Size - 1;
 			m_Components[entityIndex] = m_Components[lastIndex];

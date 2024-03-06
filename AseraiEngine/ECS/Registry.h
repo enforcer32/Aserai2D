@@ -73,6 +73,7 @@ namespace Aserai
 
 		void AddEntity(Entity entity);
 		void RemoveEntity(Entity entity);
+		bool HasEntity(Entity entity);
 		std::vector<Entity> GetEntities() const;
 		const Signature& GetComponentSignature() const;
 
@@ -94,6 +95,7 @@ namespace Aserai
 	public:
 		void AddEntityToSystems(Entity entity, Signature entitySignature);
 		void RemoveEntityFromSystems(Entity entity);
+		void EntityComponentRemoved(Entity entity, Signature entitySignature, int componentID);
 
 		template<typename T, typename ...Args>
 		void AddSystem(Args&& ...args)
@@ -156,6 +158,7 @@ namespace Aserai
 			componentPool->Set(entityID, component);
 
 			m_EntityComponentSignatures[entityID].set(componentID);
+			m_EntityComponentAddedQueue.insert(entity);
 			ASERAI_LOG_DEBUG("Entity({}) Added Component({})", entityID, componentID);
 		}
 
@@ -164,9 +167,12 @@ namespace Aserai
 		{
 			auto entityID = entity.GetID();
 			auto componentID = Component<T>::GetID();
+			if (componentID >= m_ComponentPools.size())
+				return;
 			std::shared_ptr<ComponentPool<T>> componentPool = std::static_pointer_cast<ComponentPool<T>>(m_ComponentPools[componentID]);
 			componentPool->Remove(entityID);
 			m_EntityComponentSignatures[entityID].set(componentID, false);
+			m_SystemManager->EntityComponentRemoved(entity, m_EntityComponentSignatures[entity.GetID()], componentID);
 			ASERAI_LOG_DEBUG("Entity({}) Removed Component({})", entityID, componentID);
 		}
 
@@ -219,8 +225,9 @@ namespace Aserai
 
 		std::shared_ptr<SystemManager> m_SystemManager;
 
-		std::set<Entity> m_EntityAddQueue;
 		std::set<Entity> m_EntityDeleteQueue;
+		std::set<Entity> m_EntityComponentAddedQueue;
+
 		std::deque<uint32_t> m_FreeIDs;
 	};
 

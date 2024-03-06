@@ -35,6 +35,16 @@ namespace Aserai
 		return m_Mouse.IsButtonDown(button);
 	}
 
+	void InputManager::SetAutoRepeatKey(bool status)
+	{
+		m_Keyboard.SetAutoRepeatKey(status);
+	}
+
+	void InputManager::SetAutoRepeatChar(bool status)
+	{
+		m_Keyboard.SetAutoRepeatChar(status);
+	}
+
 	void InputManager::OnKeyEvent(KeyEventType type, KeyCode key)
 	{
 		switch (type)

@@ -15,6 +15,8 @@ namespace Aserai
 
 		bool IsKeyPressed(KeyCode key) const;
 		bool IsMousePressed(MouseCode button) const;
+		void SetAutoRepeatKey(bool status);
+		void SetAutoRepeatChar(bool status);
 
 	private:
 		void OnKeyEvent(KeyEventType type, KeyCode key);
