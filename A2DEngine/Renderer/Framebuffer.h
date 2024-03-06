@@ -4,27 +4,41 @@
 
 namespace Aserai2D
 {
+	enum class FramebufferAttachmentFormat
+	{
+		RGBA,
+		RED_INTEGER,
+	};
+
+	struct FramebufferProperties
+	{
+		uint32_t Width;
+		uint32_t Height;
+		std::vector<FramebufferAttachmentFormat> Attachments;
+	};
+
 	class Framebuffer
 	{
 	public:
-		Framebuffer(uint32_t width, uint32_t height);
+		Framebuffer(const FramebufferProperties& properties);
 		~Framebuffer();
 
 		void Bind();
 		void Unbind();
 
 		uint32_t GetID() const;
-		uint32_t GetColorTextureID() const;
+		uint32_t GetColorAttachmentRendererID(uint32_t index) const;
 		void Resize(uint32_t width, uint32_t height);
 		uint32_t GetWidth() const;
 		uint32_t GetHeight() const;
+		int32_t ReadPixel(uint32_t attachmentIndex, uint32_t x, uint32_t y) const;
 
 	private:
 		void Reset();
 
 	private:
-		uint32_t m_Width, m_Height;
 		uint32_t m_FrameBufferID;
-		uint32_t m_ColorTextureID;
+		FramebufferProperties m_Properties;
+		std::vector<uint32_t> m_ColorAttachments;
 	};
 }

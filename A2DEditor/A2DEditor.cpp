@@ -43,7 +43,7 @@ namespace Aserai2D
 				ASERAI_LOG_CRITICAL("Failed to Initialize Asset Manager");
 
 			m_ActiveScene = std::make_shared<Scene>("Editor");
-			m_Framebuffer = std::make_shared<Framebuffer>(m_Properties.WindowProperties.Width, m_Properties.WindowProperties.Height);
+			m_Framebuffer = std::make_shared<Framebuffer>(FramebufferProperties{ m_Properties.WindowProperties.Width, m_Properties.WindowProperties.Height, { FramebufferAttachmentFormat::RGBA } });
 			m_EditorCamera = std::make_shared<EditorCamera>();
 			m_ActiveScene->SetEditorCamera(m_EditorCamera);
 			m_ActiveScene->SetGridLinesState(true);
@@ -109,6 +109,7 @@ namespace Aserai2D
 
 		virtual void OnImGuiRender(DeltaTime dt) override
 		{
+			// Setup Dockspace
 			static bool dockspace_open = true;
 			static bool opt_fullscreen = true;
 			static bool opt_padding = false;
@@ -165,8 +166,10 @@ namespace Aserai2D
 				ImGui::EndMenuBar();
 			}
 
+			// Editor Panels
 			m_PanelManager->RenderAllPanels();
 			
+			// Viewport
 			ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{ 0, 0 });
 			ImGui::Begin("Viewport");
 			m_ViewportFocused = ImGui::IsWindowFocused();
@@ -176,10 +179,10 @@ namespace Aserai2D
 			ImVec2 viewportPosition = ImGui::GetCursorScreenPos();
 			m_ViewportPosition = { viewportPosition.x, viewportPosition.y };
 			m_ActiveScene->SetViewportPosition(m_ViewportPosition);
-			ImGui::Image((void*)m_Framebuffer->GetColorTextureID(), ImVec2(m_Viewport.x, m_Viewport.y), ImVec2(0, 1), ImVec2(1, 0));
-			
+			ImGui::Image((void*)m_Framebuffer->GetColorAttachmentRendererID(0), ImVec2(m_Viewport.x, m_Viewport.y), ImVec2(0, 1), ImVec2(1, 0));
 			ImGui::End();
 			ImGui::PopStyleVar();
+
 			ImGui::End();
 
 			auto& stats = m_Renderer2D->GetRenderStats();

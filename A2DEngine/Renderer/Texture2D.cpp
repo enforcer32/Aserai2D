@@ -74,7 +74,7 @@ namespace Aserai2D
 		glDeleteTextures(1, &m_TextureID);
 	}
 
-	void Texture2D::Bind(unsigned int slot) const
+	void Texture2D::Bind(uint32_t slot) const
 	{
 		glActiveTexture(GL_TEXTURE0 + slot);
 		glBindTexture(GL_TEXTURE_2D, m_TextureID);
