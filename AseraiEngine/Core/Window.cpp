@@ -78,6 +78,79 @@ namespace Aserai
 		return m_Props.Height;
 	}
 
+	void Window::SetupInputEvents(const std::shared_ptr<InputManager>& inputManager)
+	{
+		m_WinPrivData.InputManager = inputManager;
+		glfwSetWindowUserPointer(m_NativeWindow, &m_WinPrivData);
+
+		glfwSetKeyCallback(m_NativeWindow, [](GLFWwindow* window, int key, int scancode, int action, int mods)
+			{
+				WindowPrivateData& data = *(WindowPrivateData*)glfwGetWindowUserPointer(window);
+				auto inputManager = data.InputManager;
+
+				switch (action)
+				{
+				case GLFW_PRESS:
+					inputManager->OnKeyEvent(KeyEventType::Press, static_cast<KeyCode>(key));
+					break;
+				case GLFW_RELEASE:
+					inputManager->OnKeyEvent(KeyEventType::Release, static_cast<KeyCode>(key));
+					break;
+				case GLFW_REPEAT:
+					inputManager->OnKeyEvent(KeyEventType::Repeat, static_cast<KeyCode>(key));
+					break;
+				default:
+					break;
+				}
+			});
+
+		glfwSetCharCallback(m_NativeWindow, [](GLFWwindow* window, unsigned int codepoint)
+			{
+				WindowPrivateData& data = *(WindowPrivateData*)glfwGetWindowUserPointer(window);
+				auto inputManager = data.InputManager;
+				inputManager->OnCharEvent(KeyEventType::Press, codepoint);
+			});
+
+		glfwSetMouseButtonCallback(m_NativeWindow, [](GLFWwindow* window, int button, int action, int mods)
+			{
+				WindowPrivateData& data = *(WindowPrivateData*)glfwGetWindowUserPointer(window);
+				auto inputManager = data.InputManager;
+
+				double xpos, ypos;
+				glfwGetCursorPos(window, &xpos, &ypos);
+
+				switch (action)
+				{
+				case GLFW_PRESS:
+					inputManager->OnMouseButtonEvent(MouseEventType::Press, static_cast<MouseCode>(button), { xpos, ypos });
+					break;
+				case GLFW_RELEASE:
+					inputManager->OnMouseButtonEvent(MouseEventType::Release, static_cast<MouseCode>(button), { xpos, ypos });
+					break;
+				default:
+					break;
+				}
+			});
+
+		glfwSetCursorPosCallback(m_NativeWindow, [](GLFWwindow* window, double xpos, double ypos)
+			{
+				WindowPrivateData& data = *(WindowPrivateData*)glfwGetWindowUserPointer(window);
+				auto inputManager = data.InputManager;
+				inputManager->OnMouseMoveEvent({ xpos, ypos });
+			});
+
+		glfwSetScrollCallback(m_NativeWindow, [](GLFWwindow* window, double xoffset, double yoffset)
+			{
+				WindowPrivateData& data = *(WindowPrivateData*)glfwGetWindowUserPointer(window);
+				auto inputManager = data.InputManager;
+
+				double xpos, ypos;
+				glfwGetCursorPos(window, &xpos, &ypos);
+				MouseEventType evtype = yoffset > 0 ? MouseEventType::ScrollUp : MouseEventType::ScrollDown;
+				inputManager->OnMouseScrollEvent(evtype, { xpos, ypos });
+			});
+	}
+
 	bool Window::InitContext()
 	{
 		if (!glfwInit())

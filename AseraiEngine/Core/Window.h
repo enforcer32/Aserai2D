@@ -1,5 +1,7 @@
 #pragma once
 
+#include "AseraiEngine/Core/InputManager.h"
+
 #include <string>
 
 struct GLFWwindow;
@@ -31,12 +33,20 @@ namespace Aserai
 		uint32_t GetHeight() const;
 		inline const auto* GetNativeWindow() const { return m_NativeWindow; }
 
+		void SetupInputEvents(const std::shared_ptr<InputManager>& inputManager);
+
 	private:
 		bool InitContext();
 
 	private:
+		struct WindowPrivateData
+		{
+			std::shared_ptr<InputManager> InputManager;
+		};
+
 		bool m_Initialized;
 		WindowProps m_Props;
 		GLFWwindow* m_NativeWindow;
+		WindowPrivateData m_WinPrivData;
 	};
 }

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "AseraiEngine/Core/Window.h"
+#include "AseraiEngine/Core/InputManager.h"
 #include "AseraiEngine/Renderer/Renderer2D.h"
 
 #include <memory>
@@ -11,7 +12,7 @@ namespace Aserai
 	{
 	public:
 		AseraiApp(const WindowProps& windowProps);
-		virtual ~AseraiApp() = default;
+		virtual ~AseraiApp();
 
 		void Run();
 		void Shutdown();
@@ -21,10 +22,11 @@ namespace Aserai
 		virtual void OnRender(std::shared_ptr<Renderer2D>& renderer) = 0;
 
 	protected:
+		std::shared_ptr<InputManager> m_InputManager;
 		std::shared_ptr<Renderer2D> m_Renderer2D;
 
 	private:
-		bool m_Running;
+		bool m_Initialized, m_Running;
 		std::unique_ptr<Window> m_Window;
 	};
 }

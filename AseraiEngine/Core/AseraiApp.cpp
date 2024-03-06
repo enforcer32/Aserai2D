@@ -14,11 +14,28 @@ namespace Aserai
 		if (!m_Window->Init(windowProps))
 			ASERAI_LOG_CRITICAL("Failed to Initialize Window");
 
+		m_InputManager = std::make_shared<InputManager>();
+		if(!m_InputManager->Init())
+			ASERAI_LOG_CRITICAL("Failed to Initialize InputManager");
+
+		m_Window->SetupInputEvents(m_InputManager);
+
 		m_Renderer2D = std::make_shared<Renderer2D>();
 		if (!m_Renderer2D->Init(1000))
 			ASERAI_LOG_CRITICAL("Failed to Initialize Renderer2D");
 
+		m_Initialized = true;
 		m_Running = true;
+	}
+
+	AseraiApp::~AseraiApp()
+	{
+		if (m_Initialized)
+		{
+			m_Renderer2D->Destroy();
+			m_InputManager->Destroy();
+			m_Window->Destroy();
+		}
 	}
 
 	void AseraiApp::Run()
@@ -45,6 +62,5 @@ namespace Aserai
 	void AseraiApp::Shutdown()
 	{
 		m_Running = false;
-		m_Window->Destroy();
 	}
 }

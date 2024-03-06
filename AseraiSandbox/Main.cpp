@@ -24,6 +24,8 @@ namespace Aserai
 
 		virtual void OnProcessInput() override
 		{
+			if (m_InputManager->IsKeyPressed(KeyCode::Escape))
+				Shutdown();
 		}
 
 		virtual void OnUpdate() override
@@ -70,6 +72,5 @@ int main(int argc, char* argv)
 {
 	Aserai::AseraiSandbox sandbox({ "AseraiSandbox", 640, 480, true });
 	sandbox.Run();
-	sandbox.Shutdown();
 	return 0;
 }
