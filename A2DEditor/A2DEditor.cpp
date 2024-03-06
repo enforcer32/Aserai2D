@@ -4,6 +4,7 @@
 #include "A2DEditor/Panels/SceneGraphPanel.h"
 #include "A2DEditor/Panels/EntityPropertiesPanel.h"
 #include "A2DEditor/Panels/AssetManagerPanel.h"
+#include "A2DEditor/Panels/ConsolePanel.h"
 
 #include <A2DEngine/Asset/AssetManager.h>
 #include <A2DEngine/Core/Engine.h>
@@ -52,6 +53,7 @@ namespace Aserai2D
 			m_PanelManager->AddPanel("SceneGraph", std::make_shared<SceneGraphPanel>(m_ActiveScene));
 			m_PanelManager->AddPanel("EntityProperties", std::make_shared<EntityPropertiesPanel>());
 			m_PanelManager->AddPanel("AssetManager", std::make_shared<AssetManagerPanel>(m_ActiveScene)); // On SwitchScene Switch Scene Argument from Panels
+			m_PanelManager->AddPanel("Console", std::make_shared<ConsolePanel>());
 
 			// TMP
 			auto tankTextureID = AssetManager::CreateAsset<TextureAsset>("../Assets/Spritesheets/top_down_tanks.png");
