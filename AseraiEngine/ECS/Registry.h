@@ -28,6 +28,11 @@ namespace Aserai
 		uint32_t GetID();
 		void Destroy();
 
+		void SetTag(const std::string& tag);
+		const std::string& GetTag() const;
+		void SetGroup(const std::string& group);
+		const std::string& GetGroup() const;
+
 		Entity& operator=(const Entity& rhs) = default;
 
 		bool operator==(const Entity& rhs) const
@@ -140,8 +145,20 @@ namespace Aserai
 	public:
 		Registry();
 
+		// Entity
 		Entity CreateEntity();
 		void DestroyEntity(Entity entity);
+
+		void SetEntityTag(Entity entity, const std::string& tag);
+		const std::string& GetEntityTag(Entity entity);
+		Entity GetEntityByTag(const std::string& tag);
+		void RemoveEntityTag(Entity entity);
+
+		void SetEntityGroup(Entity entity, const std::string& group);
+		const std::string& GetEntityGroup(Entity entity);
+		std::vector<Entity> GetEntitiesByGroup(const std::string& name);
+		void RemoveEntityGroup(Entity entity);
+
 		void Sync();
 
 		// Components
@@ -247,6 +264,12 @@ namespace Aserai
 		std::set<Entity> m_EntityComponentAddedQueue;
 
 		std::deque<uint32_t> m_FreeIDs;
+
+		std::unordered_map<uint32_t, std::string> m_EntityIDToTag;
+		std::unordered_map<std::string, Entity> m_TagToEntity;
+
+		std::unordered_map<uint32_t, std::string> m_EntityIDToGroup;
+		std::unordered_map<std::string, std::set<Entity>> m_GroupToEntities;
 	};
 
 	// Entity

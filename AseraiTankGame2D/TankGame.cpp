@@ -128,6 +128,7 @@ namespace Aserai
 					uint32_t y = (tileNum[1] - '0'); // ROW 3
 
 					Entity tileEntity = m_ActiveScene->CreateEntity();
+					tileEntity.SetGroup("tiles");
 					tileEntity.AddComponent<SpriteComponent>(m_AssetManager->GetTexture("../Assets/Spritesheets/top_down_tanks.png"), 1, 1, 0, x, y, tileSize, tileSize);
 					tileEntity.AddComponent<TransformComponent>(glm::vec3((double)tilePosX, (double)tilePosY, 1.0), glm::vec3(0.0, 0.0, 1.0), glm::vec3(tileScale, tileScale, tileScale), 0.0f);
 					tilePosX++;
@@ -143,11 +144,13 @@ namespace Aserai
 			player.AddComponent<BoxColliderComponent>(1, 1);
 
 			Entity enemy1 = m_ActiveScene->CreateEntity("enemy1");
+			enemy1.SetGroup("enemies");
 			enemy1.AddComponent<TransformComponent>(glm::vec3(5.0, 0.0, 0.0), glm::vec3(0.0, 0.0, 1.0), glm::vec3(1.0, 1.0, 1.0), 0.0);
 			enemy1.AddComponent<SpriteComponent>(m_AssetManager->GetTexture("../Assets/Spritesheets/top_down_tanks.png"), 1, 1, 0, 6.16, 5.5, 82, 79);
 			enemy1.AddComponent<BoxColliderComponent>(1, 1);
 
 			Entity enemy2 = m_ActiveScene->CreateEntity("enemy2");
+			enemy2.SetGroup("enemies");
 			enemy2.AddComponent<TransformComponent>(glm::vec3(3.0, 3.0, 0.0), glm::vec3(0.0, 0.0, 1.0), glm::vec3(1.0, 1.0, 1.0), 0.0);
 			enemy2.AddComponent<SpriteComponent>(m_AssetManager->GetTexture("../Assets/Spritesheets/top_down_tanks.png"), 1, 1, 0, 6.16, 4.5, 82, 79);
 			enemy2.AddComponent<BoxColliderComponent>(1, 1);
@@ -155,8 +158,11 @@ namespace Aserai
 
 		void OnEntityCollision(CollisionEvent& ev)
 		{
-			ASERAI_LOG_INFO("Collided({}, {})", ev.entityA.GetID(), ev.entityB.GetID());
-			ev.entityB.Destroy();
+			if (ev.entityA.GetTag() == "player" && ev.entityB.GetGroup() == "enemies")
+			{
+				ev.entityB.Destroy();
+				ASERAI_LOG_INFO("Player Killed Enemy");
+			}
 		}
 
 	private:

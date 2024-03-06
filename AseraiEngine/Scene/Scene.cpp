@@ -65,6 +65,7 @@ namespace Aserai
 	Entity Scene::CreateEntity(const std::string& name)
 	{
 		Entity entity = m_Registry->CreateEntity();
+		entity.SetTag(name);
 		entity.AddComponent<TransformComponent>();
 		return entity;
 	}

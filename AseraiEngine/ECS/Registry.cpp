@@ -24,6 +24,26 @@ namespace Aserai
 		m_Registry->DestroyEntity(*this);
 	}
 
+	void Entity::SetTag(const std::string& tag)
+	{
+		m_Registry->SetEntityTag(*this, tag);
+	}
+
+	const std::string& Entity::GetTag() const
+	{
+		return m_Registry->GetEntityTag(*this);
+	}
+
+	void Entity::SetGroup(const std::string& group)
+	{
+		m_Registry->SetEntityGroup(*this, group);
+	}
+
+	const std::string& Entity::GetGroup() const
+	{
+		return m_Registry->GetEntityGroup(*this);
+	}
+
 	// System
 	void System::AddEntity(Entity entity)
 	{
@@ -115,6 +135,77 @@ namespace Aserai
 	{
 		m_EntityDeleteQueue.insert(entity);
 		ASERAI_LOG_DEBUG("Entity({}) Destroyed!", entity.GetID());
+	}
+
+	void Registry::SetEntityTag(Entity entity, const std::string& tag)
+	{
+		if (!tag.empty())
+		{
+			m_TagToEntity[tag] = entity;
+			m_EntityIDToTag[entity.GetID()] = tag;
+		}
+	}
+
+	const std::string& Registry::GetEntityTag(Entity entity)
+	{
+		return m_EntityIDToTag[entity.GetID()];
+	}
+
+	Entity Registry::GetEntityByTag(const std::string& tag)
+	{
+		if (m_TagToEntity.find(tag) != m_TagToEntity.end())
+			return m_TagToEntity[tag];
+		return {};
+	}
+	
+	void Registry::RemoveEntityTag(Entity entity)
+	{
+		if (m_EntityIDToTag.find(entity.GetID()) != m_EntityIDToTag.end())
+		{
+			m_TagToEntity.erase(m_EntityIDToTag[entity.GetID()]);
+			m_EntityIDToTag.erase(entity.GetID());
+		}
+	}
+
+	void Registry::SetEntityGroup(Entity entity, const std::string& group)
+	{
+		if (!group.empty())
+		{
+			m_GroupToEntities.emplace(group, std::set<Entity>());
+			m_GroupToEntities[group].emplace(entity);
+			m_EntityIDToGroup[entity.GetID()] = group;
+		}
+	}
+
+	const std::string& Registry::GetEntityGroup(Entity entity)
+	{
+		return m_EntityIDToGroup[entity.GetID()];
+	}
+	
+	std::vector<Entity> Registry::GetEntitiesByGroup(const std::string& name)
+	{
+		auto& entities = m_GroupToEntities[name];
+		return std::vector<Entity>(entities.begin(), entities.end());
+	}
+
+	std::unordered_map<uint32_t, std::string> m_EntityIDToGroup;
+	std::unordered_map<std::string, std::set<Entity>> m_GroupToEntities;
+
+	void Registry::RemoveEntityGroup(Entity entity)
+	{
+		auto group = m_EntityIDToGroup.find(entity.GetID());
+		if (group != m_EntityIDToGroup.end())
+		{
+			auto groupSet = m_GroupToEntities.find(group->second);
+			if (groupSet != m_GroupToEntities.end())
+			{
+				auto ent = groupSet->second.find(entity);
+				if (ent != groupSet->second.end())
+					groupSet->second.erase(ent);
+			}
+		}
+
+		m_EntityIDToGroup.erase(entity.GetID());
 	}
 
 	void Registry::Sync()
