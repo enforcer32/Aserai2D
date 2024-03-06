@@ -1,22 +1,22 @@
 <p align="center">
-  <a href="https://aserai.com/">
+  <a href="https://aserai.com/Aserai2D">
     <img src="Resources/Branding/AseraiBannerSmall.png" alt="Logo" width=300 height=180>
   </a>
 
-  <h3 align="center">Aserai</h3>
+  <h3 align="center">Aserai2D</h3>
 
   <p align="center">
-    Aserai Game Engine
+    Aserai2D Game Engine
     <br>
-    <a href="https://github.com/enforcer32/Aserai/issues/new?labels=bug">Report bug</a>
+    <a href="https://github.com/enforcer32/Aserai2D/issues/new?labels=bug">Report bug</a>
     ·
-    <a href="https://github.com/enforcer32/Aserai/issues/new?labels=feature">Request feature</a>
+    <a href="https://github.com/enforcer32/Aserai2D/issues/new?labels=feature">Request feature</a>
   </p>
 </p>
 
 ## About
 
-Aserai Game Engine an upcoming 3D Game Engine.
+Aserai2D Game Engine an upcoming 2D Game Engine.
 
 ## Features
 
@@ -30,15 +30,15 @@ Aserai Game Engine an upcoming 3D Game Engine.
 
 ## Bugs and feature requests
 
-Have a bug or a feature request? Please first read the [issue guidelines](https://github.com/enforcer32/Aserai/blob/master/CONTRIBUTING.md) and search for existing and closed issues. If your problem or idea is not addressed yet, [please open a new issue](https://github.com/enforcer32/Aserai/issues/new).
+Have a bug or a feature request? Please first read the [issue guidelines](https://github.com/enforcer32/Aserai2D/blob/master/CONTRIBUTING.md) and search for existing and closed issues. If your problem or idea is not addressed yet, [please open a new issue](https://github.com/enforcer32/Aserai2D/issues/new).
 
 ## Contributing
 
-Please read through our [contributing guidelines](https://github.com/enforcer32/Aserai/blob/master/CONTRIBUTING.md). Included are directions for opening issues, coding standards, and notes on development.
+Please read through our [contributing guidelines](https://github.com/enforcer32/Aserai2D/blob/master/CONTRIBUTING.md). Included are directions for opening issues, coding standards, and notes on development.
 ## Authors
 
 - [**enforcer32**](https://github.com/enforcer32)
 
 ## License
 
-Aserai is Licensed under the [GPL-3 License](https://github.com/enforcer32/Aserai/blob/master/COPYING.txt).
+Aserai2D is Licensed under the [GPL-3 License](https://github.com/enforcer32/Aserai2D/blob/master/COPYING.txt).

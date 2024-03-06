@@ -1,8 +1,8 @@
 include "Dependencies.lua"
 
-workspace "Aserai"
+workspace "Aserai2D"
 	architecture "x64"
-	startproject "AseraiEditor"
+	startproject "A2DEditor"
 	configurations { "Debug", "Release" }
 
 outputdir = "%{cfg.system}-%{cfg.architecture}-%{cfg.buildcfg}"
@@ -15,6 +15,6 @@ group "Dependencies"
 	include "Dependencies/imgui"
 group ""
 
-include "AseraiEngine"
-include "AseraiEditor"
-include "AseraiSandbox"
+include "A2DEngine"
+include "A2DEditor"
+include "A2DSandbox"
