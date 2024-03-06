@@ -1,4 +1,6 @@
 #include "AseraiEditorPCH.h"
+#include "AseraiEditor/Panels/PanelManager.h"
+#include "AseraiEditor/Panels/SceneGraphPanel.h"
 
 #include <AseraiEngine/Core/AseraiApp.h>
 #include <AseraiEngine/Core/Logger.h>
@@ -29,6 +31,7 @@ namespace Aserai
 			m_ActiveScene = std::make_shared<Scene>("Editor");
 			m_Framebuffer = std::make_shared<Framebuffer>(windowProps.Width, windowProps.Height);
 			m_EditorCamera = std::make_shared<EditorCamera>();
+			m_PanelManager = std::make_shared<PanelManager>();
 
 			m_Renderer2D->SetAlphaBlending(true);
 
@@ -37,6 +40,7 @@ namespace Aserai
 			m_InputManager->SetKeyAutoRepeatHeldDown(false);
 			m_InputManager->SetMouseAutoRepeatHeldDown(false);
 
+			m_PanelManager->AddPanel("SceneGraph", std::make_shared<SceneGraphPanel>());
 
 			// TMP
 			Entity player = m_ActiveScene->CreateEntity("player");
@@ -135,7 +139,7 @@ namespace Aserai
 				ImGui::EndMenuBar();
 			}
 
-			// PANELS
+			m_PanelManager->RenderAllPanels();
 			
 			ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{ 0, 0 });
 			ImGui::Begin("Viewport");
@@ -148,7 +152,6 @@ namespace Aserai
 			ImGui::End();
 			ImGui::PopStyleVar();
 			ImGui::End();
-
 
 			auto& stats = m_Renderer2D->GetRenderStats();
 			ImGui::Begin("Performance");
@@ -176,6 +179,7 @@ namespace Aserai
 		std::shared_ptr<Scene> m_ActiveScene;
 		std::shared_ptr<Framebuffer> m_Framebuffer;
 		std::shared_ptr<EditorCamera> m_EditorCamera;
+		std::shared_ptr<PanelManager> m_PanelManager;
 		bool m_ViewportFocused;
 		glm::vec2 m_Viewport;
 	};
