@@ -5,12 +5,15 @@
 #include "AseraiEngine/ECS/Registry.h"
 #include "AseraiEngine/Core/InputManager.h"
 #include "AseraiEngine/Core/EventManager.h"
+#include "AseraiEngine/Systems/RenderSystem.h"
 
 #include <string>
 #include <memory>
 
 namespace Aserai
 {
+	const uint32_t MAX_SCENE_SYSTEMS = 1024;
+
 	class Scene
 	{
 	public:
@@ -30,19 +33,49 @@ namespace Aserai
 		template<typename T>
 		void EnableSystem()
 		{
-			if (m_Registry)
+			auto systemID = BaseSystem<T>::GetID();
+			if (!m_SystemSignature.test(systemID))
+			{
 				m_Registry->AddSystem<T>();
+				m_Systems[systemID] = &m_Registry->GetSystem<T>();
+				m_SystemSignature.set(systemID);
+			}
 		}
 		
 		template<typename T>
 		void DisableSystem()
 		{
-			if (m_Registry)
+			auto systemID = BaseSystem<T>::GetID();
+			if (systemID == BaseSystem<RenderSystem>::GetID())
+			{
+				ASERAI_LOG_ERROR("Cannot Disable RenderSystem");
+				return;
+			}
+
+			if (m_SystemSignature.test(systemID))
+			{
 				m_Registry->RemoveSystem<T>();
+				m_Systems[systemID] = nullptr;
+				m_SystemSignature.set(systemID, false);
+			}
+		}
+
+		template<typename T>
+		bool IsSystemEnabled()
+		{
+			return m_SystemSignature.test(BaseSystem<T>::GetID());
+		}
+
+		template<typename T>
+		T* GetSystem()
+		{
+			return static_cast<T*>(m_Systems[BaseSystem<T>::GetID()]);
 		}
 
 	private:
 		std::shared_ptr<Registry> m_Registry;
+		std::unordered_map<uint32_t, System*> m_Systems;
+		std::bitset<MAX_SCENE_SYSTEMS> m_SystemSignature;
 		std::string m_Name;
 	};
 }

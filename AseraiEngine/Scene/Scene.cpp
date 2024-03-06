@@ -20,29 +20,30 @@ namespace Aserai
 		m_Registry = std::make_shared<Registry>();
 
 		// Register Systems
-		m_Registry->AddSystem<CameraControlSystem>();
-		m_Registry->AddSystem<MovementSystem>();
-		m_Registry->AddSystem<RenderSystem>();
-		m_Registry->AddSystem<KeyboardMovementSystem>();
-		m_Registry->AddSystem<CollisionSystem>();
-		m_Registry->AddSystem<ParticleEmitSystem>();
-		m_Registry->AddSystem<ParticleLifeSystem>();
+		EnableSystem<CameraControlSystem>();
+		EnableSystem<CameraControlSystem>();
+		EnableSystem<MovementSystem>();
+		EnableSystem<RenderSystem>();
+		EnableSystem<KeyboardMovementSystem>();
+		EnableSystem<CollisionSystem>();
+		EnableSystem<ParticleEmitSystem>();
+		EnableSystem<ParticleLifeSystem>();
 	}
 
 	void Scene::OnRuntimeUpdate(DeltaTime dt, const std::shared_ptr<InputManager>& inputManager, const std::shared_ptr<EventManager>& eventManager)
 	{
-		if(m_Registry->HasSystem<CameraControlSystem>())
-			m_Registry->GetSystem<CameraControlSystem>().OnUpdate(dt, inputManager);
-		if (m_Registry->HasSystem<MovementSystem>())
-			m_Registry->GetSystem<MovementSystem>().OnUpdate(dt);
-		if (m_Registry->HasSystem<KeyboardMovementSystem>())
-			m_Registry->GetSystem<KeyboardMovementSystem>().OnUpdate(dt, inputManager);
-		if (m_Registry->HasSystem<CollisionSystem>())
-			m_Registry->GetSystem<CollisionSystem>().OnUpdate(dt, eventManager);
-		if (m_Registry->HasSystem<ParticleEmitSystem>())
-			m_Registry->GetSystem<ParticleEmitSystem>().OnUpdate(dt, m_Registry, inputManager);
-		if (m_Registry->HasSystem<ParticleLifeSystem>())
-			m_Registry->GetSystem<ParticleLifeSystem>().OnUpdate(dt);
+		if(IsSystemEnabled<CameraControlSystem>())
+			GetSystem<CameraControlSystem>()->OnUpdate(dt, inputManager);
+		if (IsSystemEnabled<MovementSystem>())
+			GetSystem<MovementSystem>()->OnUpdate(dt);
+		if (IsSystemEnabled<KeyboardMovementSystem>())
+			GetSystem<KeyboardMovementSystem>()->OnUpdate(dt, inputManager);
+		if (IsSystemEnabled<CollisionSystem>())
+			GetSystem<CollisionSystem>()->OnUpdate(dt, eventManager);
+		if (IsSystemEnabled<ParticleEmitSystem>())
+			GetSystem<ParticleEmitSystem>()->OnUpdate(dt, m_Registry, inputManager);
+		if (IsSystemEnabled<ParticleLifeSystem>())
+			GetSystem<ParticleLifeSystem>()->OnUpdate(dt);
 
 		m_Registry->Sync();
 	}
@@ -53,8 +54,9 @@ namespace Aserai
 		if (primaryCamera)
 		{
 			renderer->BeginRenderer(primaryCamera.GetComponent<CameraComponent>().Camera, primaryCamera.GetComponent<TransformComponent>().GetTransform());
-			m_Registry->GetSystem<RenderSystem>().OnUpdate(dt, renderer); // DON'T CHECK FOR HasComponent
-			m_Registry->GetSystem<CollisionSystem>().OnRender(dt, renderer, inputManager);
+			GetSystem<RenderSystem>()->OnUpdate(dt, renderer);
+			if(IsSystemEnabled<CollisionSystem>()) // && IsDebug?
+				GetSystem<CollisionSystem>()->OnRender(dt, renderer, inputManager);
 			renderer->EndRenderer();
 		}
 	}
