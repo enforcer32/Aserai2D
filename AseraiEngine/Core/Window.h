@@ -9,7 +9,7 @@ struct GLFWwindow;
 
 namespace Aserai
 {
-	struct WindowProps
+	struct WindowProperties
 	{
 		std::string Name;
 		uint32_t Width;
@@ -22,12 +22,12 @@ namespace Aserai
 	public:
 		Window();
 
-		bool Init(const WindowProps& props);
+		bool Init(const WindowProperties& props);
 		void Destroy();
 		void Update();
 		
-		const WindowProps& GetProperties() const;
-		void SetProperties(const WindowProps& props);
+		const WindowProperties& GetProperties() const;
+		void SetProperties(const WindowProperties& props);
 		bool IsVSync() const;
 		void SetVSync(bool vsync);
 		uint32_t GetWidth() const;

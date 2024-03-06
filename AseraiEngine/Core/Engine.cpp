@@ -1,17 +1,24 @@
 #include "AseraiEnginePCH.h"
-#include "AseraiEngine/Core/AseraiApp.h"
+#include "AseraiEngine/Core/Engine.h"
 #include "AseraiEngine/Core/Logger.h"
 #include "AseraiEngine/Core/DeltaTime.h"
 #include "AseraiEngine/Utils/DateTime.h"
+#include "AseraiEngine/Core/Assertion.h"
 
 namespace Aserai
 {
-	AseraiApp::AseraiApp(const WindowProps& windowProps)
+	Engine* Engine::s_Instance = nullptr;
+
+	Engine::Engine(const EngineProperties& engineProps)
 	{
+		ASERAI_ASSERT(!s_Instance, "ENGINE ALREADY INITIALIZED");
+		s_Instance = this;
+		m_Properties = engineProps;
+
 		Logger::Init();
 
 		m_Window = std::make_unique<Window>();
-		if (!m_Window->Init(windowProps))
+		if (!m_Window->Init(m_Properties.WindowProperties))
 			ASERAI_LOG_CRITICAL("Failed to Initialize Window");
 
 		m_EventManager = std::make_shared<EventManager>();
@@ -25,8 +32,8 @@ namespace Aserai
 		m_Window->SetupWindowEvents(m_EventManager);
 		m_Window->SetupInputEvents(m_InputManager);
 
-		m_EventManager->Subscribe<WindowCloseEvent>(this, &AseraiApp::OnWindowClose);
-		m_EventManager->Subscribe<WindowResizeEvent>(this, &AseraiApp::OnWindowResize);
+		m_EventManager->Subscribe<WindowCloseEvent>(this, &Engine::OnWindowClose);
+		m_EventManager->Subscribe<WindowResizeEvent>(this, &Engine::OnWindowResize);
 
 		m_Renderer2D = std::make_shared<Renderer2D>();
 		if (!m_Renderer2D->Init(1000))
@@ -35,12 +42,9 @@ namespace Aserai
 		m_ImGui = std::make_unique<AImGui>();
 		if(!m_ImGui->Init(m_Window))
 			ASERAI_LOG_CRITICAL("Failed to Initialize AImGui");
-
-		m_Initialized = true;
-		m_Running = true;
 	}
 
-	AseraiApp::~AseraiApp()
+	Engine::~Engine()
 	{
 		if (m_Initialized)
 		{
@@ -52,8 +56,19 @@ namespace Aserai
 		}
 	}
 
-	void AseraiApp::Run()
+	Engine* Engine::Get()
 	{
+		return s_Instance;
+	}
+
+	void Engine::Start()
+	{
+		if (!OnInit())
+			ASERAI_LOG_CRITICAL("Engine OnInit Failed");
+
+		m_Initialized = true;
+		m_Running = true;
+
 		DeltaTime lastDelteTime = 0.0;
 
 		while (m_Running)
@@ -76,19 +91,31 @@ namespace Aserai
 			m_InputManager->Reset();
 			m_Window->Update();
 		}
+
+		OnDestroy();
 	}
 
-	void AseraiApp::Shutdown()
+	void Engine::Shutdown()
 	{
 		m_Running = false;
 	}
 
-	void AseraiApp::OnWindowClose(WindowCloseEvent& ev)
+	EngineProperties& Engine::GetProperties()
+	{
+		return m_Properties;
+	}
+
+	Window& Engine::GetWindow()
+	{
+		return *m_Window;
+	}
+
+	void Engine::OnWindowClose(WindowCloseEvent& ev)
 	{
 		Shutdown();
 	}
 
-	void AseraiApp::OnWindowResize(WindowResizeEvent& ev)
+	void Engine::OnWindowResize(WindowResizeEvent& ev)
 	{
 		m_Renderer2D->SetViewPort(0, 0, ev.GetWidth(), ev.GetHeight());
 	}

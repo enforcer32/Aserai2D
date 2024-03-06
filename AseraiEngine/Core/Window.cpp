@@ -24,7 +24,7 @@ namespace Aserai
 	{
 	}
 
-	bool Window::Init(const WindowProps& props)
+	bool Window::Init(const WindowProperties& props)
 	{
 		m_WinPrivData.Name = props.Name;
 		m_WinPrivData.Width = props.Width;
@@ -52,12 +52,12 @@ namespace Aserai
 		glfwSwapBuffers(m_NativeWindow);
 	}
 
-	const WindowProps& Window::GetProperties() const
+	const WindowProperties& Window::GetProperties() const
 	{
-		return (WindowProps&)m_WinPrivData;
+		return (WindowProperties&)m_WinPrivData;
 	}
 
-	void Window::SetProperties(const WindowProps& props)
+	void Window::SetProperties(const WindowProperties& props)
 	{
 		m_WinPrivData.Name = props.Name;
 		m_WinPrivData.Width = props.Width;

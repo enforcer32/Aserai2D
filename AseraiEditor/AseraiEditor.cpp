@@ -4,7 +4,7 @@
 #include "AseraiEditor/Panels/SceneGraphPanel.h"
 #include "AseraiEditor/Panels/EntityPropertiesPanel.h"
 
-#include <AseraiEngine/Core/AseraiApp.h>
+#include <AseraiEngine/Core/Engine.h>
 #include <AseraiEngine/Core/Logger.h>
 #include <AseraiEngine/Utils/AssetManager.h>
 #include <AseraiEngine/Scene/Scene.h>
@@ -21,17 +21,21 @@
 
 namespace Aserai
 {
-	class AseraiEditor : public AseraiApp
+	class AseraiEditor : public Engine
 	{
 	public:
-		AseraiEditor(const WindowProps& windowProps)
-			: AseraiApp(windowProps)
+		AseraiEditor(const EngineProperties& engineProps)
+			: Engine(engineProps)
 		{
-			ASERAI_LOG_INFO("Initialized AseraiEditor");
+		}
+
+		virtual bool OnInit() override
+		{
+			ASERAI_LOG_INFO("Initializing AseraiEditor");
 
 			m_AssetManager = std::make_shared<AssetManager>();
 			m_ActiveScene = std::make_shared<Scene>("Editor");
-			m_Framebuffer = std::make_shared<Framebuffer>(windowProps.Width, windowProps.Height);
+			m_Framebuffer = std::make_shared<Framebuffer>(m_Properties.WindowProperties.Width, m_Properties.WindowProperties.Height);
 			m_EditorCamera = std::make_shared<EditorCamera>();
 			m_PanelManager = std::make_shared<PanelManager>();
 
@@ -47,6 +51,12 @@ namespace Aserai
 			player.AddComponent<TransformComponent>(glm::vec3(-5.0, 0.0, 0.0), glm::vec3(0.0, 0.0, 1.0), glm::vec3(1.0, 1.0, 1.0), 0.0);
 			player.AddComponent<SpriteComponent>(m_AssetManager->GetTexture("../Assets/Spritesheets/top_down_tanks.png"), 2, 2, 1, 7.16, 5.5, 82, 79);
 			//player.AddComponent<KeyboardMovementComponent>(5.0, true);
+
+			return true;
+		}
+		
+		virtual void OnDestroy() override
+		{
 		}
 
 		virtual void OnProcessInput() override
@@ -169,8 +179,7 @@ namespace Aserai
 
 		virtual void OnWindowResize(WindowResizeEvent& ev) override
 		{
-			AseraiApp::OnWindowResize(ev);
-
+			Engine::OnWindowResize(ev);
 			m_ActiveScene->OnViewportResize(ev.GetWidth(), ev.GetHeight());
 		}
 
@@ -187,7 +196,9 @@ namespace Aserai
 
 int main(int argc, char* argv)
 {
-	Aserai::AseraiEditor editor({ "AseraiEditor", 1920, 1080, true });
-	editor.Run();
+	Aserai::EngineProperties engineProps;
+	engineProps.WindowProperties = { "AseraiEditor", 1920, 1080, true };
+	Aserai::AseraiEditor editor(engineProps);
+	editor.Start();
 	return 0;
 }
