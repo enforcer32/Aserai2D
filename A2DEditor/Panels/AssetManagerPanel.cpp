@@ -126,13 +126,14 @@ namespace Aserai2D
 		{
 			glm::vec2 mousePositionScreen = InputManager::GetMousePosition();
 			glm::vec2 viewportPosition = m_Scene->GetViewportPosition();
-			float xPos = mousePositionScreen.x - viewportPosition.x;
-			float yPos = mousePositionScreen.y - viewportPosition.y;
-			glm::vec2 mousePositionWorld = ConvertScreenToWorldCoordinates({ xPos, yPos });
+			glm::vec2 mousePositionWorld = ConvertScreenToWorldCoordinates({ (mousePositionScreen.x - viewportPosition.x), (mousePositionScreen.y - viewportPosition.y)});
+			glm::vec2 cameraPosition = m_EditorCamera->GetTranslation();
+			mousePositionWorld.x += cameraPosition.x;
+			mousePositionWorld.y += cameraPosition.y;
 
 			auto& transform = m_HoldingSpriteEntity.GetComponent<TransformComponent>();
-			transform.Translation.x = mousePositionWorld.x;
-			transform.Translation.y = mousePositionWorld.y;
+			transform.Translation.x = (int)mousePositionWorld.x;
+			transform.Translation.y = (int)mousePositionWorld.y;
 
 			if (InputManager::IsMousePressed(MouseCode::Button1))
 				m_HoldingSpriteEntity = {};
