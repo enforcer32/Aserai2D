@@ -36,18 +36,20 @@ namespace Aserai
 
 		for (auto& entity : entities)
 		{
-			const auto& transform = entity.TransformComponent;
+			auto transform = entity.TransformComponent;
 			const auto& sprite = entity.SpriteComponent;
 		
 			if (sprite.Texture)
 			{
-				if (sprite.SrcX || sprite.SrcY)
+				if (sprite.TextureX || sprite.TextureY || sprite.TextureH || sprite.TextureW)
 				{
 					std::array<glm::vec2, 4> textureUV;
-					textureUV[0] = { ((float)(sprite.SrcX * sprite.Width) / sprite.Texture->GetWidth()), ((float)(sprite.SrcY * sprite.Height) / sprite.Texture->GetHeight()) }; // BOTTOM LEFT
-					textureUV[1] = { ((float)((sprite.SrcX + 1) * sprite.Width) / sprite.Texture->GetWidth()), ((float)(sprite.SrcY * sprite.Height) / sprite.Texture->GetHeight()) }; // BOTTOM RIGHT
-					textureUV[2] = { ((float)((sprite.SrcX + 1) * sprite.Width) / sprite.Texture->GetWidth()), ((float)((sprite.SrcY + 1) * sprite.Height) / sprite.Texture->GetHeight()) }; // TOP RIGHT
-					textureUV[3] = { ((float)(sprite.SrcX * sprite.Width) / sprite.Texture->GetWidth()), ((float)((sprite.SrcY + 1) * sprite.Height) / sprite.Texture->GetHeight()) }; // TOP LEFT
+					textureUV[0] = { ((float)(sprite.TextureX * sprite.TextureW) / sprite.Texture->GetWidth()), ((float)(sprite.TextureY * sprite.TextureH) / sprite.Texture->GetHeight()) }; // BOTTOM LEFT
+					textureUV[1] = { ((float)((sprite.TextureX + 1) * sprite.TextureW) / sprite.Texture->GetWidth()), ((float)(sprite.TextureY * sprite.TextureH) / sprite.Texture->GetHeight()) }; // BOTTOM RIGHT
+					textureUV[2] = { ((float)((sprite.TextureX + 1) * sprite.TextureW) / sprite.Texture->GetWidth()), ((float)((sprite.TextureY + 1) * sprite.TextureH) / sprite.Texture->GetHeight()) }; // TOP RIGHT
+					textureUV[3] = { ((float)(sprite.TextureX * sprite.TextureW) / sprite.Texture->GetWidth()), ((float)((sprite.TextureY + 1) * sprite.TextureH) / sprite.Texture->GetHeight()) }; // TOP LEFT
+					transform.Scale.x *= sprite.Width;
+					transform.Scale.y *= sprite.Height;
 					renderer->RenderQuad(transform.GetTransform(), sprite.Texture, textureUV);
 				}
 				else

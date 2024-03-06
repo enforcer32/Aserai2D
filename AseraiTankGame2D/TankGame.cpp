@@ -11,8 +11,11 @@
 #include <AseraiEngine/Components/SpriteComponent.h>
 #include <AseraiEngine/Components/CameraComponent.h>
 #include <AseraiEngine/Components/KeyboardMovementComponent.h>
+#include <AseraiEngine/Components/BoxColliderComponent.h>
 
 #include <AseraiEngine/Systems/CameraControlSystem.h>
+
+#include <AseraiEngine/Events/CollisionEvent.h>
 
 #include <imgui.h>
 #include <sstream>
@@ -44,7 +47,7 @@ namespace Aserai
 
 		virtual void OnUpdate(DeltaTime dt) override
 		{
-			m_ActiveScene->OnRuntimeUpdate(dt, m_InputManager);
+			m_ActiveScene->OnRuntimeUpdate(dt, m_InputManager, m_EventManager);
 		}
 
 		virtual void OnRender(DeltaTime dt, const std::shared_ptr<Renderer2D>& renderer) override
@@ -53,7 +56,7 @@ namespace Aserai
 			renderer->SetClearColor({ 0.2f, 0.3f, 0.3f, 1.0f });
 			renderer->Clear();
 
-			m_ActiveScene->OnRuntimeRender(dt, renderer);
+			m_ActiveScene->OnRuntimeRender(dt, renderer, m_InputManager);
 		}
 
 		virtual void OnImGuiRender(DeltaTime dt) override
@@ -97,6 +100,7 @@ namespace Aserai
 		void LoadLevel()
 		{
 			m_ActiveScene->DisableSystem<CameraControlSystem>();
+			m_EventManager->Subscribe<CollisionEvent>(this, &AseraiTankGame2D::OnEntityCollision);
 
 			Entity camera = m_ActiveScene->CreateEntity("camera");
 			SceneCamera sceneCam;
@@ -124,7 +128,7 @@ namespace Aserai
 					uint32_t y = (tileNum[1] - '0'); // ROW 3
 
 					Entity tileEntity = m_ActiveScene->CreateEntity();
-					tileEntity.AddComponent<SpriteComponent>(m_AssetManager->GetTexture("../Assets/Spritesheets/top_down_tanks.png"), tileSize, tileSize, x, y, 0);
+					tileEntity.AddComponent<SpriteComponent>(m_AssetManager->GetTexture("../Assets/Spritesheets/top_down_tanks.png"), 1, 1, 0, x, y, tileSize, tileSize);
 					tileEntity.AddComponent<TransformComponent>(glm::vec3((double)tilePosX, (double)tilePosY, 1.0), glm::vec3(0.0, 0.0, 1.0), glm::vec3(tileScale, tileScale, tileScale), 0.0f);
 					tilePosX++;
 				}
@@ -133,17 +137,26 @@ namespace Aserai
 			}
 
 			Entity player = m_ActiveScene->CreateEntity("player");
-			player.AddComponent<TransformComponent>(glm::vec3(-9.0, 0.0, 0.0), glm::vec3(0.0, 0.0, 1.0), glm::vec3(2.0, 2.0, 1.0), 90.0f);
-			player.AddComponent<SpriteComponent>(m_AssetManager->GetTexture("../Assets/Spritesheets/top_down_tanks.png"), 82, 79, 7.16, 5.5, 0);
+			player.AddComponent<TransformComponent>(glm::vec3(-5.0, 0.0, 0.0), glm::vec3(0.0, 0.0, 1.0), glm::vec3(1.0, 1.0, 1.0), 90.0f);
+			player.AddComponent<SpriteComponent>(m_AssetManager->GetTexture("../Assets/Spritesheets/top_down_tanks.png"), 1, 1, 1, 7.16, 5.5, 82, 79);
 			player.AddComponent<KeyboardMovementComponent>(5.0);
+			player.AddComponent<BoxColliderComponent>(1, 1);
 
 			Entity enemy1 = m_ActiveScene->CreateEntity("enemy1");
-			enemy1.AddComponent<TransformComponent>(glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 0.0, 1.0), glm::vec3(2.0, 2.0, 1.0), 0.0);
-			enemy1.AddComponent<SpriteComponent>(m_AssetManager->GetTexture("../Assets/Spritesheets/top_down_tanks.png"), 82, 79, 6.16, 5.5, 0);
-			
-			Entity enemy2 = m_ActiveScene->CreateEntity("enemy3");
-			enemy2.AddComponent<TransformComponent>(glm::vec3(9.0, 0.0, 0.0), glm::vec3(0.0, 0.0, 1.0), glm::vec3(2.0, 2.0, 1.0), -90.0f);
-			enemy2.AddComponent<SpriteComponent>(m_AssetManager->GetTexture("../Assets/Spritesheets/top_down_tanks.png"), 82, 79, 6.16, 5.5, 0);
+			enemy1.AddComponent<TransformComponent>(glm::vec3(5.0, 0.0, 0.0), glm::vec3(0.0, 0.0, 1.0), glm::vec3(1.0, 1.0, 1.0), 0.0);
+			enemy1.AddComponent<SpriteComponent>(m_AssetManager->GetTexture("../Assets/Spritesheets/top_down_tanks.png"), 1, 1, 0, 6.16, 5.5, 82, 79);
+			enemy1.AddComponent<BoxColliderComponent>(1, 1);
+
+			Entity enemy2 = m_ActiveScene->CreateEntity("enemy2");
+			enemy2.AddComponent<TransformComponent>(glm::vec3(3.0, 3.0, 0.0), glm::vec3(0.0, 0.0, 1.0), glm::vec3(1.0, 1.0, 1.0), 0.0);
+			enemy2.AddComponent<SpriteComponent>(m_AssetManager->GetTexture("../Assets/Spritesheets/top_down_tanks.png"), 1, 1, 0, 6.16, 4.5, 82, 79);
+			enemy2.AddComponent<BoxColliderComponent>(1, 1);
+		}
+
+		void OnEntityCollision(CollisionEvent& ev)
+		{
+			ASERAI_LOG_INFO("Collided({}, {})", ev.entityA.GetID(), ev.entityB.GetID());
+			ev.entityB.Destroy();
 		}
 
 	private:

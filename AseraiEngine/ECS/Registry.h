@@ -26,6 +26,7 @@ namespace Aserai
 		Entity(const Entity& entity) = default;
 
 		uint32_t GetID();
+		void Destroy();
 
 		Entity& operator=(const Entity& rhs) = default;
 

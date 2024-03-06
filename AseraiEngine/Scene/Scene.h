@@ -4,6 +4,7 @@
 #include "AseraiEngine/Renderer/Renderer2D.h"
 #include "AseraiEngine/ECS/Registry.h"
 #include "AseraiEngine/Core/InputManager.h"
+#include "AseraiEngine/Core/EventManager.h"
 
 #include <string>
 #include <memory>
@@ -15,8 +16,8 @@ namespace Aserai
 	public:
 		Scene(const std::string& name = "Untitled");
 
-		void OnRuntimeUpdate(DeltaTime dt, const std::shared_ptr<InputManager>& inputManager);
-		void OnRuntimeRender(DeltaTime dt, const std::shared_ptr<Renderer2D>& renderer);
+		void OnRuntimeUpdate(DeltaTime dt, const std::shared_ptr<InputManager>& inputManager, const std::shared_ptr<EventManager>& eventManager);
+		void OnRuntimeRender(DeltaTime dt, const std::shared_ptr<Renderer2D>& renderer, const std::shared_ptr<InputManager>& inputManager);
 		void OnViewportResize(uint32_t width, uint32_t height);
 
 		Entity CreateEntity(const std::string& name = "");

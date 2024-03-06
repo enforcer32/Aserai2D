@@ -19,6 +19,11 @@ namespace Aserai
 		return m_ID;
 	}
 
+	void Entity::Destroy()
+	{
+		m_Registry->DestroyEntity(*this);
+	}
+
 	// System
 	void System::AddEntity(Entity entity)
 	{
