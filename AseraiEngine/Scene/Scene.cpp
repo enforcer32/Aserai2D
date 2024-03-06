@@ -3,6 +3,7 @@
 
 #include "AseraiEngine/Systems/MovementSystem.h"
 #include "AseraiEngine/Systems/RenderSystem.h"
+#include "AseraiEngine/Systems/CameraControlSystem.h"
 
 #include "AseraiEngine/Components/TransformComponent.h"
 #include "AseraiEngine/Components/CameraComponent.h"
@@ -15,13 +16,15 @@ namespace Aserai
 		m_Registry = std::make_shared<Registry>();
 
 		// Register Systems
+		m_Registry->AddSystem<CameraControlSystem>();
 		m_Registry->AddSystem<MovementSystem>();
 		m_Registry->AddSystem<RenderSystem>();
 	}
 
-	void Scene::OnRuntimeUpdate(DeltaTime dt)
+	void Scene::OnRuntimeUpdate(DeltaTime dt, const std::shared_ptr<InputManager>& inputManager)
 	{
-		m_Registry->GetSystem<MovementSystem>().Update(dt);
+		m_Registry->GetSystem<CameraControlSystem>().OnUpdate(dt, inputManager);
+		m_Registry->GetSystem<MovementSystem>().OnUpdate(dt);
 
 		m_Registry->Sync();
 	}
@@ -32,7 +35,7 @@ namespace Aserai
 		if (primaryCamera)
 		{
 			renderer->BeginRenderer(primaryCamera.GetComponent<CameraComponent>().Camera, primaryCamera.GetComponent<TransformComponent>().GetTransform());
-			m_Registry->GetSystem<RenderSystem>().Update(dt, renderer);
+			m_Registry->GetSystem<RenderSystem>().OnUpdate(dt, renderer);
 			renderer->EndRenderer();
 		}
 	}

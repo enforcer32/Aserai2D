@@ -10,6 +10,6 @@ namespace Aserai
 	public:
 		MovementSystem();
 
-		void Update(DeltaTime dt);
+		void OnUpdate(DeltaTime dt);
 	};
 }

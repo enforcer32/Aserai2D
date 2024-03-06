@@ -3,6 +3,7 @@
 #include "AseraiEngine/Core/DeltaTime.h"
 #include "AseraiEngine/Renderer/Renderer2D.h"
 #include "AseraiEngine/ECS/Registry.h"
+#include "AseraiEngine/Core/InputManager.h"
 
 #include <string>
 #include <memory>
@@ -14,7 +15,7 @@ namespace Aserai
 	public:
 		Scene(const std::string& name = "Untitled");
 
-		void OnRuntimeUpdate(DeltaTime dt);
+		void OnRuntimeUpdate(DeltaTime dt, const std::shared_ptr<InputManager>& inputManager);
 		void OnRuntimeRender(DeltaTime dt, const std::shared_ptr<Renderer2D>& renderer);
 		void OnViewportResize(uint32_t width, uint32_t height);
 

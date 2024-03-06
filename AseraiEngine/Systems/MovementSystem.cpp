@@ -11,7 +11,7 @@ namespace Aserai
 		RegisterComponent<RigidBodyComponent>();
 	}
 
-	void MovementSystem::Update(DeltaTime dt)
+	void MovementSystem::OnUpdate(DeltaTime dt)
 	{
 		for (auto& entity : GetEntities())
 		{

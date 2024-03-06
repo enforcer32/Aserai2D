@@ -13,6 +13,6 @@ namespace Aserai
 	public:
 		RenderSystem();
 
-		void Update(DeltaTime dt, const std::shared_ptr<Renderer2D>& renderer);
+		void OnUpdate(DeltaTime dt, const std::shared_ptr<Renderer2D>& renderer);
 	};
 }

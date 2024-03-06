@@ -13,7 +13,7 @@ namespace Aserai
 		RegisterComponent<SpriteComponent>();
 	}
 
-	void RenderSystem::Update(DeltaTime dt, const std::shared_ptr<Renderer2D>& renderer)
+	void RenderSystem::OnUpdate(DeltaTime dt, const std::shared_ptr<Renderer2D>& renderer)
 	{
 		struct EntityComponents
 		{

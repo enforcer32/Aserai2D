@@ -65,7 +65,7 @@ namespace Aserai
 		{
 			//ASERAI_LOG_INFO("FPS: {}", (1000 / (dt * 1000)));
 
-			m_ActiveScene->OnRuntimeUpdate(dt);
+			m_ActiveScene->OnRuntimeUpdate(dt, m_InputManager);
 		}
 
 		virtual void OnRender(DeltaTime dt, const std::shared_ptr<Renderer2D>& renderer) override
