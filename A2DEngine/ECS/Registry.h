@@ -3,6 +3,7 @@
 #include "A2DEngine/ECS/Types.h"
 #include "A2DEngine/ECS/ComponentPool.h"
 #include "A2DEngine/Core/Logger.h"
+#include "A2DEngine/Core/UUID.h"
 #include "A2DEngine/Core/Assertion.h"
 
 #include <unordered_map>
@@ -28,10 +29,12 @@ namespace Aserai2D
 		uint32_t GetID();
 		void Destroy();
 
-		void SetTag(const std::string& tag);
 		const std::string& GetTag() const;
-		void SetGroup(const std::string& group);
+		void SetTag(const std::string& tag);
 		const std::string& GetGroup() const;
+		void SetGroup(const std::string& group);
+		UUID GetUUID() const;
+		void SetUUID(UUID uuid);
 
 		Entity& operator=(const Entity& rhs) = default;
 
@@ -160,6 +163,9 @@ namespace Aserai2D
 		std::vector<Entity> GetEntitiesByGroup(const std::string& name);
 		void RemoveEntityGroup(Entity entity);
 
+		void SetEntityUUID(Entity entity, UUID uuid);
+		UUID GetEntityUUID(Entity entity);
+
 		void Sync();
 
 		// Components
@@ -271,6 +277,9 @@ namespace Aserai2D
 
 		std::unordered_map<uint32_t, std::string> m_EntityIDToGroup;
 		std::unordered_map<std::string, std::set<Entity>> m_GroupToEntities;
+
+		std::unordered_map<uint32_t, UUID> m_EntityIDToUUID;
+		std::unordered_map<UUID, Entity> m_UUIDToEntity;
 
 		std::vector<Entity> m_Entities;
 	};

@@ -80,6 +80,7 @@ namespace Aserai2D
 	{
 		Entity entity = m_Registry->CreateEntity();
 		entity.SetTag(name);
+		entity.SetUUID(UUID());
 		entity.AddComponent<TransformComponent>();
 		return entity;
 	}

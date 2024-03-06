@@ -83,6 +83,7 @@ namespace Aserai2D
 	{
 		// ID
 		ImGui::Text("ID: %d\n", entity.GetID());
+		ImGui::Text("UUID: %s\n", std::to_string(entity.GetUUID()).c_str());
 
 		// Tag
 		char bufftag[1024] = {};

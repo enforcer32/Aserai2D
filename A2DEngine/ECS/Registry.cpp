@@ -24,14 +24,19 @@ namespace Aserai2D
 		m_Registry->DestroyEntity(*this);
 	}
 
+	const std::string& Entity::GetTag() const
+	{
+		return m_Registry->GetEntityTag(*this);
+	}
+
 	void Entity::SetTag(const std::string& tag)
 	{
 		m_Registry->SetEntityTag(*this, tag);
 	}
 
-	const std::string& Entity::GetTag() const
+	const std::string& Entity::GetGroup() const
 	{
-		return m_Registry->GetEntityTag(*this);
+		return m_Registry->GetEntityGroup(*this);
 	}
 
 	void Entity::SetGroup(const std::string& group)
@@ -39,9 +44,14 @@ namespace Aserai2D
 		m_Registry->SetEntityGroup(*this, group);
 	}
 
-	const std::string& Entity::GetGroup() const
+	UUID Entity::GetUUID() const
 	{
-		return m_Registry->GetEntityGroup(*this);
+		return m_Registry->GetEntityUUID(*this);
+	}
+
+	void Entity::SetUUID(UUID uuid)
+	{
+		m_Registry->SetEntityUUID(*this, uuid);
 	}
 
 	// System
@@ -135,7 +145,7 @@ namespace Aserai2D
 	void Registry::DestroyEntity(Entity entity)
 	{
 		m_EntityDeleteQueue.insert(entity);
-		m_Entities.erase(std::remove(m_Entities.begin(), m_Entities.end(), entity), m_Entities.end());
+		//m_Entities.erase(std::remove(m_Entities.begin(), m_Entities.end(), entity), m_Entities.end());
 		ASERAI_LOG_DEBUG("Entity({}) Destroyed!", entity.GetID());
 	}
 
@@ -215,6 +225,17 @@ namespace Aserai2D
 		m_EntityIDToGroup.erase(entity.GetID());
 	}
 
+	void Registry::SetEntityUUID(Entity entity, UUID uuid)
+	{
+		m_UUIDToEntity[uuid] = entity;
+		m_EntityIDToUUID[entity.GetID()] = uuid;
+	}
+
+	UUID Registry::GetEntityUUID(Entity entity)
+	{
+		return m_EntityIDToUUID[entity.GetID()];
+	}
+
 	void Registry::Sync()
 	{
 		for (auto entity : m_EntityComponentAddedQueue)
@@ -229,6 +250,7 @@ namespace Aserai2D
 
 			m_SystemManager->RemoveEntityFromSystems(entity);
 			m_EntityComponentSignatures[entity.GetID()].reset();
+			m_Entities.erase(std::remove(m_Entities.begin(), m_Entities.end(), entity), m_Entities.end());
 			m_FreeIDs.push_back(entity.GetID());
 		}
 		m_EntityDeleteQueue.clear();

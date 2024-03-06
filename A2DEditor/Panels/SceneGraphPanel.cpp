@@ -24,7 +24,7 @@ namespace Aserai2D
 		if(InputManager::IsMousePressed(MouseCode::Button1) && ImGui::IsWindowHovered())
 			s_SelectedEntity = {};
 
-		if (ImGui::BeginPopupContextWindow(0, 1))
+		if (ImGui::BeginPopupContextWindow(0, 1 | ImGuiPopupFlags_NoOpenOverItems))
 		{
 			if (ImGui::MenuItem("Create Entity"))
 				m_Scene->CreateEntity("Entity");
@@ -55,7 +55,7 @@ namespace Aserai2D
 		if (ImGui::IsItemClicked())
 			s_SelectedEntity = entity;
 
-		if (ImGui::BeginPopupContextItem(0, 1))
+		if (ImGui::BeginPopupContextItem(0, 1 | ImGuiPopupFlags_NoOpenOverItems))
 		{
 			if (ImGui::MenuItem("Delete Entity"))
 				remove = true;
