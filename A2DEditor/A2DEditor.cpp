@@ -18,6 +18,7 @@
 #include <A2DEngine/Components/KeyboardMovementComponent.h>
 
 #include <A2DEngine/Asset/TextureAsset.h>
+#include <A2DEngine/Asset/SpritesheetAsset.h>
 
 #include <imgui.h>
 #include <glm/glm.hpp>
@@ -51,9 +52,15 @@ namespace Aserai2D
 			m_PanelManager->AddPanel("Entity Properties", std::make_shared<EntityPropertiesPanel>());
 
 			// TMP
+			auto tankTextureID = AssetManager::CreateAsset<TextureAsset>("../Assets/Spritesheets/top_down_tanks.png");
+
+			auto spriteSheetID = AssetManager::CreateAsset<SpritesheetAsset>(tankTextureID, 128, 128, 32, 0);
+			auto& spriteAsset = AssetManager::GetAsset<SpritesheetAsset>(spriteSheetID);
+
 			Entity player = m_ActiveScene->CreateEntity("player");
 			player.AddComponent<TransformComponent>(glm::vec3(-5.0, 0.0, 0.0), glm::vec3(0.0, 0.0, 1.0), glm::vec3(1.0, 1.0, 1.0), 0.0);
-			player.AddComponent<SpriteComponent>(AssetManager::CreateAsset<TextureAsset>("../Assets/Spritesheets/top_down_tanks.png"), 2, 2, 1); // DONT ADD TEXTURE USING NAME, LOOP OVER TEXTURES OR ADD USING CONTENT BROWSER
+			//player.AddComponent<SpriteComponent>(tankTextureID, 2, 2, 1); // DONT ADD TEXTURE USING NAME, LOOP OVER TEXTURES OR ADD USING CONTENT BROWSER
+			player.AddComponent<SpriteComponent>(spriteAsset->GetSprite(8).Texture, 2, 2, 1, spriteAsset->GetSprite(8).TextureUV);
 			//player.AddComponent<KeyboardMovementComponent>(5.0, true);
 
 			return true;
