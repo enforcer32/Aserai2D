@@ -40,7 +40,7 @@ namespace Aserai
 		if (m_Registry->HasSystem<CollisionSystem>())
 			m_Registry->GetSystem<CollisionSystem>().OnUpdate(dt, eventManager);
 		if (m_Registry->HasSystem<ParticleEmitSystem>())
-			m_Registry->GetSystem<ParticleEmitSystem>().OnUpdate(dt, m_Registry);
+			m_Registry->GetSystem<ParticleEmitSystem>().OnUpdate(dt, m_Registry, inputManager);
 		if (m_Registry->HasSystem<ParticleLifeSystem>())
 			m_Registry->GetSystem<ParticleLifeSystem>().OnUpdate(dt);
 

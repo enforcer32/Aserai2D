@@ -12,6 +12,9 @@
 #include <AseraiEngine/Components/CameraComponent.h>
 #include <AseraiEngine/Components/KeyboardMovementComponent.h>
 #include <AseraiEngine/Components/BoxColliderComponent.h>
+#include <AseraiEngine/Components/ParticleEmitterComponent.h>
+#include <AseraiEngine/Components/ParticleSpriteComponent.h>
+#include <AseraiEngine/Components/ParticleComponent.h>
 
 #include <AseraiEngine/Systems/CameraControlSystem.h>
 
@@ -138,29 +141,44 @@ namespace Aserai
 			}
 
 			Entity player = m_ActiveScene->CreateEntity("player");
-			player.AddComponent<TransformComponent>(glm::vec3(-5.0, 0.0, 0.0), glm::vec3(0.0, 0.0, 1.0), glm::vec3(1.0, 1.0, 1.0), 90.0f);
-			player.AddComponent<SpriteComponent>(m_AssetManager->GetTexture("../Assets/Spritesheets/top_down_tanks.png"), 1, 1, 1, 7.16, 5.5, 82, 79);
+			player.AddComponent<TransformComponent>(glm::vec3(-5.0, 0.0, 0.0), glm::vec3(0.0, 0.0, 1.0), glm::vec3(1.0, 1.0, 1.0), 0.0);
+			player.AddComponent<SpriteComponent>(m_AssetManager->GetTexture("../Assets/Spritesheets/top_down_tanks.png"), 2, 2, 1, 7.16, 5.5, 82, 79);
 			player.AddComponent<KeyboardMovementComponent>(5.0);
-			player.AddComponent<BoxColliderComponent>(1, 1);
+			player.AddComponent<BoxColliderComponent>(2, 2);
+			player.AddComponent<ParticleEmitterComponent>("bullets", glm::vec3(1.0, 1.0, 0.0), 5, 3, 10, true, false, KeyCode::Space); // (SPEEDx,y(1,1) 3 seconds lifetime, run every 2 second
+			player.AddComponent<ParticleSpriteComponent>(m_AssetManager->GetTexture("../Assets/Spritesheets/top_down_tanks.png"), 1, 1, 2, 38.9, 15.2, 20, 34);
 
 			Entity enemy1 = m_ActiveScene->CreateEntity("enemy1");
 			enemy1.SetGroup("enemies");
 			enemy1.AddComponent<TransformComponent>(glm::vec3(5.0, 0.0, 0.0), glm::vec3(0.0, 0.0, 1.0), glm::vec3(1.0, 1.0, 1.0), 0.0);
-			enemy1.AddComponent<SpriteComponent>(m_AssetManager->GetTexture("../Assets/Spritesheets/top_down_tanks.png"), 1, 1, 0, 6.16, 5.5, 82, 79);
-			enemy1.AddComponent<BoxColliderComponent>(1, 1);
+			enemy1.AddComponent<SpriteComponent>(m_AssetManager->GetTexture("../Assets/Spritesheets/top_down_tanks.png"), 2, 2, 0, 6.16, 5.5, 82, 79);
+			enemy1.AddComponent<BoxColliderComponent>(2, 2);
 
 			Entity enemy2 = m_ActiveScene->CreateEntity("enemy2");
 			enemy2.SetGroup("enemies");
 			enemy2.AddComponent<TransformComponent>(glm::vec3(3.0, 3.0, 0.0), glm::vec3(0.0, 0.0, 1.0), glm::vec3(1.0, 1.0, 1.0), 0.0);
-			enemy2.AddComponent<SpriteComponent>(m_AssetManager->GetTexture("../Assets/Spritesheets/top_down_tanks.png"), 1, 1, 0, 6.16, 4.5, 82, 79);
-			enemy2.AddComponent<BoxColliderComponent>(1, 1);
+			enemy2.AddComponent<SpriteComponent>(m_AssetManager->GetTexture("../Assets/Spritesheets/top_down_tanks.png"), 2, 2, 0, 6.16, 4.5, 82, 79);
+			enemy2.AddComponent<BoxColliderComponent>(2, 2);
+
+			/*Entity bullet = m_ActiveScene->CreateEntity("bullet");
+			bullet.AddComponent<TransformComponent>(glm::vec3(7.0, 5.0, 0.0), glm::vec3(0.0, 0.0, 1.0), glm::vec3(1.0, 1.0, 1.0), 0.0);
+			bullet.AddComponent<SpriteComponent>(m_AssetManager->GetTexture("../Assets/Spritesheets/top_down_tanks.png"), 1, 1, 2, 38.9, 15.2, 20, 34);
+			bullet.AddComponent<BoxColliderComponent>(1, 1);*/
 		}
 
 		void OnEntityCollision(CollisionEvent& ev)
 		{
-			if (ev.entityA.GetTag() == "player" && ev.entityB.GetGroup() == "enemies")
+			if ((ev.entityA.GetGroup() == "bullets" && ev.entityB.GetGroup() == "enemies"))
 			{
-				ev.entityB.Destroy();
+				if (ev.entityA.GetComponent<ParticleComponent>().Friendly)
+				{
+					ev.entityB.Destroy();
+					ASERAI_LOG_INFO("Player Killed Enemy");
+				}
+			}
+			else if (ev.entityA.GetGroup() == "enemies" && ev.entityB.GetGroup() == "bullets")
+			{
+				ev.entityA.Destroy();
 				ASERAI_LOG_INFO("Player Killed Enemy");
 			}
 		}
