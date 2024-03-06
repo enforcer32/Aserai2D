@@ -10,7 +10,7 @@ namespace Aserai2D
 		: m_ProjectionType(CameraProjectionType::Orthographic), m_AspectRatio(1.3f),
 		m_OrthographicSize(10.0f), m_OrthographicNear(-1.0f), m_OrthographicFar(1.0f), m_OrthographicRotation(0.0f),
 		m_TranslationSpeed(5.0f), m_RotationSpeed(90.0f),
-		m_Translation({ 0.0f, 0.0f, 0.0f }), m_Rotation({ 0.0f, 0.0f, 1.0f }), m_Scale({ 1.0f, 1.0f, 1.0f })
+		m_Translation({ 0.0f, 0.0f, 0.0f }), m_Rotation({ 0.0f, 0.0f, 1.0f }), m_Scale({ 1.0f, 1.0f, 1.0f }), m_Viewport({ 0.0f }, { 0.0f })
 	{
 		CalculateProjectionViewMatrix();
 	}
@@ -83,8 +83,14 @@ namespace Aserai2D
 		CalculateProjectionViewMatrix();
 	}
 
+	const glm::vec2& EditorCamera::GetViewport() const
+	{
+		return m_Viewport;
+	}
+
 	void EditorCamera::SetViewport(uint32_t width, uint32_t height)
 	{
+		m_Viewport = { width, height };
 		m_AspectRatio = (float)width / (float)height;
 		CalculateProjectionViewMatrix();
 	}

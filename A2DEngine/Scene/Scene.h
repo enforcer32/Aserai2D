@@ -36,6 +36,11 @@ namespace Aserai2D
 		void SetViewportFocus(bool state);
 		std::shared_ptr<Registry> GetRegistry();
 
+		const glm::vec2& GetViewport() const;
+		void SetViewport(uint32_t width, uint32_t height);
+		const glm::vec2& GetViewportPosition() const;
+		void SetViewportPosition(const glm::vec2& position);
+
 		template<typename T>
 		void EnableSystem()
 		{
@@ -84,5 +89,6 @@ namespace Aserai2D
 		std::bitset<MAX_SCENE_SYSTEMS> m_SystemSignature;
 		std::string m_Name;
 		bool m_ViewportFocused;
+		glm::vec2 m_Viewport, m_ViewportPosition;
 	};
 }

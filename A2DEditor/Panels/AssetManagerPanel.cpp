@@ -2,6 +2,7 @@
 #include "A2DEditor/Panels/AssetManagerPanel.h"
 
 #include <A2DEngine/Core/Logger.h>
+#include <A2DEngine/Input/InputManager.h>
 #include <A2DEngine/Asset/AssetManager.h>
 #include <A2DEngine/Asset/TextureAsset.h>
 #include <A2DEngine/Platform/FileDialog.h>
@@ -10,11 +11,12 @@
 
 #include <imgui.h>
 #include <glm/gtc/type_ptr.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 namespace Aserai2D
 {
-	AssetManagerPanel::AssetManagerPanel(const std::shared_ptr<Scene>& scene)
-		: m_Scene(scene), m_HoldingEntity{}
+	AssetManagerPanel::AssetManagerPanel(const std::shared_ptr<Scene>& scene, const std::shared_ptr<EditorCamera>& editorCamera)
+		: m_Scene(scene), m_EditorCamera(editorCamera), m_HoldingSpriteEntity{}
 	{
 	}
 
@@ -72,6 +74,7 @@ namespace Aserai2D
 
 	void AssetManagerPanel::RenderSpritesheetTab()
 	{
+		OnPickupSpriteEntity();
 		if (ImGui::BeginTabItem("Spritesheet"))
 		{
 			auto& itemSpacing = ImGui::GetStyle().ItemSpacing;
@@ -91,7 +94,7 @@ namespace Aserai2D
 						{
 							ASERAI_LOG_INFO("Generating Sprite({})", i);
 							Entity entity = GenerateSpriteEntity(spritesheetAsset->GetSprite(i), glm::vec3(1.0f, 1.0f, 1.0f));
-							m_HoldingEntity = entity;
+							m_HoldingSpriteEntity = entity;
 						}
 
 						float lastX2 = ImGui::GetItemRectMax().x;
@@ -115,5 +118,31 @@ namespace Aserai2D
 		entity.GetComponent<TransformComponent>().Scale = scale;
 		entity.AddComponent<SpriteComponent>(sprite.Texture, 1, 1, 0, sprite.TextureUV);
 		return entity;
+	}
+
+	void AssetManagerPanel::OnPickupSpriteEntity()
+	{
+		if (m_HoldingSpriteEntity)
+		{
+			glm::vec2 mousePositionScreen = InputManager::GetMousePosition();
+			glm::vec2 viewportPosition = m_Scene->GetViewportPosition();
+			float xPos = mousePositionScreen.x - viewportPosition.x;
+			float yPos = mousePositionScreen.y - viewportPosition.y;
+			glm::vec2 mousePositionWorld = ConvertScreenToWorldCoordinates({ xPos, yPos });
+
+			auto& transform = m_HoldingSpriteEntity.GetComponent<TransformComponent>();
+			transform.Translation.x = mousePositionWorld.x;
+			transform.Translation.y = mousePositionWorld.y;
+
+			if (InputManager::IsMousePressed(MouseCode::Button1))
+				m_HoldingSpriteEntity = {};
+		}
+	}
+
+	glm::vec2 AssetManagerPanel::ConvertScreenToWorldCoordinates(const glm::vec2& screen)
+	{
+		glm::vec2 NDC = { (((screen.x / m_Scene->GetViewport().x) * 2.0) - 1.0), ((((m_Scene->GetViewport().y - screen.y) / m_Scene->GetViewport().y) * 2.0) - 1.0) };
+		glm::vec4 world = (glm::vec4(NDC.x, NDC.y, 0, 1) * glm::inverse(m_EditorCamera->GetProjectionViewMatrix()));
+		return { world.x, world.y };
 	}
 }

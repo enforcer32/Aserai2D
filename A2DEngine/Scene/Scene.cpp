@@ -67,6 +67,7 @@ namespace Aserai2D
 
 	void Scene::OnViewportResize(uint32_t width, uint32_t height)
 	{
+		m_Viewport = { width, height };
 		auto& cameras = m_Registry->GetEntitiesWithComponent<CameraComponent>();
 		for (auto entity : cameras)
 		{
@@ -120,5 +121,25 @@ namespace Aserai2D
 	std::shared_ptr<Registry> Scene::GetRegistry()
 	{
 		return m_Registry;
+	}
+
+	const glm::vec2& Scene::GetViewport() const
+	{
+		return m_Viewport;
+	}
+
+	void Scene::SetViewport(uint32_t width, uint32_t height)
+	{
+		m_Viewport = { width, height };
+	}
+
+	const glm::vec2& Scene::GetViewportPosition() const
+	{
+		return m_ViewportPosition;
+	}
+
+	void Scene::SetViewportPosition(const glm::vec2& position)
+	{
+		m_ViewportPosition = position;
 	}
 }

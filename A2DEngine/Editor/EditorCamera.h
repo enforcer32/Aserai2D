@@ -13,6 +13,8 @@ namespace Aserai2D
 		void OnUpdate(DeltaTime dt);
 
 		void SetOrthographic(float size, float zNear, float zFar);
+
+		const glm::vec2& GetViewport() const;
 		void SetViewport(uint32_t width, uint32_t height);
 
 		CameraProjectionType GetProjectionType() const;
@@ -47,5 +49,6 @@ namespace Aserai2D
 		glm::vec3 m_Translation, m_Rotation, m_Scale;
 		glm::mat4 m_View;
 		glm::mat4 m_ProjectionView;
+		glm::vec2 m_Viewport;
 	};
 }

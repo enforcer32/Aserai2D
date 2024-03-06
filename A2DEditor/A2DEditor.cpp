@@ -52,7 +52,7 @@ namespace Aserai2D
 
 			m_PanelManager->AddPanel("SceneGraph", std::make_shared<SceneGraphPanel>(m_ActiveScene));
 			m_PanelManager->AddPanel("EntityProperties", std::make_shared<EntityPropertiesPanel>());
-			m_PanelManager->AddPanel("AssetManager", std::make_shared<AssetManagerPanel>(m_ActiveScene)); // On SwitchScene Switch Scene Argument from Panels
+			m_PanelManager->AddPanel("AssetManager", std::make_shared<AssetManagerPanel>(m_ActiveScene, m_EditorCamera)); // On SwitchScene Switch Scene Argument from Panels
 			m_PanelManager->AddPanel("Console", std::make_shared<ConsolePanel>());
 
 			// TMP
@@ -171,6 +171,9 @@ namespace Aserai2D
 			m_ActiveScene->SetViewportFocus(m_ViewportFocused);
 			ImVec2 viewport = ImGui::GetContentRegionAvail();
 			m_Viewport = { viewport.x, viewport.y };
+			ImVec2 viewportPosition = ImGui::GetCursorScreenPos();
+			m_ViewportPosition = { viewportPosition.x, viewportPosition.y };
+			m_ActiveScene->SetViewportPosition(m_ViewportPosition);
 			ImGui::Image((void*)m_Framebuffer->GetColorTextureID(), ImVec2(m_Viewport.x, m_Viewport.y), ImVec2(0, 1), ImVec2(1, 0));
 			
 			ImGui::End();
@@ -206,7 +209,7 @@ namespace Aserai2D
 		std::shared_ptr<EditorCamera> m_EditorCamera;
 		std::shared_ptr<PanelManager> m_PanelManager;
 		bool m_ViewportFocused;
-		glm::vec2 m_Viewport;
+		glm::vec2 m_Viewport, m_ViewportPosition;
 	};
 }
 
