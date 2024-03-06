@@ -6,6 +6,7 @@
 #include "AseraiEngine/Renderer/IndexBuffer.h"
 #include "AseraiEngine/Renderer/Texture2D.h"
 #include "AseraiEngine/Renderer/Camera.h"
+#include "AseraiEngine/Renderer/RenderBatch.h"
 
 #include <memory>
 #include <array>
@@ -13,6 +14,14 @@
 
 namespace Aserai
 {
+	struct QuadVertex
+	{
+		glm::vec3 Position;
+		glm::vec4 Color;
+		glm::vec2 TextureUV;
+		float TextureID;
+	};
+
 	struct RenderStats
 	{
 		uint32_t DrawCallCount = 0;
@@ -24,8 +33,6 @@ namespace Aserai
 	class Renderer2D
 	{
 	public:
-		Renderer2D();
-
 		bool Init(uint32_t batchsize);
 		void Destroy();
 
@@ -38,10 +45,6 @@ namespace Aserai
 		void SetDepthTesting(bool status);
 		void SetAlphaBlending(bool status);
 
-		void RenderQuad(const glm::vec3& position, const glm::vec3& size, const glm::vec4& color);
-		void RenderQuad(const glm::vec3& position, const glm::vec3& size, const std::shared_ptr<Texture2D>& texture);
-		void RenderQuad(const glm::vec3& position, const glm::vec3& size, const std::shared_ptr<Texture2D>& texture, const std::array<glm::vec2, 4>& textureUV);
-
 		void RenderQuad(const glm::mat4& transform, const glm::vec4& color);
 		void RenderQuad(const glm::mat4& transform, const std::shared_ptr<Texture2D>& texture);
 		void RenderQuad(const glm::mat4& transform, const std::shared_ptr<Texture2D>& texture, const std::array<glm::vec2, 4>& textureUV);
@@ -50,40 +53,22 @@ namespace Aserai
 		inline void ResetRenderStats() { memset(&m_RenderStats, 0, sizeof(RenderStats)); }
 
 	private:
-		struct QuadVertex
-		{
-			glm::vec3 Position;
-			glm::vec4 Color;
-			glm::vec2 TextureUV;
-			float TextureID;
-		};
-
-		std::array<QuadVertex, 4> CreateQuad(const glm::vec3& position, const glm::vec3& size, const glm::vec4& color, float texID = 0.0f);
-		std::array<QuadVertex, 4> CreateCenteredQuad(const glm::vec4& color, float texID = 0.0f);
-		std::shared_ptr<uint32_t[]> GenerateIndices();
+		uint32_t GetTextureSlot(const std::shared_ptr<Texture2D>& texture);
 		void ResetBatch();
-		void DrawIndexed(const std::unique_ptr<VertexArray>& va, unsigned int count = 0);
 
 	private:
-		bool m_Initialized;
+		bool m_Initialized = false;
 
-		uint32_t m_MaxQuadCount;
-		uint32_t m_MaxVertexCount;
-		uint32_t m_MaxIndexCount;
+		// TEXTURE
 		uint32_t m_MaxTextureCount;
-
-		std::unique_ptr<Shader> m_QuadShader;
-		std::unique_ptr<VertexArray> m_QuadVertexArray;
-		std::shared_ptr<VertexBuffer> m_QuadVertexBuffer;
-		std::shared_ptr<IndexBuffer> m_QuadIndexBuffer;
-
-		std::array<QuadVertex, 4> m_QuadTemplate;
-		std::unique_ptr<QuadVertex[]> m_QuadVertices; 
-		uint32_t m_QuadVertexIndex;
-
 		std::shared_ptr<Texture2D> m_BlankTexture;
 		std::unique_ptr<std::shared_ptr<Texture2D>[]> m_Textures;
 		uint32_t m_TextureIndex;
+
+		// QUAD
+		std::shared_ptr<Shader> m_QuadShader;
+		std::array<QuadVertex, 4> m_QuadTemplate;
+		std::unique_ptr<RenderBatch<QuadVertex>> m_QuadRenderBatch;
 
 		RenderStats m_RenderStats;
 	};
