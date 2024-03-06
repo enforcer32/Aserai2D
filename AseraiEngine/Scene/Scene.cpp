@@ -12,7 +12,7 @@
 namespace Aserai
 {
 	Scene::Scene(const std::string& name)
-		: m_Name(name)
+		: m_Name(name), m_Registry(nullptr)
 	{
 		m_Registry = std::make_shared<Registry>();
 
@@ -25,9 +25,12 @@ namespace Aserai
 
 	void Scene::OnRuntimeUpdate(DeltaTime dt, const std::shared_ptr<InputManager>& inputManager)
 	{
-		m_Registry->GetSystem<CameraControlSystem>().OnUpdate(dt, inputManager);
-		m_Registry->GetSystem<MovementSystem>().OnUpdate(dt);
-		m_Registry->GetSystem<KeyboardMovementSystem>().OnUpdate(dt, inputManager);
+		if(m_Registry->HasSystem<CameraControlSystem>())
+			m_Registry->GetSystem<CameraControlSystem>().OnUpdate(dt, inputManager);
+		if (m_Registry->HasSystem<MovementSystem>())
+			m_Registry->GetSystem<MovementSystem>().OnUpdate(dt);
+		if (m_Registry->HasSystem<KeyboardMovementSystem>())
+			m_Registry->GetSystem<KeyboardMovementSystem>().OnUpdate(dt, inputManager);
 
 		m_Registry->Sync();
 	}
@@ -38,7 +41,7 @@ namespace Aserai
 		if (primaryCamera)
 		{
 			renderer->BeginRenderer(primaryCamera.GetComponent<CameraComponent>().Camera, primaryCamera.GetComponent<TransformComponent>().GetTransform());
-			m_Registry->GetSystem<RenderSystem>().OnUpdate(dt, renderer);
+			m_Registry->GetSystem<RenderSystem>().OnUpdate(dt, renderer); // DON'T CHECK FOR HasComponent
 			renderer->EndRenderer();
 		}
 	}

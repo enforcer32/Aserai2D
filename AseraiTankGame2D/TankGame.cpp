@@ -12,6 +12,8 @@
 #include <AseraiEngine/Components/CameraComponent.h>
 #include <AseraiEngine/Components/KeyboardMovementComponent.h>
 
+#include <AseraiEngine/Systems/CameraControlSystem.h>
+
 #include <imgui.h>
 #include <sstream>
 
@@ -94,13 +96,14 @@ namespace Aserai
 
 		void LoadLevel()
 		{
+			m_ActiveScene->DisableSystem<CameraControlSystem>();
+
 			Entity camera = m_ActiveScene->CreateEntity("camera");
 			SceneCamera sceneCam;
 			sceneCam.SetOrthographicSize(19.0f);
 			camera.AddComponent<CameraComponent>(sceneCam, true, 10.0);
 
 			std::vector<std::string> tilemap = ParseTilemap("../Assets/Tilemaps/surface.map");
-
 			
 			// 03, (C)(X) = 0, (R)(Y) = 3
 			double tileScale = 1;
@@ -116,11 +119,9 @@ namespace Aserai
 			{
 				for (uint32_t col = 0; col < tilemapCols; col++)
 				{
-					ASERAI_LOG_INFO("Pos({}, {})", tilePosX, tilePosY);
-
 					std::string tileNum = tilemap[tileIdx++];
 					uint32_t x = (tileNum[0] - '0'); // COL 0
-					uint32_t y = (tileNum[1] - '0'); // R 3
+					uint32_t y = (tileNum[1] - '0'); // ROW 3
 
 					Entity tileEntity = m_ActiveScene->CreateEntity();
 					tileEntity.AddComponent<SpriteComponent>(m_AssetManager->GetTexture("../Assets/Spritesheets/top_down_tanks.png"), tileSize, tileSize, x, y, 0);
