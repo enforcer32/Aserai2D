@@ -20,7 +20,10 @@ Aserai Game Engine an upcoming 3D Game Engine.
 
 ## Features
 
-- 2D Renderer (Under Development)
+- Window System
+- Event System
+- Input Manager
+- 2D Renderer
 
 ## Bugs and feature requests
 
