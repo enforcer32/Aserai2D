@@ -33,7 +33,7 @@ namespace Aserai
 
 		void Clear();
 		void SetClearColor(const glm::vec4& color);
-		void SetViewPort(int x, int y, int width, int height);
+		void SetViewPort(int x, int y, uint32_t width, uint32_t height);
 		void SetDepthTesting(bool status);
 		void SetAlphaBlending(bool status);
 

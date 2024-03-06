@@ -100,7 +100,7 @@ namespace Aserai
 		glClearColor(color.x, color.y, color.z, color.w);
 	}
 
-	void Renderer2D::SetViewPort(int x, int y, int width, int height)
+	void Renderer2D::SetViewPort(int x, int y, uint32_t width, uint32_t height)
 	{
 		glViewport(x, y, width, height);
 	}

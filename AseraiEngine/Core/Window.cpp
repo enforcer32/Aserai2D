@@ -1,6 +1,7 @@
 #include "AseraiEnginePCH.h"
 #include "AseraiEngine/Core/Window.h"
 #include "AseraiEngine/Core/Logger.h"
+#include "AseraiEngine/Events/WindowEvents.h"
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -25,8 +26,12 @@ namespace Aserai
 
 	bool Window::Init(const WindowProps& props)
 	{
-		m_Props = props;
+		m_WinPrivData.Name = props.Name;
+		m_WinPrivData.Width = props.Width;
+		m_WinPrivData.Height = props.Height;
+		m_WinPrivData.VSync = props.VSync;
 		if (!InitContext()) return false;
+		glfwSetWindowUserPointer(m_NativeWindow, &m_WinPrivData);
 		return m_Initialized = true;
 	}
 
@@ -49,39 +54,62 @@ namespace Aserai
 
 	const WindowProps& Window::GetProperties() const
 	{
-		return m_Props;
+		return (WindowProps&)m_WinPrivData;
 	}
 
 	void Window::SetProperties(const WindowProps& props)
 	{
-		m_Props = props;
+		m_WinPrivData.Name = props.Name;
+		m_WinPrivData.Width = props.Width;
+		m_WinPrivData.Height = props.Height;
+		m_WinPrivData.VSync = props.VSync;
 	}
 
 	bool Window::IsVSync() const
 	{
-		return m_Props.VSync;
+		return m_WinPrivData.VSync;
 	}
 
 	void Window::SetVSync(bool vsync)
 	{
-		m_Props.VSync = vsync;
-		glfwSwapInterval(m_Props.VSync ? 1 : 0);
+		m_WinPrivData.VSync = vsync;
+		glfwSwapInterval(m_WinPrivData.VSync ? 1 : 0);
 	}
 
 	uint32_t Window::GetWidth() const
 	{
-		return m_Props.Width;
+		return m_WinPrivData.Width;
 	}
 
 	uint32_t Window::GetHeight() const
 	{
-		return m_Props.Height;
+		return m_WinPrivData.Height;
+	}
+
+	void Window::SetupWindowEvents(const std::shared_ptr<EventManager>& eventManager)
+	{
+		m_WinPrivData.EventManager = eventManager;
+
+		glfwSetWindowCloseCallback(m_NativeWindow, [](GLFWwindow* window)
+			{
+				WindowPrivateData& data = *(WindowPrivateData*)glfwGetWindowUserPointer(window);
+				auto eventManager = data.EventManager;
+				eventManager->Emit<WindowCloseEvent>();
+			});
+
+		glfwSetWindowSizeCallback(m_NativeWindow, [](GLFWwindow* window, int width, int height)
+			{
+				WindowPrivateData& data = *(WindowPrivateData*)glfwGetWindowUserPointer(window);
+				auto eventManager = data.EventManager;
+				data.Width = width;
+				data.Height = height;
+				eventManager->Emit<WindowResizeEvent>(width, height);
+			});
 	}
 
 	void Window::SetupInputEvents(const std::shared_ptr<InputManager>& inputManager)
 	{
 		m_WinPrivData.InputManager = inputManager;
-		glfwSetWindowUserPointer(m_NativeWindow, &m_WinPrivData);
 
 		glfwSetKeyCallback(m_NativeWindow, [](GLFWwindow* window, int key, int scancode, int action, int mods)
 			{
@@ -167,16 +195,16 @@ namespace Aserai
 #endif
 		glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
 
-		m_NativeWindow = glfwCreateWindow(m_Props.Width, m_Props.Height, m_Props.Name.c_str(), nullptr, nullptr);
+		m_NativeWindow = glfwCreateWindow(m_WinPrivData.Width, m_WinPrivData.Height, m_WinPrivData.Name.c_str(), nullptr, nullptr);
 		if (!m_NativeWindow)
 		{
-			ASERAI_LOG_ERROR("FAILED glfwCreateWindow for {}", m_Props.Name);
+			ASERAI_LOG_ERROR("FAILED glfwCreateWindow for {}", m_WinPrivData.Name);
 			glfwTerminate();
 			return false;
 		}
 
 		glfwMakeContextCurrent(m_NativeWindow);
-		glfwSwapInterval(m_Props.VSync ? 1 : 0);
+		glfwSwapInterval(m_WinPrivData.VSync ? 1 : 0);
 
 		if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
 		{

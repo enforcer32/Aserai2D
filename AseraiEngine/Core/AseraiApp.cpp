@@ -14,11 +14,19 @@ namespace Aserai
 		if (!m_Window->Init(windowProps))
 			ASERAI_LOG_CRITICAL("Failed to Initialize Window");
 
+		m_EventManager = std::make_shared<EventManager>();
+		if (!m_EventManager->Init())
+			ASERAI_LOG_CRITICAL("Failed to Initialize EventManager");
+
 		m_InputManager = std::make_shared<InputManager>();
 		if(!m_InputManager->Init())
 			ASERAI_LOG_CRITICAL("Failed to Initialize InputManager");
 
+		m_Window->SetupWindowEvents(m_EventManager);
 		m_Window->SetupInputEvents(m_InputManager);
+
+		m_EventManager->Subscribe<WindowCloseEvent>(this, &AseraiApp::OnWindowClose);
+		m_EventManager->Subscribe<WindowResizeEvent>(this, &AseraiApp::OnWindowResize);
 
 		m_Renderer2D = std::make_shared<Renderer2D>();
 		if (!m_Renderer2D->Init(1000))
@@ -34,6 +42,7 @@ namespace Aserai
 		{
 			m_Renderer2D->Destroy();
 			m_InputManager->Destroy();
+			m_EventManager->Destroy();
 			m_Window->Destroy();
 		}
 	}
@@ -62,5 +71,15 @@ namespace Aserai
 	void AseraiApp::Shutdown()
 	{
 		m_Running = false;
+	}
+
+	void AseraiApp::OnWindowClose(WindowCloseEvent& ev)
+	{
+		Shutdown();
+	}
+
+	void AseraiApp::OnWindowResize(WindowResizeEvent& ev)
+	{
+		m_Renderer2D->SetViewPort(0, 0, ev.GetWidth(), ev.GetHeight());
 	}
 }
