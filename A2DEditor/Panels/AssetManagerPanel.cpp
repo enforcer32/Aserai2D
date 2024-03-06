@@ -33,7 +33,6 @@ namespace Aserai2D
 							AssetManager::CreateAsset<TextureAsset>(texturePath);
 					}
 
-					ImGui::Text("Tester");
 					ImGui::EndPopup();
 				}
 
@@ -43,7 +42,7 @@ namespace Aserai2D
 					bool open = ImGui::TreeNodeEx((void*)(uint64_t)asset->GetAssetID(), flags, (asset->GetTexturePath() + ":" + std::to_string((uint64_t)asset->GetAssetID())).c_str());
 					if (open)
 					{
-						ImGui::ImageButton("##Texture", (void*)(asset->IsLoaded() ? asset->GetTexture()->GetID() : 0), ImVec2(100.f, 100.f), ImVec2(0, 1), ImVec2(1, 0));
+						ImGui::ImageButton(("##TextureList" + std::to_string(asset->GetAssetID())).c_str(), (void*)(asset->IsLoaded() ? asset->GetTexture()->GetID() : 0), ImVec2(100.f, 100.f), ImVec2(0, 1), ImVec2(1, 0));
 						ImGui::TreePop();
 					}
 				}

@@ -2,8 +2,6 @@
 #include "A2DEditor/Panels/EntityPropertiesPanel.h"
 #include "A2DEditor/Panels/SceneGraphPanel.h"
 
-#include <A2DEngine/Platform/FileDialog.h>
-
 #include <A2DEngine/Components/TransformComponent.h>
 #include <A2DEngine/Components/SpriteComponent.h>
 
@@ -60,16 +58,16 @@ namespace Aserai2D
 		{
 			if (ImGui::Button("Add Component", { 250.0, 20.0 }))
 				ImGui::OpenPopup("AddComponent");
-			ImGui::InvisibleButton("###addComponentPadding", { 250.0, 20.0 });
+				ImGui::InvisibleButton("###addComponentPadding", { 250.0, 20.0 });
 
-			RenderEntityProperties(selectedEntity);
+				RenderEntityProperties(selectedEntity);
 
-			if (ImGui::BeginPopup("AddComponent"))
-			{
-				RenderAddComponent<TransformComponent>("Transform", selectedEntity);
-				RenderAddComponent<SpriteComponent>("Sprite", selectedEntity);
-				ImGui::EndPopup();
-			}
+				if (ImGui::BeginPopup("AddComponent"))
+				{
+					RenderAddComponent<TransformComponent>("Transform", selectedEntity);
+					RenderAddComponent<SpriteComponent>("Sprite", selectedEntity);
+					ImGui::EndPopup();
+				}
 		}
 		ImGui::End();
 	}
@@ -102,7 +100,7 @@ namespace Aserai2D
 				ImGui::Text("Translation");
 				ImGui::SameLine();
 				ImGui::DragFloat3("##Translation", glm::value_ptr(component.Translation), 0.1f, 0.0f, 0.0f, "%.2f");
-				
+
 				ImGui::Text("Rotation");
 				ImGui::SameLine();
 				glm::vec3 rotation = glm::degrees(component.Rotation);
@@ -142,14 +140,21 @@ namespace Aserai2D
 
 				ImGui::InvisibleButton("##texturePadding", { 10.0, 20.0 });
 
-				// TextureID using Selection
 				ImGui::Text("Texture");
 				ImGui::SameLine();
 				if (ImGui::ImageButton("##Texture", (void*)((component.Texture && AssetManager::IsAssetLoaded(component.Texture)) ? AssetManager::GetAsset<TextureAsset>(component.Texture)->GetTexture()->GetID() : 0), ImVec2(100.f, 100.f), ImVec2(0, 1), ImVec2(1, 0)))
+					ImGui::OpenPopup("AddSpriteTexturePopup");
+
+				if (ImGui::BeginPopupModal("AddSpriteTexturePopup"))
 				{
-					std::string texturePath = FileDialog::OpenFile("Image Files (*.png, *.jpg, *.jpeg)\0*.png;*.jpg;*.jpeg\0");
-					if (!texturePath.empty())
-						component.Texture = AssetManager::CreateAsset<TextureAsset>(texturePath);
+					if (ImGui::Button("Close"))
+						ImGui::CloseCurrentPopup();
+
+					for (auto& asset : AssetManager::GetAssets<TextureAsset>())
+						if (ImGui::ImageButton(("##TextureAddSprite" + std::to_string((uint64_t)asset->GetAssetID())).c_str(), (void*)(asset->IsLoaded() ? asset->GetTexture()->GetID() : 0), ImVec2(100.f, 100.f), ImVec2(0, 1), ImVec2(1, 0)))
+							component.Texture = asset->GetAssetID();
+
+					ImGui::EndPopup();
 				}
 
 				ImGui::Text("TextureUV(0)");
