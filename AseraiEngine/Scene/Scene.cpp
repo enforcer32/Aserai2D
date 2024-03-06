@@ -4,6 +4,7 @@
 #include "AseraiEngine/Systems/MovementSystem.h"
 #include "AseraiEngine/Systems/RenderSystem.h"
 #include "AseraiEngine/Systems/CameraControlSystem.h"
+#include "AseraiEngine/Systems/KeyboardMovementSystem.h"
 
 #include "AseraiEngine/Components/TransformComponent.h"
 #include "AseraiEngine/Components/CameraComponent.h"
@@ -19,12 +20,14 @@ namespace Aserai
 		m_Registry->AddSystem<CameraControlSystem>();
 		m_Registry->AddSystem<MovementSystem>();
 		m_Registry->AddSystem<RenderSystem>();
+		m_Registry->AddSystem<KeyboardMovementSystem>();
 	}
 
 	void Scene::OnRuntimeUpdate(DeltaTime dt, const std::shared_ptr<InputManager>& inputManager)
 	{
 		m_Registry->GetSystem<CameraControlSystem>().OnUpdate(dt, inputManager);
 		m_Registry->GetSystem<MovementSystem>().OnUpdate(dt);
+		m_Registry->GetSystem<KeyboardMovementSystem>().OnUpdate(dt, inputManager);
 
 		m_Registry->Sync();
 	}
