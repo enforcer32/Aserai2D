@@ -144,11 +144,11 @@ namespace Aserai2D
 
 				ImGui::Text("Texture");
 				ImGui::SameLine();
-				if (ImGui::ImageButton("##Texture", (void*)(component.Texture ? component.Texture->GetID() : 0), ImVec2(100.f, 100.f), ImVec2(0, 1), ImVec2(1, 0)))
+				if (ImGui::ImageButton("##Texture", (void*)((component.Texture && AssetManager::IsAssetLoaded(component.Texture)) ? AssetManager::GetAsset<TextureAsset>(component.Texture)->GetTexture()->GetID() : 0), ImVec2(100.f, 100.f), ImVec2(0, 1), ImVec2(1, 0)))
 				{
 					std::string texturePath = FileDialog::OpenFile("Image Files (*.png, *.jpg, *.jpeg)\0*.png;*.jpg;*.jpeg\0");
-					if(!texturePath.empty())
-						component.Texture = std::make_shared<Texture2D>(texturePath); // Only Allow From Content Browser
+					if (!texturePath.empty())
+						component.Texture = AssetManager::CreateAsset<TextureAsset>(texturePath);
 				}
 
 				ImGui::Text("TextureUV(0)");

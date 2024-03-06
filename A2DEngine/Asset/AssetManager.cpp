@@ -37,6 +37,11 @@ namespace Aserai2D
 		return HasAssetID(assetID) ? s_Assets[assetID]->IsValid() : false;
 	}
 
+	bool AssetManager::IsAssetLoaded(AssetID assetID)
+	{
+		return HasAssetID(assetID) ? (s_Assets[assetID]->IsValid() && s_Assets[assetID]->GetFlags() == AssetFlag::Loaded) : false;
+	}
+
 	void AssetManager::AddAsset(const std::shared_ptr<Asset>& asset)
 	{
 		s_Assets[asset->GetAssetID()] = asset;
@@ -45,7 +50,9 @@ namespace Aserai2D
 	void AssetManager::ReloadAsset(AssetID assetID)
 	{
 		if (HasAssetID(assetID))
-			if (!s_Assets[assetID]->Reload())
+			if (s_Assets[assetID]->Reload())
+				ASERAI_LOG_DEBUG("Reloaded Asset({})", (uint64_t)assetID);
+			else
 				ASERAI_LOG_DEBUG("AssetManager Failed To Reload " + (uint64_t)assetID);
 	}
 }

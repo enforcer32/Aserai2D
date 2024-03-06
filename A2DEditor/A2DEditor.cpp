@@ -51,17 +51,9 @@ namespace Aserai2D
 			m_PanelManager->AddPanel("Entity Properties", std::make_shared<EntityPropertiesPanel>());
 
 			// TMP
-			// Load Assets (DO IT IN EDITOR NOT MANUALLY)
-			std::shared_ptr<TextureAsset> tankAsset = std::make_shared<TextureAsset>("../Assets/Spritesheets/top_down_tanks.png");
-			AssetManager::AddAsset(tankAsset);
-			AssetManager::ReloadAsset(tankAsset->GetAssetID());
-
-			std::shared_ptr<TextureAsset> asset = AssetManager::GetAsset<TextureAsset>(tankAsset->GetAssetID());
-			std::shared_ptr<Texture2D> tankTexture = asset->GetTexture();
-			
 			Entity player = m_ActiveScene->CreateEntity("player");
 			player.AddComponent<TransformComponent>(glm::vec3(-5.0, 0.0, 0.0), glm::vec3(0.0, 0.0, 1.0), glm::vec3(1.0, 1.0, 1.0), 0.0);
-			player.AddComponent<SpriteComponent>(tankTexture, 2, 2, 1); // DONT ADD TEXTURE USING NAME, LOOP OVER TEXTURES OR ADD USING CONTENT BROWSER
+			player.AddComponent<SpriteComponent>(AssetManager::CreateAsset<TextureAsset>("../Assets/Spritesheets/top_down_tanks.png"), 2, 2, 1); // DONT ADD TEXTURE USING NAME, LOOP OVER TEXTURES OR ADD USING CONTENT BROWSER
 			//player.AddComponent<KeyboardMovementComponent>(5.0, true);
 
 			return true;

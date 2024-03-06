@@ -2,6 +2,7 @@
 #include "A2DEngine/Systems/RenderSystem.h"
 #include "A2DEngine/Components/TransformComponent.h"
 #include "A2DEngine/Components/SpriteComponent.h"
+#include "A2DEngine/Asset/AssetManager.h"
 
 #include <array>
 
@@ -41,8 +42,8 @@ namespace Aserai2D
 			transform.Scale.x *= sprite.Width;
 			transform.Scale.y *= sprite.Height;
 
-			if (sprite.Texture)
-				renderer->RenderQuad(transform.GetTransform(), sprite.Texture, sprite.TextureUV);
+			if (sprite.Texture && AssetManager::IsAssetLoaded(sprite.Texture))
+				renderer->RenderQuad(transform.GetTransform(), AssetManager::GetAsset<TextureAsset>(sprite.Texture)->GetTexture(), sprite.TextureUV);
 			else
 				renderer->RenderQuad(transform.GetTransform(), sprite.Color);
 		}

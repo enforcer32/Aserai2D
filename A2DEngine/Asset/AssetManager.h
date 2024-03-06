@@ -17,8 +17,20 @@ namespace Aserai2D
 		static AssetType GetAssetType(AssetID assetID);
 		static bool HasAssetID(AssetID assetID);
 		static bool IsAssetValid(AssetID assetID);
+		static bool IsAssetLoaded(AssetID assetID);
 		static void AddAsset(const std::shared_ptr<Asset>& asset);
 		static void ReloadAsset(AssetID assetID);
+
+		template<typename T, typename ...Args>
+		static AssetID CreateAsset(Args&& ...args)
+		{
+			std::shared_ptr<T> asset = std::make_shared<T>(std::forward<Args>(args)...);
+			std::shared_ptr<Asset> base = std::static_pointer_cast<Asset>(asset);
+			s_Assets[base->GetAssetID()] = asset;
+			ASERAI_LOG_DEBUG("Created Asset({})", base->GetAssetID());
+			ReloadAsset(base->GetAssetID());
+			return base->GetAssetID();
+		}
 
 		template<typename T>
 		static std::shared_ptr<T> GetAsset(AssetID assetID)
