@@ -1,6 +1,7 @@
 #include "AseraiEnginePCH.h"
 #include "AseraiEngine/Renderer/Texture2D.h"
 #include "AseraiEngine/Core/Logger.h"
+#include "AseraiEngine/Core/Assertion.h"
 
 #include <glad/glad.h>
 #include <stb/stb_image.h>
@@ -35,6 +36,7 @@ namespace Aserai
 	{
 		stbi_set_flip_vertically_on_load(flipVertically);
 		uint8_t* buffer = stbi_load(filepath.c_str(), &m_Width, &m_Height, &m_Channels, 0);
+		ASERAI_ASSERT(buffer != nullptr, "Invalid Texture File");
 
 		if (m_Channels == 4)
 		{

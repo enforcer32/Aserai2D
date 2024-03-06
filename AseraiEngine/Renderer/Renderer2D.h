@@ -39,9 +39,11 @@ namespace Aserai
 
 		void RenderQuad(const glm::vec3& position, const glm::vec3& size, const glm::vec4& color);
 		void RenderQuad(const glm::vec3& position, const glm::vec3& size, const std::shared_ptr<Texture2D>& texture);
+		void RenderQuad(const glm::vec3& position, const glm::vec3& size, const std::shared_ptr<Texture2D>& texture, const std::array<glm::vec2, 4>& textureUV);
 
 		void RenderQuad(const glm::mat4& transform, const glm::vec4& color);
 		void RenderQuad(const glm::mat4& transform, const std::shared_ptr<Texture2D>& texture);
+		void RenderQuad(const glm::mat4& transform, const std::shared_ptr<Texture2D>& texture, const std::array<glm::vec2, 4>& textureUV);
 
 		inline const RenderStats& GetRenderStats() const { return m_RenderStats; }
 		inline void ResetRenderStats() { memset(&m_RenderStats, 0, sizeof(RenderStats)); }

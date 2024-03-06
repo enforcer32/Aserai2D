@@ -3,6 +3,8 @@
 #include "AseraiEngine/Components/TransformComponent.h"
 #include "AseraiEngine/Components/SpriteComponent.h"
 
+#include <array>
+
 namespace Aserai
 {
 	RenderSystem::RenderSystem()
@@ -36,11 +38,27 @@ namespace Aserai
 		{
 			const auto& transform = entity.TransformComponent;
 			const auto& sprite = entity.SpriteComponent;
-
+		
 			if (sprite.Texture)
-				renderer->RenderQuad(transform.GetTransform(), sprite.Texture);
+			{
+				if (sprite.SrcX || sprite.SrcY)
+				{
+					std::array<glm::vec2, 4> textureUV;
+					textureUV[0] = { ((float)(sprite.SrcX * sprite.Width) / sprite.Texture->GetWidth()), ((float)(sprite.SrcY * sprite.Height) / sprite.Texture->GetHeight()) }; // BOTTOM LEFT
+					textureUV[1] = { ((float)((sprite.SrcX + 1) * sprite.Width) / sprite.Texture->GetWidth()), ((float)(sprite.SrcY * sprite.Height) / sprite.Texture->GetHeight()) }; // BOTTOM RIGHT
+					textureUV[2] = { ((float)((sprite.SrcX + 1) * sprite.Width) / sprite.Texture->GetWidth()), ((float)((sprite.SrcY + 1) * sprite.Height) / sprite.Texture->GetHeight()) }; // TOP RIGHT
+					textureUV[3] = { ((float)(sprite.SrcX * sprite.Width) / sprite.Texture->GetWidth()), ((float)((sprite.SrcY + 1) * sprite.Height) / sprite.Texture->GetHeight()) }; // TOP LEFT
+					renderer->RenderQuad(transform.GetTransform(), sprite.Texture, textureUV);
+				}
+				else
+				{
+					renderer->RenderQuad(transform.GetTransform(), sprite.Texture);
+				}
+			}
 			else
+			{
 				renderer->RenderQuad(transform.GetTransform(), sprite.Color);
+			}
 		}
 	}
 }

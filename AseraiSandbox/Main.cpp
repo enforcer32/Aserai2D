@@ -24,7 +24,7 @@ namespace Aserai
 			m_ActiveScene = std::make_shared<Scene>("Sandbox");
 
 			// Simple Entities
-			Entity entity1 = m_ActiveScene->CreateEntity();
+			/*Entity entity1 = m_ActiveScene->CreateEntity();
 			entity1.AddComponent<RigidBodyComponent>(glm::vec3({ 0.1, 0.0, 0.0 }));
 			entity1.AddComponent<SpriteComponent>(glm::vec4({ 1.0f, 0.0f, 0.0f, 1.0f }), 0, 0, 1);
 
@@ -38,7 +38,10 @@ namespace Aserai
 
 			Entity entity4 = m_ActiveScene->CreateEntity();
 			entity4.AddComponent<RigidBodyComponent>(glm::vec3({ 0.0, -0.1, 0.0 }));
-			entity4.AddComponent<SpriteComponent>(m_AssetManager->GetTexture("../Assets/Textures/panther_tank_jlee104.png"), 0, 0, 2);
+			entity4.AddComponent<SpriteComponent>(m_AssetManager->GetTexture("../Assets/Textures/panther_tank_jlee104.png"), 0, 0, 2);*/			
+
+			Entity block = m_ActiveScene->CreateEntity();
+			block.AddComponent<SpriteComponent>(m_AssetManager->GetTexture("../Assets/Spritesheets/top_down_tanks.png"), 128, 128, 0, 3);
 		}
 
 		virtual void OnProcessInput() override

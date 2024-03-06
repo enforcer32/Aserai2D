@@ -166,6 +166,40 @@ namespace Aserai
 		m_RenderStats.QuadCount++;
 	}
 
+	void Renderer2D::RenderQuad(const glm::vec3& position, const glm::vec3& size, const std::shared_ptr<Texture2D>& texture, const std::array<glm::vec2, 4>& textureUV)
+	{
+		if (m_QuadVertexIndex >= m_MaxVertexCount)
+			ResetBatch();
+
+		float texID = 0.0f;
+		for (uint32_t i = 1; i < m_TextureIndex; i++)
+		{
+			if (*texture == *m_Textures[i])
+			{
+				texID = i;
+				break;
+			}
+		}
+
+		if (!texID)
+		{
+			if (m_TextureIndex >= m_MaxTextureCount)
+				ResetBatch();
+
+			texID = m_TextureIndex;
+			m_Textures[m_TextureIndex++] = texture;
+		}
+
+		auto quad = CreateQuad(position, size, { 1.0f, 1.0f, 1.0f, 1.0f }, texID);
+		for (uint32_t i = 0; i < 4; i++)
+		{
+			quad[i].TextureUV = textureUV[i];
+			m_QuadVertices[m_QuadVertexIndex++] = quad[i];
+		}
+
+		m_RenderStats.QuadCount++;
+	}
+
 	void Renderer2D::RenderQuad(const glm::mat4& transform, const glm::vec4& color)
 	{
 		if (m_QuadVertexIndex >= m_MaxVertexCount)
@@ -212,6 +246,42 @@ namespace Aserai
 		{
 			quad[i].TextureID = texID;
 			quad[i].Position = transform * glm::vec4({ quad[i].Position.x, quad[i].Position.y, quad[i].Position.z, 1.0f });
+			m_QuadVertices[m_QuadVertexIndex++] = quad[i];
+		}
+
+		m_RenderStats.QuadCount++;
+	}
+
+	void Renderer2D::RenderQuad(const glm::mat4& transform, const std::shared_ptr<Texture2D>& texture, const std::array<glm::vec2, 4>& textureUV)
+	{
+		if (m_QuadVertexIndex >= m_MaxVertexCount)
+			ResetBatch();
+
+		float texID = 0.0f;
+		for (uint32_t i = 1; i < m_TextureIndex; i++)
+		{
+			if (*texture == *m_Textures[i])
+			{
+				texID = i;
+				break;
+			}
+		}
+
+		if (!texID)
+		{
+			if (m_TextureIndex >= m_MaxTextureCount)
+				ResetBatch();
+
+			texID = m_TextureIndex;
+			m_Textures[m_TextureIndex++] = texture;
+		}
+
+		auto quad = m_QuadTemplate;
+		for (int i = 0; i < 4; i++)
+		{
+			quad[i].Position = transform * glm::vec4({ quad[i].Position.x, quad[i].Position.y, quad[i].Position.z, 1.0f });
+			quad[i].TextureUV = textureUV[i];
+			quad[i].TextureID = texID;
 			m_QuadVertices[m_QuadVertexIndex++] = quad[i];
 		}
 
