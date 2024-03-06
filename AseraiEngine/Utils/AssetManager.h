@@ -15,6 +15,8 @@ namespace Aserai
 		std::shared_ptr<Shader> GetShader(const std::string& vertexPath, const std::string& fragmentPath);
 		std::shared_ptr<Texture2D> GetTexture(const std::string& path);
 
+		void Clear();
+
 	private:
 		std::unordered_map<uint32_t, std::shared_ptr<Shader>> m_Shaders;
 		std::unordered_map<uint32_t, std::shared_ptr<Texture2D>> m_Textures;

@@ -7,6 +7,9 @@ staticruntime "off"
 targetdir ("%{wks.location}/Build/" .. outputdir .. "/%{prj.name}")
 objdir ("%{wks.location}/Build/Intermediates/" .. outputdir .. "/%{prj.name}")
 
+pchheader "AseraiTankGame2DPCH.h"
+pchsource "AseraiTankGame2DPCH.cpp"
+
 files
 {
 	"**.h",

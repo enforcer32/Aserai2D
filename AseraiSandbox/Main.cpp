@@ -1,3 +1,4 @@
+#include "AseraiSandboxPCH.h"
 #include <iostream>
 
 #include <AseraiEngine/Core/AseraiApp.h>
@@ -39,7 +40,7 @@ namespace Aserai
 			Entity player = m_ActiveScene->CreateEntity("player");
 			player.AddComponent<TransformComponent>(glm::vec3(-5.0, 0.0, 0.0), glm::vec3(0.0, 0.0, 1.0), glm::vec3(1.0, 1.0, 1.0), 0.0);
 			player.AddComponent<SpriteComponent>(m_AssetManager->GetTexture("../Assets/Spritesheets/top_down_tanks.png"), 2, 2, 1, 7.16, 5.5, 82, 79);
-			player.AddComponent<KeyboardMovementComponent>(5.0);
+			player.AddComponent<KeyboardMovementComponent>(5.0, true);
 		}
 
 		virtual void OnProcessInput() override

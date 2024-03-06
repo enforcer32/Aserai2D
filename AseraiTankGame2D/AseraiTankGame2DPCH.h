@@ -13,13 +13,8 @@
 #include <array>
 
 #include <spdlog/spdlog.h>
-#include <spdlog/sinks/stdout_color_sinks.h>
-// #include <glad/glad.h>
-// #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-#include <stb/stb_image.h>
-#include <fnv/fnv.h>
 #include <imgui.h>
 
 #ifdef ASERAI_PLATFORM_WINDOWS

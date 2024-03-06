@@ -2,7 +2,6 @@
 #include "AseraiEngine/Systems/KeyboardMovementSystem.h"
 #include "AseraiEngine/Components/TransformComponent.h"
 #include "AseraiEngine/Components/KeyboardMovementComponent.h"
-#include "AseraiEngine/Components/SpriteComponent.h"
 
 namespace Aserai
 {
@@ -18,32 +17,30 @@ namespace Aserai
 		{
 			auto& transform = entity.GetComponent<TransformComponent>();
 			const auto& keyboard = entity.GetComponent<KeyboardMovementComponent>();
-			bool hasSprit = entity.HasComponent<SpriteComponent>();
 
 			if (inputManager->IsKeyHeldDown(keyboard.LeftKey))
 			{
 				transform.Translation.x -= keyboard.Speed * dt;
-
-				if (hasSprit)
+				if(keyboard.UpdateRotation2D)
 					transform.Rotation2D = 90.0f;
 			}
 			else if (inputManager->IsKeyHeldDown(keyboard.RightKey))
 			{
 				transform.Translation.x += keyboard.Speed * dt;
-				if (hasSprit)
+				if (keyboard.UpdateRotation2D)
 					transform.Rotation2D = -90.0f;
 			}
 			else if (inputManager->IsKeyHeldDown(keyboard.UpKey))
 			{
 				transform.Translation.y += keyboard.Speed * dt;
-				if (hasSprit)
+				if (keyboard.UpdateRotation2D)
 					transform.Rotation2D = 0.0;
 
 			}
 			else if (inputManager->IsKeyHeldDown(keyboard.DownKey))
 			{
 				transform.Translation.y -= keyboard.Speed * dt;
-				if (hasSprit)
+				if (keyboard.UpdateRotation2D)
 					transform.Rotation2D = 180.0f;
 			}
 		}

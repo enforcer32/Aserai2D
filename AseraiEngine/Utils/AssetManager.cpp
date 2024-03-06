@@ -25,4 +25,10 @@ namespace Aserai
 
 		return m_Textures[hash];
 	}
+
+	void AssetManager::Clear()
+	{
+		m_Shaders.clear();
+		m_Textures.clear();
+	}
 }
