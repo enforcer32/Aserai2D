@@ -6,6 +6,7 @@
 #include "AseraiEngine/Core/InputManager.h"
 #include "AseraiEngine/Core/EventManager.h"
 #include "AseraiEngine/Systems/RenderSystem.h"
+#include "AseraiEngine/Scene/EditorCamera.h"
 
 #include <string>
 #include <memory>
@@ -23,6 +24,9 @@ namespace Aserai
 		void OnRuntimeRender(DeltaTime dt, const std::shared_ptr<Renderer2D>& renderer, const std::shared_ptr<InputManager>& inputManager);
 		void OnViewportResize(uint32_t width, uint32_t height);
 
+		void OnEditorUpdate(DeltaTime dt, const std::shared_ptr<InputManager>& inputManager, const std::shared_ptr<EventManager>& eventManager);
+		void OnEditorRender(DeltaTime dt, const std::shared_ptr<Renderer2D>& renderer, const std::shared_ptr<InputManager>& inputManager, const std::shared_ptr<EditorCamera>& editorCamera);
+		
 		Entity CreateEntity(const std::string& name = "");
 		void DestroyEntity(Entity entity);
 		Entity GetPrimaryCamera();

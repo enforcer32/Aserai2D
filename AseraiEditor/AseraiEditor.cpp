@@ -5,6 +5,7 @@
 #include <AseraiEngine/Utils/AssetManager.h>
 #include <AseraiEngine/Scene/Scene.h>
 #include <AseraiEngine/Renderer/Framebuffer.h>
+#include <AseraiEngine/Scene/EditorCamera.h>
 
 #include <AseraiEngine/Components/TransformComponent.h>
 #include <AseraiEngine/Components/SpriteComponent.h>
@@ -27,6 +28,7 @@ namespace Aserai
 			m_AssetManager = std::make_shared<AssetManager>();
 			m_ActiveScene = std::make_shared<Scene>("Editor");
 			m_Framebuffer = std::make_shared<Framebuffer>(windowProps.Width, windowProps.Height);
+			m_EditorCamera = std::make_shared<EditorCamera>();
 
 			m_Renderer2D->SetAlphaBlending(true);
 
@@ -37,13 +39,10 @@ namespace Aserai
 
 
 			// TMP
-			Entity camera = m_ActiveScene->CreateEntity();
-			camera.AddComponent<CameraComponent>(true);
-
 			Entity player = m_ActiveScene->CreateEntity("player");
 			player.AddComponent<TransformComponent>(glm::vec3(-5.0, 0.0, 0.0), glm::vec3(0.0, 0.0, 1.0), glm::vec3(1.0, 1.0, 1.0), 0.0);
 			player.AddComponent<SpriteComponent>(m_AssetManager->GetTexture("../Assets/Spritesheets/top_down_tanks.png"), 2, 2, 1, 7.16, 5.5, 82, 79);
-			player.AddComponent<KeyboardMovementComponent>(5.0, true);
+			//player.AddComponent<KeyboardMovementComponent>(5.0, true);
 		}
 
 		virtual void OnProcessInput() override
@@ -58,9 +57,13 @@ namespace Aserai
 			{
 				m_Framebuffer->Resize(m_Viewport.x, m_Viewport.y);
 				m_ActiveScene->OnViewportResize(m_Viewport.x, m_Viewport.y);
+				m_EditorCamera->SetViewport(m_Viewport.x, m_Viewport.y);
 			}
 
-			m_ActiveScene->OnRuntimeUpdate(dt, m_InputManager, m_EventManager);
+			if (m_ViewportFocused)
+				m_EditorCamera->OnUpdate(dt, m_InputManager);
+
+			m_ActiveScene->OnEditorUpdate(dt, m_InputManager, m_EventManager);
 		}
 
 		virtual void OnRender(DeltaTime dt, const std::shared_ptr<Renderer2D>& renderer) override
@@ -70,7 +73,7 @@ namespace Aserai
 			renderer->SetClearColor({ 0.2f, 0.3f, 0.3f, 1.0f });
 			renderer->Clear();
 
-			m_ActiveScene->OnRuntimeRender(dt, renderer, m_InputManager);
+			m_ActiveScene->OnEditorRender(dt, renderer, m_InputManager, m_EditorCamera);
 			m_Framebuffer->Unbind();
 		}
 
@@ -172,6 +175,7 @@ namespace Aserai
 		std::shared_ptr<AssetManager> m_AssetManager;
 		std::shared_ptr<Scene> m_ActiveScene;
 		std::shared_ptr<Framebuffer> m_Framebuffer;
+		std::shared_ptr<EditorCamera> m_EditorCamera;
 		bool m_ViewportFocused;
 		glm::vec2 m_Viewport;
 	};

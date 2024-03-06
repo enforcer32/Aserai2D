@@ -21,7 +21,6 @@ namespace Aserai
 
 		// Register Systems
 		EnableSystem<CameraControlSystem>();
-		EnableSystem<CameraControlSystem>();
 		EnableSystem<MovementSystem>();
 		EnableSystem<RenderSystem>();
 		EnableSystem<KeyboardMovementSystem>();
@@ -59,6 +58,33 @@ namespace Aserai
 				GetSystem<CollisionSystem>()->OnRender(dt, renderer, inputManager);
 			renderer->EndRenderer();
 		}
+	}
+
+	void Scene::OnEditorUpdate(DeltaTime dt, const std::shared_ptr<InputManager>& inputManager, const std::shared_ptr<EventManager>& eventManager)
+	{
+		if (IsSystemEnabled<CameraControlSystem>())
+			GetSystem<CameraControlSystem>()->OnUpdate(dt, inputManager);
+		if (IsSystemEnabled<MovementSystem>())
+			GetSystem<MovementSystem>()->OnUpdate(dt);
+		if (IsSystemEnabled<KeyboardMovementSystem>())
+			GetSystem<KeyboardMovementSystem>()->OnUpdate(dt, inputManager);
+		if (IsSystemEnabled<CollisionSystem>())
+			GetSystem<CollisionSystem>()->OnUpdate(dt, eventManager);
+		if (IsSystemEnabled<ParticleEmitSystem>())
+			GetSystem<ParticleEmitSystem>()->OnUpdate(dt, m_Registry, inputManager);
+		if (IsSystemEnabled<ParticleLifeSystem>())
+			GetSystem<ParticleLifeSystem>()->OnUpdate(dt);
+
+		m_Registry->Sync();
+	}
+
+	void Scene::OnEditorRender(DeltaTime dt, const std::shared_ptr<Renderer2D>& renderer, const std::shared_ptr<InputManager>& inputManager, const std::shared_ptr<EditorCamera>& editorCamera)
+	{
+		renderer->BeginRenderer(*editorCamera, editorCamera->GetTransformMatrix());
+		GetSystem<RenderSystem>()->OnUpdate(dt, renderer);
+		if (IsSystemEnabled<CollisionSystem>()) // && IsDebug?
+			GetSystem<CollisionSystem>()->OnRender(dt, renderer, inputManager);
+		renderer->EndRenderer();
 	}
 
 	void Scene::OnViewportResize(uint32_t width, uint32_t height)
