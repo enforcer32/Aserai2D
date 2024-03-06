@@ -15,7 +15,7 @@ namespace Aserai
 			ASERAI_LOG_CRITICAL("Failed to Initialize Window");
 
 		m_Renderer2D = std::make_shared<Renderer2D>();
-		if (!m_Renderer2D->Init())
+		if (!m_Renderer2D->Init(1000))
 			ASERAI_LOG_CRITICAL("Failed to Initialize Renderer2D");
 
 		m_Running = true;

@@ -2,6 +2,7 @@
 #include "AseraiEngine/Renderer/Renderer2D.h"
 
 #include <glad/glad.h>
+#include <glm/gtc/matrix_transform.hpp>
 
 namespace Aserai
 {
@@ -10,12 +11,12 @@ namespace Aserai
 		m_Initialized = false;
 	}
 
-	bool Renderer2D::Init()
+	bool Renderer2D::Init(uint32_t batchsize)
 	{
 		// Mesh = Object, Material = Color or Lighting applied on object to change effects/colors
 		// Texture = Material or Image Applied on Mesh or Object (Add Detail On Object)
 
-		m_MaxQuadCount = 1000;
+		m_MaxQuadCount = batchsize;
 		m_MaxVertexCount = m_MaxQuadCount * 4;
 		m_MaxIndexCount = m_MaxQuadCount * 6;
 		m_MaxTextureCount = 32;
@@ -161,6 +162,58 @@ namespace Aserai
 		auto quad = CreateQuad(position, size, { 1.0f, 1.0f, 1.0f, 1.0f }, texID);
 		for (uint32_t i = 0; i < 4; i++)
 			m_QuadVertices[m_QuadVertexIndex++] = quad[i];
+
+		m_RenderStats.QuadCount++;
+	}
+
+	void Renderer2D::RenderQuad(const glm::mat4& transform, const glm::vec4& color)
+	{
+		if (m_QuadVertexIndex >= m_MaxVertexCount)
+			ResetBatch();
+
+		auto quad = m_QuadTemplate;
+		for (int i = 0; i < 4; i++)
+		{
+			quad[i].Color = color;
+			quad[i].Position = transform * glm::vec4({ quad[i].Position.x, quad[i].Position.y, quad[i].Position.z, 1.0f });
+			m_QuadVertices[m_QuadVertexIndex++] = quad[i];
+		}
+
+		m_RenderStats.QuadCount++;
+	}
+
+	void Renderer2D::RenderQuad(const glm::mat4& transform, const std::shared_ptr<Texture2D>& texture)
+	{
+
+		if (m_QuadVertexIndex >= m_MaxVertexCount)
+			ResetBatch();
+
+		float texID = 0.0f;
+		for (uint32_t i = 1; i < m_TextureIndex; i++)
+		{
+			if (*texture == *m_Textures[i])
+			{
+				texID = i;
+				break;
+			}
+		}
+
+		if (!texID)
+		{
+			if (m_TextureIndex >= m_MaxTextureCount)
+				ResetBatch();
+
+			texID = m_TextureIndex;
+			m_Textures[m_TextureIndex++] = texture;
+		}
+
+		auto quad = m_QuadTemplate;
+		for (int i = 0; i < 4; i++)
+		{
+			quad[i].TextureID = texID;
+			quad[i].Position = transform * glm::vec4({ quad[i].Position.x, quad[i].Position.y, quad[i].Position.z, 1.0f });
+			m_QuadVertices[m_QuadVertexIndex++] = quad[i];
+		}
 
 		m_RenderStats.QuadCount++;
 	}

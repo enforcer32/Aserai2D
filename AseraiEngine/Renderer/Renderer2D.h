@@ -25,7 +25,7 @@ namespace Aserai
 	public:
 		Renderer2D();
 
-		bool Init();
+		bool Init(uint32_t batchsize);
 		void Destroy();
 
 		void BeginRenderer();
@@ -39,6 +39,9 @@ namespace Aserai
 
 		void RenderQuad(const glm::vec3& position, const glm::vec3& size, const glm::vec4& color);
 		void RenderQuad(const glm::vec3& position, const glm::vec3& size, const std::shared_ptr<Texture2D>& texture);
+
+		void RenderQuad(const glm::mat4& transform, const glm::vec4& color);
+		void RenderQuad(const glm::mat4& transform, const std::shared_ptr<Texture2D>& texture);
 
 		inline const RenderStats& GetRenderStats() const { return m_RenderStats; }
 		inline void ResetRenderStats() { memset(&m_RenderStats, 0, sizeof(RenderStats)); }

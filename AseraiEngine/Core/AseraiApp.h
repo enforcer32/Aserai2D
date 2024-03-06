@@ -20,9 +20,11 @@ namespace Aserai
 		virtual void OnUpdate() = 0;
 		virtual void OnRender(std::shared_ptr<Renderer2D>& renderer) = 0;
 
+	protected:
+		std::shared_ptr<Renderer2D> m_Renderer2D;
+
 	private:
 		bool m_Running;
 		std::unique_ptr<Window> m_Window;
-		std::shared_ptr<Renderer2D> m_Renderer2D;
 	};
 }
