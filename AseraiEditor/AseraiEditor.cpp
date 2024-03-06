@@ -43,7 +43,7 @@ namespace Aserai
 			m_InputManager->SetMouseAutoRepeatHeldDown(false);
 
 			m_PanelManager->AddPanel("SceneGraph", std::make_shared<SceneGraphPanel>(m_ActiveScene, m_InputManager));
-			m_PanelManager->AddPanel("Entity Properties", std::make_shared<EntityPropertiesPanel>());
+			m_PanelManager->AddPanel("Entity Properties", std::make_shared<EntityPropertiesPanel>(m_AssetManager));
 
 			// TMP
 			Entity player = m_ActiveScene->CreateEntity("player");

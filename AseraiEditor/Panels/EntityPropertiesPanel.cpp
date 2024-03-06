@@ -2,6 +2,8 @@
 #include "AseraiEditor/Panels/EntityPropertiesPanel.h"
 #include "AseraiEditor/Panels/SceneGraphPanel.h"
 
+#include <AseraiEngine/Platform/FileDialog.h>
+
 #include <AseraiEngine/Components/TransformComponent.h>
 #include <AseraiEngine/Components/SpriteComponent.h>
 
@@ -48,6 +50,11 @@ namespace Aserai
 				ImGui::CloseCurrentPopup();
 			}
 		}
+	}
+
+	EntityPropertiesPanel::EntityPropertiesPanel(const std::shared_ptr<AssetManager>& assetManager)
+		: m_AssetManager(assetManager)
+	{
 	}
 
 	void EntityPropertiesPanel::OnImGuiRender()
@@ -117,26 +124,60 @@ namespace Aserai
 
 		RenderComponent<SpriteComponent>("Sprite", entity, [](SpriteComponent& component)
 			{
-				if (!component.Texture)
-				{
-					ImGui::Text("Color");
-					ImGui::SameLine();
-					ImGui::ColorEdit4("##Color", glm::value_ptr(component.Color));
-				}
+				ImGui::Text("Color");
+				ImGui::SameLine();
+				ImGui::ColorEdit4("##Color", glm::value_ptr(component.Color));
 
 				ImGui::Text("Width");
 				ImGui::SameLine();
 				ImGui::DragInt("##Width", (int32_t*)&component.Width, 1.0f);
 
-
 				ImGui::Text("Height");
 				ImGui::SameLine();
 				ImGui::DragInt("##Height", (int32_t*)&component.Height, 1.0f);
 
-
 				ImGui::Text("Z-Index");
 				ImGui::SameLine();
 				ImGui::DragInt("##Z-Index", (int32_t*)&component.ZIndex, 1.0f);
+
+				ImGui::Text("Fixed");
+				ImGui::SameLine();
+				ImGui::Checkbox("##Fixed", &component.Fixed);
+
+				ImGui::InvisibleButton("##texturePadding", { 10.0, 20.0 });
+
+				ImGui::Text("Texture");
+				ImGui::SameLine();
+				if (ImGui::ImageButton("##Texture", (void*)(component.Texture ? component.Texture->GetID() : 0), ImVec2(100.f, 100.f), ImVec2(0, 1), ImVec2(1, 0)))
+				{
+					std::string texturePath = FileDialog::OpenFile("Image Files (*.png, *.jpg, *.jpeg)\0*.png;*.jpg;*.jpeg\0");
+					if(!texturePath.empty())
+						component.Texture = std::make_shared<Texture2D>(texturePath);
+				}
+
+				ImGui::Text("TextureX");
+				ImGui::SameLine();
+				ImGui::DragFloat("##TextureX", &component.TextureX, 1.0f);
+
+				ImGui::Text("TextureY");
+				ImGui::SameLine();
+				ImGui::DragFloat("##TextureY", &component.TextureY, 1.0f);
+
+				ImGui::Text("TextureW");
+				ImGui::SameLine();
+				ImGui::DragInt("##TextureW", (int32_t*)&component.TextureW, 1.0f);
+
+				ImGui::Text("TextureH");
+				ImGui::SameLine();
+				ImGui::DragInt("##TextureH", (int32_t*)&component.TextureH, 1.0f);
+
+				if (ImGui::Button("Reset"))
+				{
+					component.TextureX = 0;
+					component.TextureY = 0;
+					component.TextureW = 0;
+					component.TextureH = 0;
+				}
 			});
 	}
 }

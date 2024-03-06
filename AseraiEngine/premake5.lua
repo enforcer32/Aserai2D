@@ -62,6 +62,7 @@ filter "system:windows"
 
 	files
 	{
+		"AseraiEngine/Platform/Win32/**.cpp"
 	}
 
 filter "configurations:Debug"

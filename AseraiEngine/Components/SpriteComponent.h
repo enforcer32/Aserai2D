@@ -29,5 +29,15 @@ namespace Aserai
 			: Texture(texture), Color({1.0f, 0.0f, 0.0f, 1.0f}), Width(width), Height(height), ZIndex(zIndex), TextureX(textureX), TextureY(textureY), TextureW(textureW), TextureH(textureH), Fixed(fixed)
 		{
 		}
+
+		std::array<glm::vec2, 4> GetTextureUV()
+		{
+			std::array<glm::vec2, 4> textureUV;
+			textureUV[0] = { ((float)(TextureX * TextureW) / Texture->GetWidth()), ((float)(TextureY * TextureH) / Texture->GetHeight()) }; // BOTTOM LEFT
+			textureUV[1] = { ((float)((TextureX + 1) * TextureW) / Texture->GetWidth()), ((float)(TextureY * TextureH) / Texture->GetHeight()) }; // BOTTOM RIGHT
+			textureUV[2] = { ((float)((TextureX + 1) * TextureW) / Texture->GetWidth()), ((float)((TextureY + 1) * TextureH) / Texture->GetHeight()) }; // TOP RIGHT
+			textureUV[3] = { ((float)(TextureX * TextureW) / Texture->GetWidth()), ((float)((TextureY + 1) * TextureH) / Texture->GetHeight()) }; // TOP LEFT
+			return textureUV;
+		}
 	};
 }
