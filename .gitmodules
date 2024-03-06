@@ -1,0 +1,3 @@
+[submodule "Dependencies/spdlog"]
+	path = Dependencies/spdlog
+	url = https://github.com/enforcer32/spdlog
