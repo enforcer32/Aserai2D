@@ -35,6 +35,7 @@ namespace Aserai
 		const std::string& GetName() const;
 
 		void SetViewportFocus(bool state);
+		std::shared_ptr<Registry> GetRegistry();
 
 		template<typename T>
 		void EnableSystem()

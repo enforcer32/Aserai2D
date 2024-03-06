@@ -148,6 +148,7 @@ namespace Aserai
 		// Entity
 		Entity CreateEntity();
 		void DestroyEntity(Entity entity);
+		const std::vector<Entity>& GetEntities();
 
 		void SetEntityTag(Entity entity, const std::string& tag);
 		const std::string& GetEntityTag(Entity entity);
@@ -270,6 +271,8 @@ namespace Aserai
 
 		std::unordered_map<uint32_t, std::string> m_EntityIDToGroup;
 		std::unordered_map<std::string, std::set<Entity>> m_GroupToEntities;
+
+		std::vector<Entity> m_Entities;
 	};
 
 	// Entity

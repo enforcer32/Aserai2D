@@ -127,6 +127,7 @@ namespace Aserai
 		}
 
 		Entity entity(id, this);
+		m_Entities.push_back(entity);
 		ASERAI_LOG_DEBUG("Entity({}) Created!", entity.GetID());
 		return entity;
 	}
@@ -134,7 +135,13 @@ namespace Aserai
 	void Registry::DestroyEntity(Entity entity)
 	{
 		m_EntityDeleteQueue.insert(entity);
+		m_Entities.erase(std::remove(m_Entities.begin(), m_Entities.end(), entity), m_Entities.end());
 		ASERAI_LOG_DEBUG("Entity({}) Destroyed!", entity.GetID());
+	}
+
+	const std::vector<Entity>& Registry::GetEntities()
+	{
+		return m_Entities;
 	}
 
 	void Registry::SetEntityTag(Entity entity, const std::string& tag)

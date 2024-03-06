@@ -137,4 +137,9 @@ namespace Aserai
 	{
 		m_ViewportFocused = state;
 	}
+
+	std::shared_ptr<Registry> Scene::GetRegistry()
+	{
+		return m_Registry;
+	}
 }
