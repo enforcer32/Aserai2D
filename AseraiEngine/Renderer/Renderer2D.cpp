@@ -67,9 +67,10 @@ namespace Aserai
 		m_Initialized = false;
 	}
 
-	void Renderer2D::BeginRenderer()
+	void Renderer2D::BeginRenderer(const Camera& camera, const glm::mat4& cameraTransform)
 	{
 		m_QuadShader->Bind();
+		m_QuadShader->SetMat4("u_ProjectionViewMatrix", (camera.GetProjection() * glm::inverse(cameraTransform)));
 		m_QuadVertexIndex = 0;
 		m_TextureIndex = 1;
 	}

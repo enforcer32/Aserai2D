@@ -21,6 +21,7 @@ namespace Aserai
 	class Entity
 	{
 	public:
+		Entity();
 		Entity(uint32_t id, Registry* registry);
 		Entity(const Entity& entity) = default;
 
@@ -60,9 +61,12 @@ namespace Aserai
 		template<typename T>
 		T& GetComponent();
 
+		operator bool() const { return !m_NULL; }
+
 	private:
 		uint32_t m_ID;
 		Registry* m_Registry;
+		bool m_NULL;
 	};
 
 	// System
@@ -216,6 +220,19 @@ namespace Aserai
 		T& GetSystem()
 		{
 			return m_SystemManager->GetSystem<T>();
+		}
+
+		template<typename T>
+		std::vector<Entity> GetEntitiesWithComponent()
+		{
+			std::vector<Entity> entities;
+			auto componentID = Component<T>::GetID();
+			for (uint32_t i = 0; i < m_EntityComponentSignatures.size(); i++)
+			{
+				if (m_EntityComponentSignatures[i].test(componentID))
+					entities.push_back({ i, this });
+			}
+			return entities;
 		}
 
 	private:

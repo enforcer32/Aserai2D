@@ -5,6 +5,7 @@
 #include "AseraiEngine/Systems/RenderSystem.h"
 
 #include "AseraiEngine/Components/TransformComponent.h"
+#include "AseraiEngine/Components/CameraComponent.h"
 
 namespace Aserai
 {
@@ -27,9 +28,24 @@ namespace Aserai
 
 	void Scene::OnRuntimeRender(DeltaTime dt, const std::shared_ptr<Renderer2D>& renderer)
 	{
-		renderer->BeginRenderer();
-		m_Registry->GetSystem<RenderSystem>().Update(dt, renderer);
-		renderer->EndRenderer();
+		Entity primaryCamera = GetPrimaryCamera();
+		if (primaryCamera)
+		{
+			renderer->BeginRenderer(primaryCamera.GetComponent<CameraComponent>().Camera, primaryCamera.GetComponent<TransformComponent>().GetTransform());
+			m_Registry->GetSystem<RenderSystem>().Update(dt, renderer);
+			renderer->EndRenderer();
+		}
+	}
+
+	void Scene::OnViewportResize(uint32_t width, uint32_t height)
+	{
+		auto& cameras = m_Registry->GetEntitiesWithComponent<CameraComponent>();
+		for (auto entity : cameras)
+		{
+			auto component = entity.GetComponent<CameraComponent>();
+			if (!component.Fixed)
+				component.Camera.SetViewport(width, height);
+		}
 	}
 
 	Entity Scene::CreateEntity(const std::string& name)
@@ -42,6 +58,18 @@ namespace Aserai
 	void Scene::DestroyEntity(Entity entity)
 	{
 		m_Registry->DestroyEntity(entity);
+	}
+
+	Entity Scene::GetPrimaryCamera()
+	{
+		auto& cameras = m_Registry->GetEntitiesWithComponent<CameraComponent>();
+		for (auto entity : cameras)
+		{
+			auto component = entity.GetComponent<CameraComponent>();
+			if (component.Primary)
+				return entity;
+		}
+		return {};
 	}
 
 	void Scene::SetName(const std::string& name)

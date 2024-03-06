@@ -5,6 +5,7 @@
 #include "AseraiEngine/Renderer/VertexBuffer.h"
 #include "AseraiEngine/Renderer/IndexBuffer.h"
 #include "AseraiEngine/Renderer/Texture2D.h"
+#include "AseraiEngine/Renderer/Camera.h"
 
 #include <memory>
 #include <array>
@@ -28,7 +29,7 @@ namespace Aserai
 		bool Init(uint32_t batchsize);
 		void Destroy();
 
-		void BeginRenderer();
+		void BeginRenderer(const Camera& camera, const glm::mat4& cameraTransform);
 		void EndRenderer();
 
 		void Clear();
@@ -62,7 +63,6 @@ namespace Aserai
 		std::shared_ptr<uint32_t[]> GenerateIndices();
 		void ResetBatch();
 		void DrawIndexed(const std::unique_ptr<VertexArray>& va, unsigned int count = 0);
-
 
 	private:
 		bool m_Initialized;

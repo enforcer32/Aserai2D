@@ -5,8 +5,10 @@
 #include <AseraiEngine/Scene/Scene.h>
 #include <AseraiEngine/Utils/AssetManager.h>
 
+#include <AseraiEngine/Components/TransformComponent.h>
 #include <AseraiEngine/Components/RigidBodyComponent.h>
 #include <AseraiEngine/Components/SpriteComponent.h>
+#include <AseraiEngine/Components/CameraComponent.h>
 
 #include <imgui.h>
 
@@ -42,8 +44,15 @@ namespace Aserai
 			entity4.AddComponent<RigidBodyComponent>(glm::vec3({ 0.0, -0.1, 0.0 }));
 			entity4.AddComponent<SpriteComponent>(m_AssetManager->GetTexture("../Assets/Textures/panther_tank_jlee104.png"), 0, 0, 2);*/			
 
-			Entity block = m_ActiveScene->CreateEntity();
-			block.AddComponent<SpriteComponent>(m_AssetManager->GetTexture("../Assets/Spritesheets/top_down_tanks.png"), 128, 128, 0, 3);
+			/*Entity block = m_ActiveScene->CreateEntity();
+			block.AddComponent<SpriteComponent>(m_AssetManager->GetTexture("../Assets/Spritesheets/top_down_tanks.png"), 128, 128, 0, 3);*/
+
+			Entity camera = m_ActiveScene->CreateEntity();
+			camera.AddComponent<CameraComponent>(true);
+
+			Entity square = m_ActiveScene->CreateEntity();
+			square.AddComponent<SpriteComponent>(glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
+			square.AddComponent<TransformComponent>(glm::vec3(0.0f, 0.0f, 0.0f));
 		}
 
 		virtual void OnProcessInput() override
@@ -87,6 +96,13 @@ namespace Aserai
 			ImGui::Text("Active Scene: %s", m_ActiveScene->GetName().c_str());
 			ImGui::Text("FPS: %.2f", (1.0f / dt));
 			ImGui::End();
+		}
+
+		virtual void OnWindowResize(WindowResizeEvent& ev) override
+		{
+			AseraiApp::OnWindowResize(ev);
+			
+			m_ActiveScene->OnViewportResize(ev.GetWidth(), ev.GetHeight());
 		}
 
 	private:

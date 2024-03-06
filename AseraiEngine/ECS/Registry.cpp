@@ -4,8 +4,13 @@
 namespace Aserai
 {
 	// Entity
+	Entity::Entity()
+		: m_ID(0), m_Registry(0), m_NULL(true)
+	{
+	}
+
 	Entity::Entity(uint32_t id, Registry* registry)
-		: m_ID(id), m_Registry(registry)
+		: m_ID(id), m_Registry(registry), m_NULL(false)
 	{
 	}
 
