@@ -6,6 +6,8 @@
 #include "AseraiEngine/Systems/CameraControlSystem.h"
 #include "AseraiEngine/Systems/KeyboardMovementSystem.h"
 #include "AseraiEngine/Systems/CollisionSystem.h"
+#include "AseraiEngine/Systems/ParticleEmitSystem.h"
+#include "AseraiEngine/Systems/ParticleLifeSystem.h"
 
 #include "AseraiEngine/Components/TransformComponent.h"
 #include "AseraiEngine/Components/CameraComponent.h"
@@ -23,6 +25,8 @@ namespace Aserai
 		m_Registry->AddSystem<RenderSystem>();
 		m_Registry->AddSystem<KeyboardMovementSystem>();
 		m_Registry->AddSystem<CollisionSystem>();
+		m_Registry->AddSystem<ParticleEmitSystem>();
+		m_Registry->AddSystem<ParticleLifeSystem>();
 	}
 
 	void Scene::OnRuntimeUpdate(DeltaTime dt, const std::shared_ptr<InputManager>& inputManager, const std::shared_ptr<EventManager>& eventManager)
@@ -35,6 +39,10 @@ namespace Aserai
 			m_Registry->GetSystem<KeyboardMovementSystem>().OnUpdate(dt, inputManager);
 		if (m_Registry->HasSystem<CollisionSystem>())
 			m_Registry->GetSystem<CollisionSystem>().OnUpdate(dt, eventManager);
+		if (m_Registry->HasSystem<ParticleEmitSystem>())
+			m_Registry->GetSystem<ParticleEmitSystem>().OnUpdate(dt, m_Registry);
+		if (m_Registry->HasSystem<ParticleLifeSystem>())
+			m_Registry->GetSystem<ParticleLifeSystem>().OnUpdate(dt);
 
 		m_Registry->Sync();
 	}

@@ -25,26 +25,26 @@ namespace Aserai
 				transform.Translation.x -= keyboard.Speed * dt;
 
 				if (hasSprit)
-					transform.Rotation2D = -90.0f;
+					transform.Rotation2D = 90.0f;
 			}
 			else if (inputManager->IsKeyPressed(keyboard.RightKey))
 			{
 				transform.Translation.x += keyboard.Speed * dt;
 				if (hasSprit)
-					transform.Rotation2D = 90.0f;
+					transform.Rotation2D = -90.0f;
 			}
 			else if (inputManager->IsKeyPressed(keyboard.UpKey))
 			{
 				transform.Translation.y += keyboard.Speed * dt;
 				if (hasSprit)
-					transform.Rotation2D = 180.0f;
+					transform.Rotation2D = 0.0;
 
 			}
 			else if (inputManager->IsKeyPressed(keyboard.DownKey))
 			{
 				transform.Translation.y -= keyboard.Speed * dt;
 				if (hasSprit)
-					transform.Rotation2D = 0.0f;
+					transform.Rotation2D = 180.0f;
 			}
 		}
 	}
