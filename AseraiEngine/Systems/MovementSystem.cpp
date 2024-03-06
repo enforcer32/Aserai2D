@@ -3,8 +3,6 @@
 #include "AseraiEngine/Components/TransformComponent.h"
 #include "AseraiEngine/Components/RigidBodyComponent.h"
 
-#include "AseraiEngine/Core/Logger.h"
-
 namespace Aserai
 {
 	MovementSystem::MovementSystem()

@@ -3,8 +3,10 @@
 #include <AseraiEngine/Core/AseraiApp.h>
 #include <AseraiEngine/Core/Logger.h>
 #include <AseraiEngine/Scene/Scene.h>
+#include <AseraiEngine/Utils/AssetManager.h>
 
 #include <AseraiEngine/Components/RigidBodyComponent.h>
+#include <AseraiEngine/Components/SpriteComponent.h>
 
 namespace Aserai
 {
@@ -15,14 +17,28 @@ namespace Aserai
 			: AseraiApp(windowProps)
 		{
 			ASERAI_LOG_INFO("Initialized AseraiSandbox");
-			m_BrickWallTexture = std::make_shared<Texture2D>("../Assets/Textures/wall_brick.png", true);
-			m_PantherTankTexture = std::make_shared<Texture2D>("../Assets/Textures/panther_tank_jlee104.png", true);
+
+			m_AssetManager = std::make_shared<AssetManager>();
 
 			m_Renderer2D->SetAlphaBlending(true);
 			m_ActiveScene = std::make_shared<Scene>("Sandbox");
 
 			// Simple Entities
-			m_ActiveScene->CreateEntity().AddComponent<RigidBodyComponent>(glm::vec3({ 0.1, 0.0, 0.0 }));
+			Entity entity1 = m_ActiveScene->CreateEntity();
+			entity1.AddComponent<RigidBodyComponent>(glm::vec3({ 0.1, 0.0, 0.0 }));
+			entity1.AddComponent<SpriteComponent>(glm::vec4({ 1.0f, 0.0f, 0.0f, 1.0f }), 0, 0, 1);
+
+			Entity entity2 = m_ActiveScene->CreateEntity();
+			entity2.AddComponent<RigidBodyComponent>(glm::vec3({ 0.1, 0.0, 0.0 }));
+			entity2.AddComponent<SpriteComponent>(glm::vec4({ 0.0f, 1.0f, 0.0f, 1.0f }), 0, 0, 0);
+
+			Entity entity3 = m_ActiveScene->CreateEntity();
+			entity3.AddComponent<RigidBodyComponent>(glm::vec3({ 0.0, 0.1, 0.0 }));
+			entity3.AddComponent<SpriteComponent>(m_AssetManager->GetTexture("../Assets/Textures/wall_brick.png"));
+
+			Entity entity4 = m_ActiveScene->CreateEntity();
+			entity4.AddComponent<RigidBodyComponent>(glm::vec3({ 0.0, -0.1, 0.0 }));
+			entity4.AddComponent<SpriteComponent>(m_AssetManager->GetTexture("../Assets/Textures/panther_tank_jlee104.png"), 0, 0, 2);
 		}
 
 		virtual void OnProcessInput() override
@@ -53,8 +69,7 @@ namespace Aserai
 		}
 
 	private:
-		std::shared_ptr<Texture2D> m_BrickWallTexture;
-		std::shared_ptr<Texture2D> m_PantherTankTexture;
+		std::shared_ptr<AssetManager> m_AssetManager;
 		std::shared_ptr<Scene> m_ActiveScene;
 	};
 }
