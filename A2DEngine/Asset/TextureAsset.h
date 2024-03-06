@@ -15,6 +15,7 @@ namespace Aserai2D
 		virtual AssetType GetType() const override;
 		virtual bool Reload() override;
 		std::shared_ptr<Texture2D> GetTexture();
+		const std::string& GetTexturePath() const;
 
 	private:
 		std::string m_TexturePath;

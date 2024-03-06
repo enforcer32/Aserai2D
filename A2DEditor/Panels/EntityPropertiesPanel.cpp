@@ -142,6 +142,7 @@ namespace Aserai2D
 
 				ImGui::InvisibleButton("##texturePadding", { 10.0, 20.0 });
 
+				// TextureID using Selection
 				ImGui::Text("Texture");
 				ImGui::SameLine();
 				if (ImGui::ImageButton("##Texture", (void*)((component.Texture && AssetManager::IsAssetLoaded(component.Texture)) ? AssetManager::GetAsset<TextureAsset>(component.Texture)->GetTexture()->GetID() : 0), ImVec2(100.f, 100.f), ImVec2(0, 1), ImVec2(1, 0)))

@@ -16,6 +16,7 @@ namespace Aserai2D
 		AssetFlag GetFlags() const { return m_Flags; }
 		void SetFlags(AssetFlag flags) { m_Flags = flags; }
 		bool IsValid() const { return (GetType() != AssetType::None) && (GetFlags() != AssetFlag::Invalid && GetFlags() != AssetFlag::Missing); }
+		bool IsLoaded() const { return GetFlags() == AssetFlag::Loaded; }
 
 	private:
 		AssetID m_ID;

@@ -33,4 +33,9 @@ namespace Aserai2D
 	{
 		return m_Texture;
 	}
+
+	const std::string& TextureAsset::GetTexturePath() const
+	{
+		return m_TexturePath;
+	}
 }
